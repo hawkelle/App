@@ -388,6 +388,10 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 .rotrow .iconbtn{width:34px;height:34px;font-size:16px}
 #rotVal{font:600 13px var(--sans);min-width:44px;text-align:right;color:var(--muted)}
 #tapBtns{margin-top:10px}
+.pickrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.pickrow label{position:relative;overflow:hidden}
+#loupe{position:fixed;z-index:90;width:220px;height:120px;border-radius:14px;border:2px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,.45);pointer-events:none}
+#loupe[hidden]{display:none}
 #cropBtns .rowend{justify-content:center}
 #cropOk{flex-basis:100%;padding:14px;font-size:16px}
 #cropBtns[hidden],#tapBtns[hidden],#scanPick[hidden]{display:none}
@@ -471,7 +475,7 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 <div class="modal" id="scanner" role="dialog" aria-modal="true" aria-label="Scan LH strip"><div class="mcard">
   <div class="mhead"><h4>Scan an LH strip</h4><button class="iconbtn" data-close="scanner" aria-label="Close">✕</button></div>
   <p class="hint" id="scanHint"></p>
-  <div id="scanPick" style="margin-top:14px"><label class="btn ghost small" style="cursor:pointer">Take or choose photo<input type="file" accept="image/*" id="scanFile" hidden></label></div>
+  <div id="scanPick" class="pickrow"><label class="btn small" style="cursor:pointer">Take photo<input type="file" accept="image/*" capture="environment" class="scanIn" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></label><label class="btn ghost small" style="cursor:pointer">Choose from library<input type="file" accept="image/*,.heic,.heif" id="scanFile" class="scanIn" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></label></div>
   <div class="stage" id="scanStage" hidden><canvas id="scanCanvas"></canvas></div>
   <div id="cropBtns" hidden><div class="rotrow"><button class="iconbtn" data-nudge="-0.5" aria-label="Rotate left a little">‹</button><input type="range" id="rotFine" min="-45" max="45" step="0.5" value="0" aria-label="Straighten"><button class="iconbtn" data-nudge="0.5" aria-label="Rotate right a little">›</button><span id="rotVal">0.0°</span></div>
     <div class="rowend"><button class="btn ghost small" id="cropZoom">Zoom in</button><button class="btn ghost small" id="cropRot">Turn 90°</button><button class="btn ghost small" id="cropSkip">Skip cropping</button><button class="btn small" id="cropOk">Crop</button></div></div>
@@ -490,6 +494,7 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 </div></div>
 
 <input type="file" id="importFile" hidden>
+<canvas id="loupe" width="440" height="240" hidden></canvas>
 <label id="hapt" aria-hidden="true" style="position:fixed;left:0;bottom:0;width:2px;height:2px;opacity:.01;overflow:hidden;pointer-events:none"><input type="checkbox" switch tabindex="-1"></label>
 <div class="toast" id="toast" role="status"></div>
 
@@ -1093,7 +1098,7 @@ function askConfirm(msg,ok='OK',danger=false){return new Promise(res=>{$('#confi
 const scan={view:{x:0,y:0,w:1,h:1},fine:0,orig:null,src:null,rot:0,rect:null,mode:'pick',data:null,w:0,h:0,taps:[],ratio:null,result:null,out:null,cropped:false,prof:null,drag:null};
 function scanHint(){const n=scan.taps.length,t={pick:'Lay the strip on something plain and white, in even daylight with no flash, and get close.',
   crop:'Straighten the strip with the slider so the lines stand upright, then drag the corners around it.',
-  tap:n===0?'Tap the control line (C), the one that always appears.':n===1?'Now tap where the test line (T) is, even if it’s faint or blank.':'Check the reading below and adjust it if it looks off.'}[scan.mode];$('#scanHint').textContent=t}
+  tap:n===0?'Touch the control line (C) and slide to place it exactly. A magnifier shows where it lands.':n===1?'Now place the test line (T) the same way, even if it’s faint or blank.':'Drag either marker to fine-tune. The reading updates when you let go.'}[scan.mode];$('#scanHint').textContent=t}
 function scanUI(){$('#scanner .mcard').classList.toggle('full',scan.mode!=='pick');$('#scanPick').hidden=scan.mode!=='pick'&&scan.mode!=='crop';$('#scanStage').hidden=scan.mode==='pick';$('#cropBtns').hidden=scan.mode!=='crop';$('#tapBtns').hidden=scan.mode!=='tap';scanHint()}
 function openScanner(kind='lh',target=null){$('#scanner h4').textContent=kind==='preg'?'Scan a pregnancy test':'Scan an LH strip';Object.assign(scan,{kind,target,orig:null,src:null,rot:0,rect:null,mode:'pick',data:null,taps:[],ratio:null,result:null,out:null,cropped:false,prof:null});$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();openModal('scanner')}
 function rotated(c,deg){if(!deg)return c;const a=deg*Math.PI/180,cs=Math.abs(Math.cos(a)),sn=Math.abs(Math.sin(a)),o=document.createElement('canvas');
@@ -1102,10 +1107,14 @@ function rotated(c,deg){if(!deg)return c;const a=deg*Math.PI/180,cs=Math.abs(Mat
 function fitCanvas(){const cv=$('#scanCanvas'),st=$('#scanStage'),aw=st.clientWidth||340,ah=Math.max(220,window.innerHeight*(scan.mode==='crop'?.56:.4)),k=Math.min(aw/cv.width,ah/cv.height);
   cv.style.width=Math.round(cv.width*k)+'px';cv.style.height=Math.round(cv.height*k)+'px'}
 let rotRaf=0;function applyRotation(){scan.src=rotated(scan.orig,scan.rot+scan.fine);$('#rotVal').textContent=(scan.fine>0?'+':'')+scan.fine.toFixed(1)+'°';drawCrop()}
-$('#scanFile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const url=URL.createObjectURL(f),img=new Image();
-  img.onload=()=>{const s=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);
-    scan.orig=c;scan.rot=0;scan.fine=0;scan.view={x:0,y:0,w:1,h:1};$('#rotFine').value=0;$('#rotVal').textContent='0.0°';scan.src=c;scan.rect={x:.1,y:.1,w:.8,h:.8};scan.mode='crop';scan.taps=[];$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop()};
-  img.onerror=()=>toast('That image couldn’t be opened. Try a JPEG or PNG.');img.src=url});
+function loadPhoto(f){return new Promise(res=>{const url=URL.createObjectURL(f),img=new Image();
+  img.onload=()=>{URL.revokeObjectURL(url);res({src:img,w:img.naturalWidth,h:img.naturalHeight})};
+  img.onerror=async()=>{URL.revokeObjectURL(url);try{const b=await createImageBitmap(f);res({src:b,w:b.width,h:b.height})}catch(e){res(null)}};img.src=url})}
+async function onPhotoPicked(e){const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;toast('Opening photo…');const im=await loadPhoto(f);
+  if(!im||!im.w){toast('That photo couldn’t be opened. In Settings → Camera → Formats, “Most Compatible” saves photos as JPEG, which always works.');return}
+  const s=Math.min(1,1600/Math.max(im.w,im.h)),c=document.createElement('canvas');c.width=Math.round(im.w*s);c.height=Math.round(im.h*s);c.getContext('2d').drawImage(im.src,0,0,c.width,c.height);
+  scan.orig=c;scan.rot=0;scan.fine=0;scan.view={x:0,y:0,w:1,h:1};$('#rotFine').value=0;$('#rotVal').textContent='0.0°';scan.src=c;scan.rect={x:.1,y:.1,w:.8,h:.8};scan.mode='crop';scan.taps=[];$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop()}
+$$('.scanIn').forEach(inp=>inp.addEventListener('change',onPhotoPicked));
 function cropGeom(){const c=scan.cv,v=scan.view,r=scan.rect;return{rx:c.pad+(r.x-v.x)/v.w*c.iw,ry:c.pad+(r.y-v.y)/v.h*c.ih,rw:r.w/v.w*c.iw,rh:r.h/v.h*c.ih}}
 function drawCrop(){const cv=$('#scanCanvas'),s=scan.src,v=scan.view,vx=v.x*s.width,vy=v.y*s.height,vw=Math.max(8,v.w*s.width),vh=Math.max(8,v.h*s.height),z=Math.min(3,1400/Math.max(vw,vh));
   const iw=Math.round(vw*z),ih=Math.round(vh*z),pad=Math.round(Math.max(iw,ih)*.06);scan.cv={iw,ih,pad};
@@ -1157,17 +1166,32 @@ function drawTaps(){const x=$('#scanCanvas').getContext('2d');x.putImageData(sca
     const top=scan.cropped?0:Math.max(0,t.y-H*.08),hh=scan.cropped?H:Math.min(H,H*.16);x.strokeRect(t.x-bw/2,top+x.lineWidth/2,bw,hh-x.lineWidth);
     const fs=Math.max(12,Math.min(W*.04,H*.35));x.font=`700 ${fs}px sans-serif`;x.fillStyle=`rgb(${col})`;x.textAlign='center';
     const ly=scan.cropped?fs+2:top-4;x.lineWidth=3;x.strokeStyle='rgba(0,0,0,.6)';x.strokeText(i?'T':'C',t.x,ly);x.fillText(i?'T':'C',t.x,ly)})}
-$('#scanCanvas').addEventListener('click',e=>{if(scan.mode!=='tap'||scan.taps.length>=2)return;const p=cvPoint(e);let x=p.x*scan.w,y=p.y*scan.h;
-  if(scan.prof){const r=Math.max(3,Math.round(scan.w*.04)),pr=scan.prof.p;let bx=Math.round(x),bv=-1e9;for(let k=Math.max(0,bx-r);k<=Math.min(scan.w-1,bx+r);k++)if(pr[k]>bv){bv=pr[k];bx=k}
-    if(scan.taps.length===1||bv-scan.prof.bg>4)x=bx}
-  scan.taps.push({x,y});drawTaps();scanHint();if(scan.taps.length===2)analyse()});
+/* place and fine-tune the C and T markers with a magnifier, like moving the text cursor on iPhone */
+let tdrag=null;
+function tapXY(e){const p=cvPoint(e);return{x:Math.max(0,Math.min(scan.w-1,p.x*scan.w)),y:Math.max(0,Math.min(scan.h-1,p.y*scan.h))}}
+function showLoupe(e,idx){const L=$('#loupe'),t=scan.taps[idx];if(!t)return;const cv=$('#scanCanvas'),b=cv.getBoundingClientRect(),k=b.width/scan.w,Z=3.2;
+  const lw=L.width,lh=L.height,CW=220,CH=120,sw=CW/(Z*k),sh=CH/(Z*k),sx=t.x-sw/2,sy=(scan.cropped?scan.h/2:t.y)-sh/2;
+  const x=L.getContext('2d');x.fillStyle='#111';x.fillRect(0,0,lw,lh);x.imageSmoothingEnabled=true;x.drawImage(scan.out,sx,sy,sw,sh,0,0,lw,lh);
+  scan.taps.forEach((q,i)=>{const lx=(q.x-sx)/sw*lw;if(lx<-4||lx>lw+4)return;x.strokeStyle=i?'#4fd6cc':'#ff86a8';x.lineWidth=i===idx?4:2.5;x.setLineDash(i===idx?[]:[8,8]);x.beginPath();x.moveTo(lx,0);x.lineTo(lx,lh);x.stroke()});
+  x.setLineDash([]);x.font='700 28px sans-serif';x.fillStyle=idx?'#4fd6cc':'#ff86a8';x.fillText(idx?'T':'C',lw/2+12,36);
+  const W=CW/2,H=CH/2,cx=Math.min(innerWidth-W-8,Math.max(W+8,e.clientX));let top=e.clientY-H*2-38;if(top<20)top=e.clientY+40;
+  L.style.left=(cx-W)+'px';L.style.top=top+'px';L.hidden=false}
+$('#scanCanvas').addEventListener('pointerdown',e=>{if(scan.mode!=='tap')return;e.preventDefault();const cv=e.currentTarget,p=tapXY(e),k=cv.getBoundingClientRect().width/scan.w,near=24/k;
+  let idx=-1,bd=1e9;scan.taps.forEach((t,i)=>{const d=Math.abs(t.x-p.x)+(scan.cropped?0:Math.abs(t.y-p.y));if(d<bd){bd=d;idx=i}});
+  if(!(idx>=0&&bd<near)){if(scan.taps.length>=2)return;scan.taps.push({x:p.x,y:p.y});idx=scan.taps.length-1}
+  tdrag={idx,ox:scan.taps[idx].x-p.x,oy:scan.taps[idx].y-p.y,moved:false};cv.setPointerCapture(e.pointerId);drawTaps();showLoupe(e,idx);scanHint()});
+$('#scanCanvas').addEventListener('pointermove',e=>{if(scan.mode!=='tap'||!tdrag)return;const p=tapXY(e),t=scan.taps[tdrag.idx];
+  t.x=Math.max(0,Math.min(scan.w-1,p.x+tdrag.ox));t.y=Math.max(0,Math.min(scan.h-1,p.y+tdrag.oy));tdrag.moved=true;drawTaps();showLoupe(e,tdrag.idx)});
+function endTapDrag(){if(!tdrag)return;tdrag=null;$('#loupe').hidden=true;drawTaps();scanHint();if(scan.taps.length===2)analyse()}
+$('#scanCanvas').addEventListener('pointerup',()=>{if(scan.mode==='tap')endTapDrag()});
+$('#scanCanvas').addEventListener('pointercancel',()=>{if(scan.mode==='tap')endTapDrag()});
 $('#scanRecrop').addEventListener('click',()=>{if(!scan.src)return;scan.mode='crop';scan.taps=[];scan.ratio=null;scan.result=null;$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop()});
 $('#scanReset').addEventListener('click',()=>{if(!scan.data)return;scan.taps=[];scan.ratio=null;scan.result=null;drawTaps();scanHint();$('#scanOut').innerHTML='';$('#scanSave').disabled=true});
 function win(cx,cy,r){const d=scan.data.data,v=[];const x0=Math.max(0,cx-r|0),x1=Math.min(scan.w-1,Math.ceil(cx+r)),y0=Math.max(0,cy-r|0),y1=Math.min(scan.h-1,Math.ceil(cy+r));
   for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const i=(y*scan.w+x)*4;v.push((d[i]+d[i+2])/2-d[i+1])}return v.sort((a,b)=>a-b)}
 function analyse(){const[C,T]=scan.taps;let ci,ti;
   // Line dye is pink/purple: it absorbs green far more than red/blue, so (R+B)/2−G ignores shadows and grey tones.
-  if(scan.prof){const pr=scan.prof.p,bg=scan.prof.bg,at=x=>{const i=Math.round(x);let s=0,n=0;for(let k=-1;k<=1;k++){const j=i+k;if(j>=0&&j<scan.w){s+=pr[j];n++}}return s/n-bg};ci=at(C.x);ti=Math.max(0,at(T.x))}
+  if(scan.prof){const pr=scan.prof.p,bg=scan.prof.bg,at=x=>{const i=Math.round(x);let m=-1e9;for(let k=-2;k<=2;k++){const j=i+k;if(j>=0&&j<scan.w)m=Math.max(m,pr[j])}return m-bg};ci=at(C.x);ti=Math.max(0,at(T.x))}
   else{const r=Math.max(6,scan.w*.03),top=v=>{const n=Math.max(1,Math.floor(v.length*.12));let s=0;for(let i=v.length-n;i<v.length;i++)s+=v[i];return s/n};
     const bgv=win((C.x+T.x)/2,(C.y+T.y)/2,r*.4),bg=bgv[bgv.length>>1];ci=top(win(C.x,C.y,r))-bg;ti=Math.max(0,top(win(T.x,T.y,r))-bg)}
   if(ci<4){$('#scanOut').innerHTML='<p class="warn">No clear control line found where you tapped. Tap right on it, or crop closer and try again.</p>';return}
