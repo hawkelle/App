@@ -478,7 +478,7 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 </div></div>
 <div class="modal" id="confirm" role="alertdialog" aria-modal="true"><div class="mcard small">
   <p id="confirmMsg" style="font-size:16px;margin:4px 0 0"></p>
-  <div class="rowend"><button class="btn ghost small" id="confirmNo">Cancel</button><button class="btn small" id="confirmYes">OK</button></div>
+  <div class="rowend"><button class="btn ghost small" id="confirmNo">Cancel</button><button class="btn ghost small" id="confirmAlt" hidden></button><button class="btn small" id="confirmYes">OK</button></div>
 </div></div>
 
 <input type="file" id="importFile" hidden>
@@ -1012,7 +1012,7 @@ $('#sBody').addEventListener('toggle',e=>{const el=e.target;if(!el.matches||!el.
 $('#sBody').addEventListener('click',e=>{
   const b=e.target.closest('[data-f]');
   if(b){const f=b.dataset.f,v=b.dataset.v,d=dayData(logDate);
-    if(b.dataset.m==='single')setField(logDate,f,d[f]===v?null:v);
+    if(b.dataset.m==='single'){const off=d[f]===v;setField(logDate,f,off?null:v);if(f==='lh'&&off&&dayData(logDate).lhRatio!=null){setField(logDate,'lhRatio',null);rerenderLog();return}}
     else{const s=new Set(d[f]||[]);s.has(v)?s.delete(v):s.add(v);setField(logDate,f,[...s])}
     $$(`[data-f="${f}"]`,$('#sBody')).forEach(x=>x.setAttribute('aria-pressed',isOn(f,x.dataset.v)));sheetHead();renderStrip();refreshSummaries();return}
   if(e.target.closest('#scanBtn'))openScanner();
@@ -1154,8 +1154,13 @@ $('#scanSave').addEventListener('click',async()=>{const d=dayData(logDate),id=`p
   setField(logDate,'lhPhoto',id);setField(logDate,'lhRatio',scan.ratio);setField(logDate,'lh',scan.result);
   setField(logDate,'lhCrop',scan.cropped||null);setField(logDate,'lhC',scan.cropped?Math.round(scan.taps[0].x/scan.w*1000)/1000:null);setField(logDate,'lhT',scan.cropped?Math.round(scan.taps[1].x/scan.w*1000)/1000:null);
   closeModal('scanner');rerenderLog();toast('Strip saved')});
-async function deleteStripPhoto(){const d=dayData(logDate);if(!d.lhPhoto)return;if(!await askConfirm('Delete this strip photo? Your LH result stays logged.','Delete photo',true))return;
-  await DB.del(d.lhPhoto);['lhPhoto','lhCrop','lhC','lhT'].forEach(f=>setField(logDate,f,null));rerenderLog();toast('Photo deleted')}
+function askChoice(msg,altLabel,yesLabel){return new Promise(res=>{$('#confirmMsg').textContent=msg;const y=$('#confirmYes'),a=$('#confirmAlt'),n=$('#confirmNo');
+  y.textContent=yesLabel;y.classList.add('danger');a.textContent=altLabel;a.hidden=false;openModal('confirm');
+  const done=v=>{closeModal('confirm');a.hidden=true;y.onclick=a.onclick=n.onclick=null;res(v)};y.onclick=()=>done('all');a.onclick=()=>done('photo');n.onclick=()=>done(null)})}
+async function deleteStripPhoto(){const d=dayData(logDate);if(!d.lhPhoto)return;
+  const c=await askChoice('Delete this strip photo? You can keep the LH result, or remove it too.','Photo only','Photo and result');if(!c)return;
+  await DB.del(d.lhPhoto);const fields=['lhPhoto','lhCrop','lhC','lhT'];if(c==='all')fields.push('lh','lhRatio');fields.forEach(f=>setField(logDate,f,null));
+  rerenderLog();toast(c==='all'?'Photo and result deleted':'Photo deleted')}
 
 /* ================= backup & import ================= */
 async function exportBackup(){await persist();const photos={};for(const k of await DB.keys())if(k.startsWith('photo:'))photos[k]=await DB.get(k);
