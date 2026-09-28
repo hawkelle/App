@@ -567,9 +567,12 @@ let model=null, logDate=null, chartIdx=null, chartPin=null, calBack=18, openYear
 const dayData=k=>state.days[k]||{};
 const toUnit=c=>state.settings.unit==='F'?c*9/5+32:c;
 
-let saveT=null;
-function save(){model=computeModel();clearTimeout(saveT);saveT=setTimeout(persist,500)}
-async function persist(){clearTimeout(saveT);await DB.set('state',state);try{localStorage.setItem('mpt-state',JSON.stringify(state))}catch(e){}}
+let saveT=null,unsaved=false;
+function save(){model=computeModel();unsaved=true;clearTimeout(saveT);saveT=setTimeout(persist,500)}
+// only write when something actually changed, so a page left open can't bring back data you deleted in Settings
+async function persist(){clearTimeout(saveT);if(!unsaved)return;unsaved=false;await DB.set('state',state);try{localStorage.setItem('mpt-state',JSON.stringify(state))}catch(e){}}
+function storageEmpty(){return new Promise(res=>{let ls;try{ls=localStorage.getItem('mpt-state')}catch(e){return res(false)}if(ls)return res(false);if(!DB.db)return res(false);
+  try{const rq=DB.db.transaction('kv','readonly').objectStore('kv').getAllKeys();rq.onsuccess=()=>res(Array.isArray(rq.result)&&rq.result.length===0);rq.onerror=()=>res(false)}catch(e){res(false)}})}
 function setField(k,f,v){const d=state.days[k]||(state.days[k]={});if(v==null||v===''||(Array.isArray(v)&&!v.length))delete d[f];else d[f]=v;if(!Object.keys(d).length)delete state.days[k];save()}
 
 /* ================= cycle model ================= */
@@ -683,12 +686,12 @@ function ringSVG(sel){
   if(ti>=0)track+=`<path d="${arc(RT,a0,a0+(ti+1)*u)}" fill="none" stroke="var(--track-past)" stroke-width="${TW}" stroke-linecap="round"/>`;
   {const[bx1,by1]=P(RT-17,aE),[bx2,by2]=P(RT+17,aE),[tx,ty]=P(RT,aE+.13);track+=`<path d="M${f1(bx1)},${f1(by1)}L${f1(bx2)},${f1(by2)}L${f1(tx)},${f1(ty)}Z" fill="${ti>=n-1?'var(--track-past)':'var(--track)'}"/>`}
   const label=(i0,i1,text,color)=>{const s=a0+i0*u,e=a0+(i1+1)*u,mid=(s+e)/2,len=(e-s)*RT;if(len<text.length*7.4+8)return;
-    const bottom=Math.sin(mid)>.25,id='rl'+(lid++);labels+=`<path id="${id}" d="${bottom?arc(RT,e,s):arc(RT,s,e)}" fill="none"/><text font-size="10" font-weight="700" letter-spacing="1.3" font-family="Figtree,sans-serif" fill="${color}" dominant-baseline="central"><textPath href="#${id}" startOffset="50%" text-anchor="middle">${text}</textPath></text>`};
+    const bottom=Math.sin(mid)>.25,id='rl'+(lid++);labels+=`<path id="${id}" d="${bottom?arc(RT+3.6,e,s):arc(RT-3.6,s,e)}" fill="none"/><text font-size="10" font-weight="700" letter-spacing="1.3" font-family="Figtree,sans-serif" fill="${color}"><textPath href="#${id}" startOffset="50%" text-anchor="middle">${text}</textPath></text>`};
   const runs=test=>{const out=[];let st=null;for(let i=0;i<=n;i++){const v=i<n?test(i):null;if(v&&st&&v===st.v)continue;if(st){out.push({i0:st.i,i1:i-1,v:st.v});st=null}if(v)st={i,v}}return out};
   const K=i=>addDays(S,i);
   // period
   const pe=Math.min(n-1,(m.cur.pLen||1)-1);
-  segs+=`<path d="${arc(RT,a0+u*.15,a0+(pe+1)*u-u*.15)}" fill="none" stroke="var(--berry)" stroke-width="${TW}" stroke-linecap="round"/>`;
+  segs+=`<path d="${arc(RT,a0,a0+(pe+1)*u-u*.15)}" fill="none" stroke="var(--berry)" stroke-width="${TW}" stroke-linecap="round"/>`;
   label(0,pe,'PERIOD','var(--on-berry)');
   // fertile window, drawn bubbly
   for(const r of runs(i=>(m.marks[K(i)]||{}).fert)){const op=r.v==='pred'?.5:1;
@@ -699,8 +702,7 @@ function ringSVG(sel){
   // ovulation burst
   for(let i=0;i<n;i++){const o=(m.marks[K(i)]||{}).ovu;if(!o)continue;const[x,y]=P(RT,ang(i));
     if(o==='pred')segs+=`<circle cx="${f1(x)}" cy="${f1(y)}" r="15" fill="var(--bg)" stroke="var(--teal-strong)" stroke-width="2" stroke-dasharray="3 3"/>`;
-    else{let rays='';for(let k=0;k<14;k++){const t=k/14*2*Math.PI;rays+=`<line x1="${f1(x+18*Math.cos(t))}" y1="${f1(y+18*Math.sin(t))}" x2="${f1(x+24*Math.cos(t))}" y2="${f1(y+24*Math.sin(t))}"/>`}
-      segs+=`<g stroke="var(--teal-strong)" stroke-width="1.6" stroke-linecap="round">${rays}</g><circle cx="${f1(x)}" cy="${f1(y)}" r="15" fill="var(--teal-strong)" stroke="var(--bg)" stroke-width="2"/><use href="#i-egg" x="${f1(x-8)}" y="${f1(y-9)}" width="16" height="16" style="color:#fff"/>`}}
+    else segs+=`<circle cx="${f1(x)}" cy="${f1(y)}" r="21" fill="none" stroke="var(--teal-strong)" stroke-width="1.6"/><circle cx="${f1(x)}" cy="${f1(y)}" r="16" fill="var(--teal-strong)" stroke="var(--bg)" stroke-width="2.5"/><use href="#i-egg" x="${f1(x-8)}" y="${f1(y-7.3)}" width="16" height="16" style="color:#fff"/>`}
   // PMS forecast cloud, if PMS has been logged recently
   const recent=m.cycles.slice(-4).some(c=>{for(let i=0;i<(c.len||c.days);i++)if(state.days[addDays(c.start,i)]?.pms)return true;return false});
   const pi=n-4;if(recent&&pi>ti+1&&!(m.marks[K(pi)]||{}).fert){const[x,y]=P(RT,ang(pi));top+=`<use href="#cloud" x="${f1(x-14)}" y="${f1(y-16)}" width="28" height="28" style="color:var(--cloud-track);filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.28))"><title>PMS likely around here</title></use>`}
@@ -1033,7 +1035,7 @@ async function handleTest(b){
     if(t.photo)await DB.del(t.photo);if(c==='all')list.splice(list.indexOf(t),1);else Object.assign(t,{photo:null,crop:null,c:null,t:null});
     setField(logDate,key,list);syncTests(logDate);rerenderLog();toast(c==='all'?'Test deleted':'Photo deleted')}}
 function rerenderLog(){const st=$('#sBody').scrollTop;renderLog();$('#sBody').scrollTop=st}
-$('#sBody').addEventListener('toggle',e=>{const el=e.target;if(!el.matches||!el.matches('details.sec'))return;const set=new Set(state.settings.openSecs||[]);el.open?set.add(el.dataset.sec):set.delete(el.dataset.sec);state.settings.openSecs=[...set];clearTimeout(saveT);saveT=setTimeout(persist,500)},true);
+$('#sBody').addEventListener('toggle',e=>{const el=e.target;if(!el.matches||!el.matches('details.sec'))return;const set=new Set(state.settings.openSecs||[]);el.open?set.add(el.dataset.sec):set.delete(el.dataset.sec);state.settings.openSecs=[...set];unsaved=true;clearTimeout(saveT);saveT=setTimeout(persist,500)},true);
 $('#sBody').addEventListener('click',e=>{
   const tb=e.target.closest('[data-tres],[data-tact],[data-add]');if(tb){handleTest(tb);return}
   const b=e.target.closest('[data-f]');
@@ -1479,7 +1481,8 @@ function exportCSV(year){const allT=(L,f)=>(L||[]).map(t=>[t.time,t.result?LABEL
 function makeIcon(){try{const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');x.fillStyle='#141414';x.fillRect(0,0,180,180);
   x.strokeStyle='#ece8e6';x.lineWidth=7;x.beginPath();x.arc(90,90,58,0,7);x.stroke();x.fillStyle='#eb9fb4';x.beginPath();x.arc(74,100,15,0,7);x.fill();
   x.fillStyle='#ece8e6';x.beginPath();x.arc(108,76,10,0,7);x.fill();x.beginPath();x.arc(104,110,7,0,7);x.fill();$('#touchIcon').href=c.toDataURL('image/png')}catch(e){}}
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persist()});
+document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){persist();return}
+  if(!unsaved&&Object.keys(state.days).length&&await storageEmpty()){state={version:1,days:{},settings:{...DEFAULTS}};applyTheme();model=computeModel();renderAll();toast('Your data was cleared on this phone')}});
 (async()=>{await DB.open();let s=await DB.get('state');if(!s){try{const ls=localStorage.getItem('mpt-state');if(ls)s=JSON.parse(ls)}catch(e){}}
   if(s&&s.days)state={version:1,days:s.days,settings:{...DEFAULTS,...(s.settings||{})}};
   migrate();applyTheme();model=computeModel();renderAll();try{navigator.storage?.persist?.()}catch(e){}})();
