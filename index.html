@@ -22,7 +22,7 @@
   --berry:#a9465f; --berry-soft:#f4dfe5; --on-berry:#ffffff;
   --f-heavy:#a9465f; --f-medium:#c26a82; --f-light:#dc9daf; --f-spot:#ecc6d0; --on-heavy:#ffffff;
   --teal:#a8dcd9; --teal-soft:#d8f0ee; --teal-ink:#23706b; --teal-strong:#44a39c;
-  --dot-past:rgba(28,28,28,.18); --dot-future:rgba(28,28,28,.32); --track:#dde3e3; --track-past:#bcc6c6; --bubble:#f8e8ec;
+  --dot-past:rgba(28,28,28,.18); --dot-future:rgba(28,28,28,.32); --track:#dde3e3; --track-past:#bcc6c6; --bubble:#f8e8ec; --cloud:#9ea6ab; --cloud-track:#ffffff; --pinkish:#d77f9c;
   --serif:"Fraunces","Iowan Old Style",Georgia,serif;
   --sans:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   color-scheme:light;
@@ -34,7 +34,7 @@
     --berry:#e894ab; --berry-soft:#3b232b; --on-berry:#1a1a1a;
     --f-heavy:#eb9fb4; --f-medium:#c77990; --f-light:#915568; --f-spot:#664350; --on-heavy:#1a1a1a;
     --teal:#2f5d5a; --teal-soft:#1f3534; --teal-ink:#8fd3cd; --teal-strong:#4f9d97;
-    --dot-past:rgba(240,238,237,.2); --dot-future:rgba(240,238,237,.38); --track:#272727; --track-past:#3b3b3b; --bubble:#3b232b;
+    --dot-past:rgba(240,238,237,.2); --dot-future:rgba(240,238,237,.38); --track:#272727; --track-past:#3b3b3b; --bubble:#3b232b; --cloud:#8d9194; --cloud-track:#d7dadc; --pinkish:#f2a7be;
     color-scheme:dark;
   }
 }
@@ -44,12 +44,14 @@
   --berry:#e894ab; --berry-soft:#3b232b; --on-berry:#1a1a1a;
   --f-heavy:#eb9fb4; --f-medium:#c77990; --f-light:#915568; --f-spot:#664350; --on-heavy:#1a1a1a;
   --teal:#2f5d5a; --teal-soft:#1f3534; --teal-ink:#8fd3cd; --teal-strong:#4f9d97;
-  --dot-past:rgba(240,238,237,.2); --dot-future:rgba(240,238,237,.38); --track:#272727; --track-past:#3b3b3b; --bubble:#3b232b;
+  --dot-past:rgba(240,238,237,.2); --dot-future:rgba(240,238,237,.38); --track:#272727; --track-past:#3b3b3b; --bubble:#3b232b; --cloud:#8d9194; --cloud-track:#d7dadc; --pinkish:#f2a7be;
   color-scheme:dark;
 }
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg);touch-action:manipulation;-webkit-text-size-adjust:100%}
+html,body{overflow-x:clip}
+#views{min-height:100vh}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;padding-bottom:88px;-webkit-tap-highlight-color:transparent}
 body.locked{overflow:hidden}
 button{font-family:inherit;cursor:pointer}
@@ -129,9 +131,13 @@ h2.sect{font:500 21px/1.2 var(--serif);margin:28px 0 12px}
 .sw{width:17px;height:17px;border-radius:5px;display:inline-block}
 .sw.fert{background:var(--teal-soft);border:1.5px solid var(--teal-strong)}
 .sw.pp{border:1.5px dashed var(--berry)}
-.wk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:20px 0 10px;border-bottom:1px solid var(--line);box-shadow:0 -40px 0 var(--bg)}
+.calhead{position:sticky;top:calc(env(safe-area-inset-top,0px) + 26px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);margin-top:10px}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:8px 0 8px}
+.searchwrap{position:relative}
+.searchwrap svg{position:absolute;left:13px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.statusbg{position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top,0px) + 26px);background:var(--bg);z-index:15;pointer-events:none}
 .wk span{text-align:center;font:600 11px var(--sans);letter-spacing:.12em;color:var(--muted)}
-.month{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 56px)}
+.month{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 70px)}
 .month h3{font:500 21px var(--serif);margin:24px 0 10px}
 .month h3 span{color:var(--muted)}
 .g7{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
@@ -152,7 +158,7 @@ h2.sect{font:500 21px/1.2 var(--serif);margin:28px 0 12px}
 .cell .ic .h{color:var(--berry)}
 .cell.fl-heavy .ic .h,.cell.fl-medium .ic .h{color:var(--on-heavy)}
 .cell .ic .lh{font:700 8px var(--sans);background:var(--teal-strong);color:#fff;border-radius:3px;padding:1px 2px}
-.cell .ic .cl{width:13px;height:13px;color:var(--ink)}
+.cell .ic .cl{width:14px;height:14px;color:var(--cloud)}
 .cell.fl-heavy .ic .cl,.cell.fl-medium .ic .cl{color:var(--on-heavy)}
 .cell .ic .d{width:4px;height:4px;border-radius:50%;background:var(--muted)}
 
@@ -286,14 +292,46 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 .sec>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:16px 0;cursor:pointer}
 .sec>summary::-webkit-details-marker{display:none}
 .sec h4{font:500 18px var(--serif);margin:0;flex:none;display:flex;align-items:center;gap:8px}
-.secic{width:22px;height:22px;color:var(--ink)}
+.secic{width:22px;height:22px}
+.ico{display:inline-block;width:16px;height:16px;flex:none;vertical-align:middle}
+.cp{color:var(--berry)}.cf{color:var(--teal-strong)}.ci{color:var(--pinkish)}.cb{color:var(--cloud)}
+.tags .tag{display:inline-flex;align-items:center;gap:5px}
+.chip .ico{width:16px;height:16px;margin-left:-3px}
+.chip[aria-pressed="true"] .ico{color:inherit}
+.cell .ic .ico{width:11px;height:11px}
+.cell .egg2{position:absolute;right:4px;top:4px;width:12px;height:12px;z-index:2;color:var(--teal-strong)}
+.cell.ovu.pred .egg2{opacity:.6}
+.cell .bigic{position:absolute;left:0;right:0;bottom:6px;display:flex;justify-content:center;gap:2px;z-index:2}
+.cell .bigic .ico{width:19px;height:19px}
+.cell.fl-heavy .bigic .cp,.cell.fl-medium .bigic .cp{color:var(--on-heavy)}
+.legend .ico{width:17px;height:17px}
+.ico.secic{width:20px;height:20px}
+.tcl{width:16px;height:16px;color:var(--cloud);margin:-3px 4px -3px -2px;vertical-align:middle}
+.calfilter{padding-top:4px}
+.calfilter .search{font-size:16px;padding:9px 14px 9px 38px;border-radius:999px}
+.fchips{flex-wrap:nowrap;overflow-x:auto;margin:8px -20px 0;padding:0 20px 2px;scrollbar-width:none}
+.fchips::-webkit-scrollbar{display:none}
+.fchips .chip{flex:none;min-height:34px;padding:6px 12px;font-size:13.5px}
+.calcount{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);margin-top:6px}
+.calcount:empty{display:none}
+.cell.dim{opacity:.18}
+.cell.hitd{box-shadow:0 0 0 2px var(--teal-strong)}
+.mcard.half{max-height:62%}
+.tags.pk{margin-top:14px}
+.tags.pk .tag{font-size:13.5px;padding:5px 11px;display:inline-flex;align-items:center}
+.tag.b{background:var(--berry-soft);border-color:var(--berry)}
+.tagbtn{font:inherit;color:var(--ink);cursor:pointer}
+.tagbtn:active{transform:scale(.96)}
+.tag.t{background:var(--teal-soft);border-color:var(--teal-strong)}
+.tag.o{background:transparent;border-style:dashed}
+.pknote{white-space:pre-wrap;margin:14px 0 0;font-size:15px;line-height:1.5;border-left:3px solid var(--line);padding-left:12px}
 .sec .sv{flex:1;min-width:0;text-align:right;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sec>summary svg{flex:none;color:var(--muted);transition:transform .2s}
-.sec[open]>summary svg{transform:rotate(180deg)}
+.sec>summary>svg{flex:none;color:var(--muted);transition:transform .2s}
+.sec[open]>summary>svg{transform:rotate(180deg)}
 .sec[open] .sv{visibility:hidden}
 .secb{padding:0 0 18px}
 .secb>.sub:first-child{margin-top:0}
-.sub{font-size:13px;color:var(--muted);margin:14px 0 8px}
+.sub{font-size:13px;color:var(--muted);margin:16px 0 8px;display:flex;align-items:center;gap:6px}
 .bbtrow{display:flex;gap:10px;align-items:center}
 .bbtrow .unit{font:500 17px var(--sans);color:var(--muted)}
 .bbtrow .field{max-width:130px}
@@ -330,7 +368,27 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="cloud" viewBox="0 0 24 24"><path d="M6.8 14.6a3.9 3.9 0 0 1-.5-7.77 5.4 5.4 0 0 1 10.4-.9 3.6 3.6 0 0 1 .5 7.18 1.5 1.5 0 0 1-.4.05H6.8z" fill="currentColor"/><g stroke="var(--teal-strong)" stroke-width="1.9" stroke-linecap="round"><path d="M8.5 17.6l-.9 2.4M12.5 17.6l-.9 2.4M16.5 17.6l-.9 2.4"/></g></symbol></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="cloud" viewBox="0 0 24 24"><g fill="currentColor"><circle cx="8" cy="13.4" r="4.2"/><circle cx="12.6" cy="10" r="5.3"/><circle cx="17.1" cy="12.9" r="4"/><circle cx="4.9" cy="15.7" r="3"/><circle cx="19.9" cy="15.7" r="2.8"/><rect x="4.9" y="13" width="15" height="5.7" rx="2.85"/></g></symbol>
+<symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5c3 4 5.5 7 5.5 10a5.5 5.5 0 0 1-11 0c0-3 2.5-6 5.5-10z" fill="currentColor"/></symbol>
+<symbol id="i-zap" viewBox="0 0 24 24"><path d="M13.5 3 7 13h4.5l-1 8L17 11h-4.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-egg" viewBox="0 0 24 24"><path d="M12 3c3.5 0 6 5 6 10a6 6 0 0 1-12 0c0-5 2.5-10 6-10z" fill="currentColor"/></symbol>
+<symbol id="i-eggo" viewBox="0 0 24 24"><path d="M12 3.5c3.3 0 5.6 4.8 5.6 9.5a5.6 5.6 0 0 1-11.2 0c0-4.7 2.3-9.5 5.6-9.5z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-thermo" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13.5V5a2 2 0 0 1 4 0v8.5a4 4 0 1 1-4 0z"/><path d="M12 9v7"/></g></symbol>
+<symbol id="i-wave" viewBox="0 0 24 24"><path d="M3.5 12c2.6-4.2 5.2-4.2 8.5 0s5.9 4.2 8.5 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+<symbol id="i-cervix" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="currentColor"/></symbol>
+<symbol id="i-stick" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="18" rx="3"/><path d="M12 9v4M10 11h4"/></g></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z" fill="currentColor"/></symbol>
+<symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1 3.5 5.5 5.5 5.5 10.5a5.5 5.5 0 0 1-11 0c0-3 2-4.5 2-7 1.2 1 2 2.2 2 3.5.8-2.3 1.8-4.5 1.5-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-face" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M8.5 13.5a4 4 0 0 0 7 0"/><path d="M9.5 9.5h0M14.5 9.5h0" stroke-width="2.8"/></g></symbol>
+<symbol id="i-battery" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="7.5" width="15" height="9" rx="2"/><path d="M21 11v2"/><path d="M6.8 10.5v3M9.8 10.5v3" stroke-width="2.4"/></g></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.5A7.5 7.5 0 1 1 9.5 4.5a6 6 0 0 0 10 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-swirl" viewBox="0 0 24 24"><path d="M12 12a1.5 1.5 0 1 1 1.5-1.5A3.5 3.5 0 1 1 10 7a5.5 5.5 0 1 1-4.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 4c.6 4.2 1.8 5.4 6 6-4.2.6-5.4 1.8-6 6-.6-4.2-1.8-5.4-6-6 4.2-.6 5.4-1.8 6-6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-cookie" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><path d="M9.5 10h0M14 9h0M13 14.5h0" stroke-width="2.8"/></g></symbol>
+<symbol id="i-pill" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="9" width="16" height="6" rx="3" transform="rotate(-40 12 12)"/><path d="m9.8 14.6 4.4-5.2"/></g></symbol>
+<symbol id="i-lines" viewBox="0 0 24 24"><path d="M6 7h12M6 12h12M6 17h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+</defs></svg>
+<div class="statusbg" aria-hidden="true"></div>
 <div class="app">
   <header class="top">
     <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="2" opacity=".85"/><circle cx="15" cy="22.5" r="4" fill="var(--berry)"/><circle cx="24.5" cy="15.5" r="3" fill="currentColor" opacity=".8"/><circle cx="23.5" cy="25" r="2" fill="currentColor" opacity=".8"/></svg>
@@ -342,7 +400,11 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
     <section class="view on" id="v-today"></section>
     <section class="view" id="v-cal">
       <div class="legend" id="calLegend"></div>
-      <div class="wk"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
+      <div class="calhead" id="calHead">
+        <div class="calfilter"><div class="searchwrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input class="field search" id="calQ" type="search" placeholder="Search notes and symptoms" autocomplete="off" enterkeyhint="search"></div>
+          <div class="chips fchips" id="calChips"></div><div class="calcount"><span id="calCount"></span><button class="linkbtn" id="calClear" hidden>Clear</button></div></div>
+        <div class="wk"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
+      </div>
       <div id="calBody"></div>
     </section>
     <section class="view" id="v-chart"></section>
@@ -375,6 +437,11 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
   <div class="rowend"><button class="btn ghost small" id="scanReset">Redo taps</button><button class="btn small" id="scanSave" disabled>Save to this day</button></div>
 </div></div>
 
+<div class="modal" id="peek" role="dialog" aria-modal="true" aria-label="Day"><div class="mcard half">
+  <div class="mhead"><div><h4 id="pkDate"></h4><div class="hint" id="pkSub" style="margin:3px 0 0"></div></div><div style="display:flex;gap:8px;flex:none"><button class="iconbtn" id="pkPrev" aria-label="Previous day">‹</button><button class="iconbtn" id="pkNext" aria-label="Next day">›</button></div></div>
+  <div id="pkBody"></div>
+  <div style="margin-top:18px"><button class="btn big" id="pkEdit" style="width:100%">Edit this day</button></div>
+</div></div>
 <div class="modal" id="confirm" role="alertdialog" aria-modal="true"><div class="mcard small">
   <p id="confirmMsg" style="font-size:16px;margin:4px 0 0"></p>
   <div class="rowend"><button class="btn ghost small" id="confirmNo">Cancel</button><button class="btn small" id="confirmYes">OK</button></div>
@@ -423,32 +490,35 @@ const LH_OPTS=[['neg','Negative'],['low','Faint'],['high','High'],['peak','Peak'
 const BBT_FLAGS=[['excluded','Ignore this one'],['sleep','Poor sleep'],['alcohol','Alcohol'],['sick','Sick'],['time','Different time'],['travel','Travel'],['stress','Stress']];
 const SECTIONS=[
  {key:'flow',title:'Flow',type:'flow'},
- {key:'pms',title:'PMS',icon:'cloud',type:'single',cls:'b',opts:[['mild','Mild'],['moderate','Moderate'],['strong','Strong']]},
- {key:'bbt',title:'Basal body temperature',type:'bbt'},
- {key:'lh',title:'Ovulation test',type:'lh'},
- {key:'mucus',title:'Cervical mucus',type:'single',cls:'t',opts:[['dry','Dry'],['sticky','Sticky'],['creamy','Creamy'],['watery','Watery'],['eggwhite','Egg white']]},
- {key:'mucusColor',label:'Colour',type:'single',cls:'t',opts:[['clear','Clear'],['white','White'],['yellow','Yellowish'],['pink','Pinkish'],['brown','Brownish']]},
- {key:'cervixPos',title:'Cervix',label:'Position',type:'single',cls:'t',opts:[['low','Low'],['mid','Medium'],['high','High']]},
- {key:'cervixFirm',label:'Firmness',type:'single',cls:'t',opts:[['firm','Firm'],['mid','Medium'],['soft','Soft']]},
- {key:'cervixOpen',label:'Opening',type:'single',cls:'t',opts:[['closed','Closed'],['mid','Partly open'],['open','Open']]},
+ {key:'bbt',title:'Temperature',type:'bbt'},
+ {key:'lh',title:'Tests',label:'Ovulation test (LH)',type:'lh'},
+ {key:'preg',label:'Pregnancy test',type:'single',cls:'t',opts:[['neg','Negative'],['faint','Faint line'],['pos','Positive']]},
+ {key:'mucus',title:'Mucus and cervix',label:'Cervical mucus',type:'single',cls:'t',opts:[['dry','Dry'],['sticky','Sticky'],['creamy','Creamy'],['watery','Watery'],['eggwhite','Egg white']]},
+ {key:'mucusColor',label:'Mucus colour',type:'single',cls:'t',opts:[['clear','Clear'],['white','White'],['yellow','Yellowish'],['pink','Pinkish'],['brown','Brownish']]},
+ {key:'cervixPos',label:'Cervix position',type:'single',cls:'t',opts:[['low','Low'],['mid','Medium'],['high','High']]},
+ {key:'cervixFirm',label:'Cervix firmness',type:'single',cls:'t',opts:[['firm','Firm'],['mid','Medium'],['soft','Soft']]},
+ {key:'cervixOpen',label:'Cervix opening',type:'single',cls:'t',opts:[['closed','Closed'],['mid','Partly open'],['open','Open']]},
  {key:'sex',title:'Sex',type:'multi',cls:'b',opts:[['protected','Protected'],['unprotected','Unprotected']]},
  {key:'libido',label:'Libido',type:'single',opts:[['low','Low'],['mid','Medium'],['high','High']]},
  {key:'pain',title:'Pain',type:'multi',opts:[['cramps','Cramps'],['headache','Headache'],['migraine','Migraine'],['backache','Backache'],['neck','Neck pain'],['breasts','Tender breasts'],['ovulation','Ovulation pain'],['joints','Joint pain']]},
  {key:'mood',title:'Mood',type:'multi',opts:[['happy','Happy'],['calm','Calm'],['sensitive','Sensitive'],['sad','Sad'],['anxious','Anxious'],['irritable','Irritable']]},
- {key:'energy',title:'Energy and sleep',label:'Energy',type:'single',opts:[['low','Low'],['mid','Okay'],['high','High']]},
+ {key:'pms',label:'PMS',type:'single',cls:'b',opts:[['mild','Mild'],['moderate','Moderate'],['strong','Strong']]},
+ {key:'energy',title:'Body',label:'Energy',type:'single',opts:[['low','Low'],['mid','Okay'],['high','High']]},
  {key:'sleep',label:'Sleep',type:'single',opts:[['poor','Poor'],['ok','Okay'],['good','Good']]},
- {key:'digestion',title:'Body',label:'Digestion',type:'multi',opts:[['bloated','Bloated'],['constipated','Constipated'],['diarrhea','Diarrhea'],['nauseous','Nauseous']]},
+ {key:'digestion',label:'Digestion',type:'multi',opts:[['bloated','Bloated'],['constipated','Constipated'],['diarrhea','Diarrhea'],['nauseous','Nauseous']]},
  {key:'skin',label:'Skin',type:'multi',opts:[['breakouts','Breakouts'],['oily','Oily'],['dry','Dry']]},
  {key:'cravings',label:'Cravings',type:'multi',opts:[['sweet','Sweet'],['salty','Salty'],['carbs','Carbs']]},
- {key:'preg',title:'Pregnancy test',type:'single',opts:[['neg','Negative'],['faint','Faint line'],['pos','Positive']]},
- {key:'meds',title:'Medication and supplements',type:'meds'},
+ {key:'meds',label:'Medication and supplements',type:'meds'},
  {key:'note',title:'Notes',type:'note'}
 ];
+const SEC_ICON={Flow:'flow',Temperature:'bbt',Tests:'lh','Mucus and cervix':'mucus',Sex:'sex',Pain:'pain',Mood:'mood',Body:'energy',Notes:'note'};
+const ICON={flow:['drop','cp'],pms:['cloud','cb'],pain:['zap','cp'],ovu:['egg','cf'],lh:['eggo','cf'],bbt:['thermo','cf'],mucus:['wave','cf'],cervix:['cervix','cf'],preg:['stick','cf'],sex:['heart','ci'],libido:['flame','ci'],mood:['face','cb'],energy:['battery','cb'],sleep:['moon','cb'],digestion:['swirl','cb'],skin:['sparkle','cb'],cravings:['cookie','cb'],meds:['pill','cb'],note:['lines','cb']};
+const ic=(k,extra='')=>{const[n,c]=ICON[k]||['lines','cb'];return`<svg class="ico ${c} ${extra}" viewBox="0 0 24 24" aria-hidden="true"><use href="#${n==='cloud'?'cloud':'i-'+n}"/></svg>`};
 const LABEL={};SECTIONS.forEach(s=>{if(s.opts)LABEL[s.key]=Object.fromEntries(s.opts)});
 LABEL.flow=Object.fromEntries(FLOWS.map(f=>[f[0],f[1]]));LABEL.lh=Object.fromEntries(LH_OPTS);
 
 /* ================= state ================= */
-const DEFAULTS={openSecs:['Flow','PMS','Basal body temperature','Ovulation test','Cervical mucus'],mode:'auto',cycleLen:32,lutealMode:'auto',lutealLen:13,unit:'C',theme:'auto',meds:[],excluded:[]};
+const DEFAULTS={openSecs:['Flow','Temperature','Tests','Mucus and cervix'],mode:'auto',cycleLen:32,lutealMode:'auto',lutealLen:13,unit:'C',theme:'auto',meds:[],excluded:[]};
 let state={version:1,days:{},settings:{...DEFAULTS}};
 let model=null, logDate=null, chartIdx=null, chartPin=null, calBack=18, openYears=null;
 const dayData=k=>state.days[k]||{};
@@ -524,7 +594,8 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',applyThem
 let curView='today';const dirty={today:1,cal:1,chart:1,ins:1};
 function renderView(v){if(!dirty[v])return;dirty[v]=0;({today:renderToday,cal:renderCalendar,chart:renderChart,ins:renderInsights})[v]()}
 function showView(v){curView=v;renderView(v);$$('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));$$('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.tab===v));
-  window.scrollTo(0,0);if(v==='cal'){requestAnimationFrame(()=>{const el=document.getElementById('m-'+todayKey().slice(0,7));el&&el.scrollIntoView({block:'start'})})}}
+  window.scrollTo(0,0);if(v==='cal'){requestAnimationFrame(()=>calScrollTo(todayKey().slice(0,7)))}}
+function calScrollTo(ym){const el=document.getElementById('m-'+ym);if(!el)return;const top=$('.statusbg').offsetHeight+$('#calHead').offsetHeight;window.scrollTo(0,el.getBoundingClientRect().top+window.scrollY-top-4)}
 $$('.tab').forEach(t=>t.addEventListener('click',()=>{if(t.dataset.tab==='chart'){chartPin=null;dirty.chart=1}if(t.dataset.tab==='today'&&ringSel){ringSel=null;dirty.today=1}showView(t.dataset.tab)}));
 document.addEventListener('gesturestart',e=>e.preventDefault());
 let rsT=null;window.addEventListener('resize',()=>{clearTimeout(rsT);rsT=setTimeout(()=>{dirty.chart=1;if(curView==='chart')renderView('chart')},150)});
@@ -540,17 +611,21 @@ function basisText(p){const m=model;return{
   fixed:`Using your fixed cycle length of ${m.L} days`,
   default:`Using ${m.L} days until you've logged a full cycle`,
   nobbt:`No temperature shift yet, so it's at least ${m.luteal+1} days away`}[p.basis]}
-function daySummary(d){const out=[];
-  if(d.flow)out.push(LABEL.flow[d.flow]+' flow');
-  if(d.bbt!=null)out.push(toUnit(d.bbt).toFixed(2)+'°'+state.settings.unit);
-  if(d.lh)out.push('LH '+LABEL.lh[d.lh].toLowerCase());
-  if(d.mucus)out.push(LABEL.mucus[d.mucus]+' mucus');
-  if(d.cervixPos)out.push('Cervix '+LABEL.cervixPos[d.cervixPos].toLowerCase());
-  ['sex','pain','mood','digestion','skin','cravings'].forEach(f=>(d[f]||[]).forEach(v=>out.push(LABEL[f][v])));
-  ['energy','sleep','libido'].forEach(f=>{if(d[f])out.push(`${f[0].toUpperCase()+f.slice(1)}: ${LABEL[f][d[f]].toLowerCase()}`)});
-  if(d.pms)out.push('PMS '+LABEL.pms[d.pms].toLowerCase());
-  if(d.preg)out.push('Pregnancy test: '+LABEL.preg[d.preg].toLowerCase());
-  (d.meds||[]).forEach(v=>out.push(v));if(d.note)out.push('Note');return out}
+function dayTags(d){const out=[],t=(k,txt)=>out.push({k,txt});
+  if(d.flow)t('flow',LABEL.flow[d.flow]+' flow');
+  if(d.bbt!=null)t('bbt',toUnit(d.bbt).toFixed(2)+'°'+state.settings.unit);
+  if(d.lh)t('lh','LH '+LABEL.lh[d.lh].toLowerCase());
+  if(d.preg)t('preg','Pregnancy test '+LABEL.preg[d.preg].toLowerCase());
+  if(d.mucus)t('mucus',LABEL.mucus[d.mucus]+' mucus');
+  if(d.cervixPos)t('cervix','Cervix '+LABEL.cervixPos[d.cervixPos].toLowerCase());
+  (d.sex||[]).forEach(v=>t('sex',LABEL.sex[v]));if(d.libido)t('libido','Libido '+LABEL.libido[d.libido].toLowerCase());
+  (d.pain||[]).forEach(v=>t('pain',LABEL.pain[v]));
+  if(d.pms)t('pms','PMS '+LABEL.pms[d.pms].toLowerCase());(d.mood||[]).forEach(v=>t('mood',LABEL.mood[v]));
+  if(d.energy)t('energy','Energy '+LABEL.energy[d.energy].toLowerCase());if(d.sleep)t('sleep','Sleep '+LABEL.sleep[d.sleep].toLowerCase());
+  ['digestion','skin','cravings'].forEach(f=>(d[f]||[]).forEach(v=>t(f,LABEL[f][v])));
+  (d.meds||[]).forEach(v=>t('meds',v));if(d.note)t('note','Note');return out}
+function daySummary(d){return dayTags(d).map(x=>x.txt)}
+const tagHTML=x=>`<span class="tag">${ic(x.k)}${esc(x.txt)}</span>`;
 let ringSel=null;
 function dpoOf(k){const s0=model.pred?projStart():null;if(s0&&k>=s0)return null;const cf=cycleFor(k);if(!cf||!cf.c.ovu)return null;if(cf.c.next&&k>=cf.c.next)return null;const n=diffDays(cf.c.ovu.date,k);return n>0?n:null}
 function ringSVG(sel){
@@ -582,16 +657,16 @@ function ringSVG(sel){
   for(let i=0;i<n;i++){const o=(m.marks[K(i)]||{}).ovu;if(!o)continue;const[x,y]=P(RT,ang(i));
     if(o==='pred')segs+=`<circle cx="${f1(x)}" cy="${f1(y)}" r="15" fill="var(--bg)" stroke="var(--teal-strong)" stroke-width="2" stroke-dasharray="3 3"/>`;
     else{let rays='';for(let k=0;k<14;k++){const t=k/14*2*Math.PI;rays+=`<line x1="${f1(x+18*Math.cos(t))}" y1="${f1(y+18*Math.sin(t))}" x2="${f1(x+24*Math.cos(t))}" y2="${f1(y+24*Math.sin(t))}"/>`}
-      segs+=`<g stroke="var(--teal-strong)" stroke-width="1.6" stroke-linecap="round">${rays}</g><circle cx="${f1(x)}" cy="${f1(y)}" r="15" fill="var(--teal-strong)" stroke="var(--bg)" stroke-width="2"/>`}}
+      segs+=`<g stroke="var(--teal-strong)" stroke-width="1.6" stroke-linecap="round">${rays}</g><circle cx="${f1(x)}" cy="${f1(y)}" r="15" fill="var(--teal-strong)" stroke="var(--bg)" stroke-width="2"/><use href="#i-egg" x="${f1(x-8)}" y="${f1(y-9)}" width="16" height="16" style="color:#fff"/>`}}
   // PMS forecast cloud, if PMS has been logged recently
   const recent=m.cycles.slice(-4).some(c=>{for(let i=0;i<(c.len||c.days);i++)if(state.days[addDays(c.start,i)]?.pms)return true;return false});
-  const pi=n-4;if(recent&&pi>ti+1&&!(m.marks[K(pi)]||{}).fert){const[x,y]=P(RT,ang(pi));top+=`<circle cx="${f1(x)}" cy="${f1(y)}" r="14" fill="var(--bg)"/><use href="#cloud" x="${f1(x-11)}" y="${f1(y-12)}" width="22" height="22" style="color:var(--ink)"><title>PMS likely around here</title></use>`}
+  const pi=n-4;if(recent&&pi>ti+1&&!(m.marks[K(pi)]||{}).fert){const[x,y]=P(RT,ang(pi));top+=`<use href="#cloud" x="${f1(x-14)}" y="${f1(y-16)}" width="28" height="28" style="color:var(--cloud-track);filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.28))"><title>PMS likely around here</title></use>`}
   // inner day marks
   for(let i=0;i<n;i++){const k=K(i),d=state.days[k]||{},a=ang(i),deg=(a*180/Math.PI).toFixed(1);
     let r=RI;
-    if(d.pms){const[x,y]=P(RI-3,a);marks+=`<use href="#cloud" x="${f1(x-7.5)}" y="${f1(y-7.5)}" width="15" height="15" style="color:var(--ink)"/>`;r=RI-14}
+    if(d.pms){const[x,y]=P(RI-3,a);marks+=`<use href="#cloud" x="${f1(x-7.5)}" y="${f1(y-7.5)}" width="15" height="15" style="color:var(--cloud)"/>`;r=RI-14}
     const cats=[];if(d.flow)cats.push('var(--berry)');if(d.bbt!=null||d.lh||d.mucus||d.cervixPos||d.cervixFirm)cats.push('var(--teal-strong)');
-    if(d.pain||d.mood||d.energy||d.sleep||d.digestion||d.skin||d.cravings||d.libido||d.meds||d.note||d.preg)cats.push('var(--muted)');if(d.sex)cats.push('var(--f-light)');
+    if(d.pain||d.mood||d.energy||d.sleep||d.digestion||d.skin||d.cravings||d.libido||d.meds||d.note||d.preg)cats.push('var(--cloud)');if(d.sex)cats.push('var(--pinkish)');
     if(!cats.length&&!d.pms){const[x,y]=P(RI,a);marks+=`<circle cx="${f1(x)}" cy="${f1(y)}" r="1.8" fill="${k<=today?'var(--dot-past)':'var(--dot-future)'}"/>`}
     cats.slice(0,3).forEach((col,j)=>{const[x,y]=P(r-j*7,a);marks+=`<rect x="${f1(x-2.4)}" y="${f1(y-2.4)}" width="4.8" height="4.8" rx=".8" fill="${col}" transform="rotate(${deg} ${f1(x)} ${f1(y)})"/>`})}
   // today bubble
@@ -629,7 +704,7 @@ function renderToday(){
     facts=`<div class="facts">
       <div class="fact"><div class="k">Next period</div><div class="v">${fmt(p.next<today?today:p.next,{weekday:'short',day:'numeric',month:'long'})}${p.late?' or later':''}<small>${basisText(p)}</small></div></div>
       <div class="fact"><div class="k">Fertile window</div><div class="v">${short(p.fertStart)} – ${short(p.fertEnd)}<small>${p.ovuKnown?(m.cur.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${m.cur.ovu.cd}`:`Estimated from your LH peak`):'Predicted, not yet confirmed'}</small></div></div>
-      <div class="fact"><div class="k">Today</div><div class="v">${summ.length?`<div class="tags">${summ.map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div>`:'<small style="margin:0">Nothing logged yet</small>'}</div></div>
+      <div class="fact"><div class="k">Today</div><div class="v">${summ.length?`<div class="tags">${dayTags(dayData(today)).map(tagHTML).join('')}</div>`:'<small style="margin:0">Nothing logged yet</small>'}</div></div>
     </div>`}
   $('#v-today').innerHTML=`<div class="ring-wrap"><svg id="ringSvg" viewBox="0 0 340 340" role="img" aria-label="Cycle ring">${ringSVG(sel)}</svg><div class="ring-center">${centerFor(sel)}</div></div>
     <div id="ringBelow">${belowFor(sel)}</div>${facts}
@@ -669,12 +744,15 @@ document.addEventListener('mouseup',()=>dragEnd());
 
 /* ================= calendar ================= */
 function renderCalendar(){
+  renderCalFilter();
   $('#calLegend').innerHTML=FLOWS.map(f=>`<span><i class="fi" style="--fill:${f[2]};--fc:var(${FC[f[0]]})"></i>${f[1]}</span>`).join('')+
-    `<span><i class="sw fert"></i>Fertile</span><span><i class="sw pp"></i>Predicted</span>`;
+    `<span><i class="sw fert"></i>Fertile</span><span>${ic('ovu')}Ovulation</span><span><i class="sw pp"></i>Predicted</span>`;
   const today=todayKey(),keys=Object.keys(state.days).sort();
   const t=fromKey(today),tI=t.getFullYear()*12+t.getMonth();let startI=tI-11;
   if(keys[0]){const f=fromKey(keys[0]);startI=Math.min(startI,f.getFullYear()*12+f.getMonth())}
-  const limit=tI-calBack,more=startI<limit;if(more)startI=limit;
+  const act=calActive();let limit=tI-calBack;
+  if(act){const hits=Object.keys(state.days).filter(k=>dayMatches(state.days[k],k)).sort();if(hits[0]){const f=fromKey(hits[0]);limit=Math.min(limit,f.getFullYear()*12+f.getMonth())}}
+  const more=startI<limit;if(more)startI=limit;
   const endI=tI+5;let h=more?'<div class="center" style="margin-top:18px"><button class="btn ghost small" id="calMore">Show earlier months</button></div>':'';
   for(let i=startI;i<=endI;i++){
     const yy=Math.floor(i/12),mm=i%12,first=new Date(yy,mm,1),dim=new Date(yy,mm+1,0).getDate(),lead=(first.getDay()+6)%7;
@@ -687,10 +765,10 @@ function renderCalendar(){
       else if(mk.pp)cl.push('pp');
       if(mk.fert)cl.push('fert',mk.fert==='pred'?'pred':'act');
       if(mk.ovu)cl.push('ovu',mk.ovu==='pred'?'pred':'act');
-      if(k===today)cl.push('today');if(k>today)cl.push('fut');
+      if(k===today)cl.push('today');if(k>today)cl.push('fut');const hit=act&&dayMatches(state.days[k],k);if(act)cl.push(hit?'hitd':'dim');
       const other=(d.pain||d.mood||d.note||d.mucus)?1:0;
-      const ic=`${d.sex?'<span class="h">♥</span>':''}${d.lh==='high'||d.lh==='peak'?'<span class="lh">LH</span>':''}${d.pms?'<svg class="cl" viewBox="0 0 24 24"><use href="#cloud"/></svg>':''}${other?'<span class="d"></span>':''}`;
-      h+=`<button class="${cl.join(' ')}" style="${st}" data-date="${k}" aria-label="${dd} ${mName}"><span class="dn">${dd}</span>${mk.ovu?'<i class="egg"></i>':''}<span class="ic">${ic}</span></button>`;
+      const icons=hit?`<span class="bigic">${matchIcons(k,state.days[k]).map(x=>ic(x)).join('')}</span>`:(act?'':`<span class="ic">${d.sex?ic('sex'):''}${d.lh==='high'||d.lh==='peak'?ic('lh'):''}${d.pms?ic('pms'):''}${other?'<span class="d"></span>':''}</span>`);
+      h+=`<button class="${cl.join(' ')}" style="${st}" data-date="${k}" aria-label="${dd} ${mName}"><span class="dn">${dd}</span>${mk.ovu?`<svg class="egg2" viewBox="0 0 24 24"><use href="#i-${mk.ovu==='pred'?'eggo':'egg'}"/></svg>`:''}${icons}</button>`;
     }
     const tail=(7-(lead+dim)%7)%7;for(let b=0;b<tail;b++)h+='<div class="cell blank"></div>';
     h+='</div></section>';
@@ -821,6 +899,9 @@ function renderInsights(){
    <div class="setrow"><p class="lbl">Temperature</p>${segHTML('unit',[['C','°C'],['F','°F']])}</div>
    <h2 class="sect" id="dataSec">Your data</h2>
    <div class="setrow"><p class="lbl">Import from Clue</p><p class="hint" style="margin:0 0 10px">In Clue, export your data, save the file to Files, then choose it here. Imported days merge with what you already have.</p><div class="datarow"><button class="btn ghost small" data-act="import">Choose Clue file</button></div></div>
+   <div class="setrow"><p class="lbl">Export</p><p class="hint" style="margin:0 0 10px">A spreadsheet of every logged day, or a printable PDF with a year overview, monthly pages and your temperature charts.</p>
+     <div class="datarow" style="align-items:center"><select class="field" id="exYear" style="width:auto;padding:9px 34px 9px 14px;font-size:15px;border-radius:999px;background:var(--surface) url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%223%22><path d=%22M6 9l6 6 6-6%22/></svg>') no-repeat right 12px center">${dataYears().map(y=>`<option>${y}</option>`).join('')}</select>
+     <button class="btn small" data-act="csv">CSV</button><button class="btn small" data-act="pdf">PDF</button></div></div>
    <div class="setrow"><p class="lbl">Backup</p><p class="hint" style="margin:0 0 10px">Everything lives only on this phone. Save a backup to Files now and then; clearing Safari's website data would erase it.</p><div class="datarow"><button class="btn small" data-act="export">Save backup</button><button class="btn ghost small" data-act="import">Restore backup</button></div></div>
    <div class="setrow"><div class="datarow"><button class="btn ghost small" data-act="wipe" style="color:#d4574a;border-color:#d4574a">Delete all data</button></div></div>
    <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.</p>`;
@@ -831,6 +912,8 @@ $('#v-ins').addEventListener('click',async e=>{
   const a=e.target.closest('[data-act]');if(!a)return;
   if(a.dataset.act==='import')$('#importFile').click();
   if(a.dataset.act==='export')exportBackup();
+  if(a.dataset.act==='csv')exportCSV($('#exYear').value);
+  if(a.dataset.act==='pdf')exportPDF($('#exYear').value);
   if(a.dataset.act==='wipe'&&await askConfirm('Delete every logged day, photo and setting on this phone? This can’t be undone.','Delete everything',true)){
     for(const k of await DB.keys())await DB.del(k);state={version:1,days:{},settings:{...DEFAULTS}};applyTheme();save();renderAll();toast('All data deleted')}
 });
@@ -858,6 +941,9 @@ function secSummary(title){const d=dayData(logDate),keys=SEC_KEYS[title],multi=k
     else if(k==='bbtFlags')out.push('flagged');
     else if(k==='note')out.push(v.length>28?v.slice(0,28)+'…':v);
     else if(k==='meds')out.push(...v);
+    else if(k==='lh')out.push('LH '+LABEL.lh[v].toLowerCase());
+    else if(k==='preg')out.push('Pregnancy '+LABEL.preg[v].toLowerCase());
+    else if(k==='pms')out.push('PMS '+LABEL.pms[v].toLowerCase());
     else if(Array.isArray(v))out.push(...v.map(x=>LABEL[k]?.[x]||x));
     else{const l=LABEL[k]?.[v]||v;out.push(multi&&SUBLBL[k]&&k!=='mucus'?`${SUBLBL[k]} ${l.toLowerCase()}`:l)}}
   return out.join(', ')}
@@ -865,8 +951,8 @@ function refreshSummaries(){$$('details.sec',$('#sBody')).forEach(el=>{const sv=
 function renderLog(){
   const d=dayData(logDate),u=state.settings.unit,openS=new Set(state.settings.openSecs||[]);sheetHead();renderStrip();let h='<div class="inner">',open=false;
   for(const s of SECTIONS){
-    if(s.title){if(open)h+='</div></details>';h+=`<details class="sec" data-sec="${s.title}"${openS.has(s.title)?' open':''}><summary><h4>${s.title}${s.icon?' <svg class="secic" viewBox="0 0 24 24"><use href="#cloud"/></svg>':''}</h4><span class="sv">${esc(secSummary(s.title))}</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary><div class="secb">`;open=true}
-    if(s.label)h+=`<div class="sub">${s.label}</div>`;
+    if(s.title){if(open)h+='</div></details>';h+=`<details class="sec" data-sec="${s.title}"${openS.has(s.title)?' open':''}><summary><h4>${ic(SEC_ICON[s.title],'secic')}${s.title}</h4><span class="sv">${esc(secSummary(s.title))}</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary><div class="secb">`;open=true}
+    if(s.label){const sk={preg:'preg',cervixPos:'cervix',libido:'libido',pms:'pms',sleep:'sleep',digestion:'digestion',skin:'skin',cravings:'cravings',meds:'meds'}[s.key];h+=`<div class="sub">${sk?ic(sk)+' ':''}${s.label}</div>`}
     if(s.type==='single'||s.type==='multi')h+=`<div class="chips">${s.opts.map(([v,l])=>chip(s.key,v,l,s.type,s.cls)).join('')}</div>`;
     else if(s.type==='flow')h+=`<div class="chips">${FLOWS.map(([v,l,f])=>chip('flow',v,`<i class="fi" style="--fill:${f};--fc:var(${FC[v]})"></i>${l}`,'single','b')).join('')}</div>`;
     else if(s.type==='bbt'){const val=d.bbt!=null?toUnit(d.bbt).toFixed(2):'';
@@ -924,7 +1010,7 @@ $('#views').addEventListener('click',e=>{
   if(e.target.closest('#calMore')){const h0=document.documentElement.scrollHeight,y0=window.scrollY;calBack+=24;renderCalendar();window.scrollTo(0,y0+document.documentElement.scrollHeight-h0);return}
   const xb=e.target.closest('[data-excl]');if(xb){const st=xb.dataset.excl,S=state.settings,set=new Set(S.excluded||[]);const was=set.has(st);was?set.delete(st):set.add(st);S.excluded=[...set];save();renderAll();toast(was?'Cycle counted in predictions again':'Cycle left out of predictions');return}
   if(e.target.closest('#goImport')){showView('ins');requestAnimationFrame(()=>$('#dataSec')?.scrollIntoView());return}
-  const t=e.target.closest('[data-date]');if(t)openLog(t.getAttribute('data-date'));
+  const t=e.target.closest('[data-date]');if(t){const k=t.getAttribute('data-date');if(t.closest('#v-cal'))openPeek(k);else openLog(k)}
 });
 
 /* ================= modals ================= */
@@ -970,9 +1056,8 @@ $('#scanSave').addEventListener('click',async()=>{const d=dayData(logDate),id=`p
 
 /* ================= backup & import ================= */
 async function exportBackup(){await persist();const photos={};for(const k of await DB.keys())if(k.startsWith('photo:'))photos[k]=await DB.get(k);
-  const name=`period-backup-${todayKey()}.json`,blob=new Blob([JSON.stringify({app:'my-period-tracker',version:1,exported:new Date().toISOString(),state,photos})],{type:'application/json'});
-  try{const file=new File([blob],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Period tracker backup'});return}}catch(e){if(e&&e.name==='AbortError')return}
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+  const name=`cycles-backup-${todayKey()}.json`,blob=new Blob([JSON.stringify({app:'my-period-tracker',version:1,exported:new Date().toISOString(),state,photos})],{type:'application/json'});
+  if(!await shareFile(blob,name,'Cycles backup'))await offerFile(blob,name,'Cycles backup')}
 $('#importFile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;let json;
   try{json=JSON.parse(await f.text())}catch(err){toast('That file isn’t readable JSON. Choose a Clue export or a backup from this app.');return}
   if(json&&json.app==='my-period-tracker'&&json.state){if(!await askConfirm('Replace everything on this phone with this backup?','Restore backup'))return;
@@ -985,7 +1070,7 @@ $('#importFile').addEventListener('change',async e=>{const f=e.target.files[0];e
 function showInfo(msg){return new Promise(res=>{$('#confirmMsg').textContent=msg;$('#confirmMsg').style.whiteSpace='pre-line';const y=$('#confirmYes'),n=$('#confirmNo');y.textContent='OK';y.classList.remove('danger');n.hidden=true;openModal('confirm');
   y.onclick=()=>{closeModal('confirm');n.hidden=false;y.onclick=null;res()}})}
 
-function migrate(){for(const d of Object.values(state.days)){if(d.mood&&d.mood.includes('pms')){d.mood=d.mood.filter(x=>x!=='pms');if(!d.mood.length)delete d.mood;if(!d.pms)d.pms='moderate'}}}
+function migrate(){{const titles=new Set(SECTIONS.filter(x=>x.title).map(x=>x.title)),o=state.settings.openSecs;if(!o||o.some(t=>!titles.has(t)))state.settings.openSecs=[...DEFAULTS.openSecs]}for(const d of Object.values(state.days)){if(d.mood&&d.mood.includes('pms')){d.mood=d.mood.filter(x=>x!=='pms');if(!d.mood.length)delete d.mood;if(!d.pms)d.pms='moderate'}}}
 function toStrings(v){if(v==null)return[];if(typeof v==='string')return[v];if(typeof v==='number'||typeof v==='boolean')return[String(v)];if(Array.isArray(v))return v.flatMap(toStrings);
   if(typeof v==='object'){const o=[];for(const k of['option','options','value','values','name','type','selected','tag','tags','text'])if(k in v)o.push(...toStrings(v[k]));if(o.length)return o;for(const[k,x]of Object.entries(v)){if(x===true)o.push(k);else if(typeof x==='string'||typeof x==='number')o.push(String(x));else if(x&&typeof x==='object')o.push(...toStrings(x))}return o}return[]}
 function importClue(json){
@@ -1028,6 +1113,166 @@ function importClue(json){
     if(Object.keys(d).length&&JSON.stringify(d)!==before){state.days[k]=d;touched.add(k);if(!first||k<first)first=k;if(!last||k>last)last=k}
   }
   return{days:touched.size,unmapped,first,last};
+}
+
+/* ================= calendar: day preview sheet ================= */
+let peekDate=null;
+function openPeek(k){peekDate=k;renderPeek();openModal('peek')}
+function renderPeek(){const k=peekDate,d=dayData(k),mk=model.marks[k]||{},cd=cdOf(k),dpo=dpoOf(k);
+  $('#pkDate').textContent=fmt(k,{weekday:'long',day:'numeric',month:'long'});
+  $('#pkSub').textContent=[k===todayKey()?'Today':'',cd?'Cycle day '+cd:'',dpo?dpo+' DPO':''].filter(Boolean).join(', ');
+  const st=[];if(d.flow)st.push(['b',`${ic('flow')}Period, ${LABEL.flow[d.flow].toLowerCase()}`,'flow']);else if(mk.pp)st.push(['b o','Predicted period']);
+  if(mk.ovu)st.push(['t',`${ic('ovu')}${mk.ovu==='pred'?'Predicted ovulation':'Ovulation day'}`,mk.ovu==='pred'?'':'ovu']);else if(mk.fert)st.push(['t'+(mk.fert==='pred'?' o':''),mk.fert==='pred'?'Likely fertile':'Fertile window']);
+  const tags=dayTags(d).filter(x=>x.k!=='flow'&&x.k!=='note');
+  let h=st.length?`<div class="tags pk">${st.map(([c,t,f])=>f?`<button type="button" class="tag tagbtn ${c}" data-pf="${f}">${t}</button>`:`<span class="tag ${c}">${t}</span>`).join('')}</div>`:'';
+  h+=tags.length?`<div class="tags pk">${tags.map(x=>{const f={bbt:'bbt',note:'note'}[x.k];return`<button type="button" class="tag tagbtn" ${f?`data-pf="${f}"`:`data-pq="${esc(x.txt.toLowerCase())}" data-pl="${esc(x.txt)}"`}>${ic(x.k)}${esc(x.txt)}</button>`}).join('')}</div><p class="hint" style="margin-top:10px">Tap a tag to find every day with it.</p>`:'<p class="muted" style="margin:14px 0 4px">Nothing logged for this day.</p>';
+  if(d.note)h+=`<p class="pknote">${esc(d.note)}</p>`;
+  if(d.lhPhoto)h+='<img class="lhthumb" id="pkThumb" alt="LH strip" style="margin-top:10px">';
+  $('#pkBody').innerHTML=h;$('#pkEdit').textContent=Object.keys(d).length?'Edit this day':'Log this day';
+  if(d.lhPhoto)DB.get(d.lhPhoto).then(src=>{const im=$('#pkThumb');if(im&&src)im.src=src});
+}
+$('#pkPrev').addEventListener('click',()=>{peekDate=addDays(peekDate,-1);renderPeek()});
+$('#pkNext').addEventListener('click',()=>{peekDate=addDays(peekDate,1);renderPeek()});
+$('#pkEdit').addEventListener('click',()=>{closeModal('peek');openLog(peekDate)});
+$('#peek').addEventListener('click',e=>{if(e.target.id==='peek')closeModal('peek')});
+
+/* ================= calendar: search & filter ================= */
+const calF={q:'',tag:null};
+const FILTERS=[['flow','Period',d=>d.flow],['ovu','Ovulation',(d,k)=>{const o=(model.marks[k]||{}).ovu;return o&&o!=='pred'}],['lh','Positive LH',d=>d.lh==='high'||d.lh==='peak'],['bbt','Temperature',d=>d.bbt!=null],['mucus','Mucus',d=>d.mucus],['preg','Pregnancy test',d=>d.preg],
+  ['sex','Sex',d=>d.sex],['pain','Pain',d=>d.pain],['pms','PMS',d=>d.pms],['mood','Mood',d=>d.mood],['sleep','Sleep',d=>d.sleep],['meds','Medication',d=>d.meds],['note','Notes',d=>d.note]];
+function matchIcons(k,d){if(calF.tag)return[calF.tag];const seen=[];for(const x of dayTags(d))if(x.txt.toLowerCase().includes(calF.q)&&!seen.includes(x.k))seen.push(x.k);
+  if(d.note&&d.note.toLowerCase().includes(calF.q)&&!seen.includes('note'))seen.push('note');return seen.slice(0,3)}
+const calActive=()=>!!(calF.q||calF.tag);
+function dayMatches(d,k){if(!d)return false;if(calF.tag&&!FILTERS.find(f=>f[0]===calF.tag)[2](d,k))return false;
+  if(calF.q){const hay=(daySummary(d).join(' ')+' '+(d.note||'')).toLowerCase();if(!hay.includes(calF.q))return false}return true}
+function renderCalFilter(){$('#calChips').innerHTML=FILTERS.map(([k,l])=>`<button type="button" class="chip t" data-cf="${k}" aria-pressed="${calF.tag===k}">${ic(k)}${l}</button>`).join('');
+  if(!calActive()){$('#calCount').textContent='';$('#calClear').hidden=true;return}
+  const hits=Object.keys(state.days).filter(k=>dayMatches(state.days[k],k)).sort();$('#calClear').hidden=false;
+  $('#calCount').textContent=hits.length?`${plural(hits.length,'day')} match, ${fmt(hits[0],{month:'short',year:'numeric'})} – ${fmt(hits[hits.length-1],{month:'short',year:'numeric'})}`:'No days match.'}
+let cfT=null;
+function calRefresh(){const h0=document.documentElement.scrollHeight,y0=window.scrollY;renderCalendar();const dh=document.documentElement.scrollHeight-h0;if(dh)window.scrollTo(0,y0+dh)}
+$('#calQ').addEventListener('input',e=>{clearTimeout(cfT);cfT=setTimeout(()=>{calF.q=e.target.value.trim().toLowerCase();calRefresh()},180)});
+$('#calChips').addEventListener('click',e=>{const b=e.target.closest('[data-cf]');if(!b)return;calF.tag=calF.tag===b.dataset.cf?null:b.dataset.cf;calRefresh()});
+$('#calClear').addEventListener('click',()=>{calF.q='';calF.tag=null;$('#calQ').value='';calRefresh()});
+function applyCalSearch(f,q,label){calF.tag=f||null;calF.q=q||'';$('#calQ').value=q?label:'';closeModal('peek');calRefresh();
+  const c=$('#calChips [aria-pressed="true"]');c&&c.scrollIntoView({inline:'center',block:'nearest'})}
+$('#pkBody').addEventListener('click',e=>{const b=e.target.closest('[data-pf],[data-pq]');if(!b)return;if(b.dataset.pf)applyCalSearch(b.dataset.pf);else applyCalSearch(null,b.dataset.pq,b.dataset.pl)});
+
+/* ================= export: CSV & PDF ================= */
+LABEL.bbtFlags=Object.fromEntries(BBT_FLAGS);
+async function shareFile(blob,name,title){
+  try{const file=new File([blob],name,{type:blob.type});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title});return true}}
+  catch(e){if(e&&e.name==='AbortError')return true;if(e&&e.name==='NotAllowedError')return false}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),6000);return true}
+function offerFile(blob,name,title){return new Promise(res=>{$('#confirmMsg').textContent=`${name} is ready.`;const y=$('#confirmYes'),n=$('#confirmNo');y.textContent='Save';y.classList.remove('danger');n.textContent='Close';openModal('confirm');
+  const done=()=>{closeModal('confirm');y.onclick=n.onclick=null;n.textContent='Cancel';res()};y.onclick=async()=>{done();await shareFile(blob,name,title)};n.onclick=done})}
+function dataYears(){const ys=new Set(Object.keys(state.days).map(k=>k.slice(0,4)));ys.add(todayKey().slice(0,4));return[...ys].sort().reverse()}
+function exportCSV(year){const u=state.settings.unit,lab=(f,v)=>v==null?'':(LABEL[f]?.[v]??v),arr=(f,v)=>(v||[]).map(x=>LABEL[f]?.[x]??x).join('; ');
+  const head=['Date','Cycle day','DPO','Flow','PMS',`Temperature (°${u})`,'Temperature time','Temperature flags','LH test','LH T/C ratio','Cervical mucus','Mucus colour','Cervix position','Cervix firmness','Cervix opening','Sex','Libido','Pain','Mood','Energy','Sleep','Digestion','Skin','Cravings','Pregnancy test','Medication','Notes'];
+  const rows=Object.keys(state.days).filter(k=>k.startsWith(year)).sort().map(k=>{const d=state.days[k];return[k,cdOf(k)??'',dpoOf(k)??'',lab('flow',d.flow),lab('pms',d.pms),d.bbt!=null?toUnit(d.bbt).toFixed(2):'',d.bbtTime||'',arr('bbtFlags',d.bbtFlags),lab('lh',d.lh),d.lhRatio??'',lab('mucus',d.mucus),lab('mucusColor',d.mucusColor),lab('cervixPos',d.cervixPos),lab('cervixFirm',d.cervixFirm),lab('cervixOpen',d.cervixOpen),arr('sex',d.sex),lab('libido',d.libido),arr('pain',d.pain),arr('mood',d.mood),lab('energy',d.energy),lab('sleep',d.sleep),arr('digestion',d.digestion),arr('skin',d.skin),arr('cravings',d.cravings),lab('preg',d.preg),(d.meds||[]).join('; '),d.note||'']});
+  const q=v=>{v=String(v);return/[",\n\r;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+  const csv='\ufeff'+[head,...rows].map(r=>r.map(q).join(',')).join('\r\n');
+  shareFile(new Blob([csv],{type:'text/csv'}),`cycles-${year}.csv`,`Cycles ${year}`)}
+let jsPDFp=null;
+function loadJsPDF(){return jsPDFp||(jsPDFp=new Promise((res,rej)=>{if(window.jspdf)return res(window.jspdf.jsPDF);const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';s.onload=()=>res(window.jspdf.jsPDF);s.onerror=()=>{jsPDFp=null;rej(new Error('load'))};document.head.appendChild(s)}))}
+async function exportPDF(year){toast('Making your PDF…');let J;try{J=await loadJsPDF()}catch(e){toast('The PDF tool couldn’t load. Connect to the internet once and try again.');return}
+  const doc=buildPDF(J,year);await offerFile(doc.output('blob'),`cycles-${year}.pdf`,`Cycles ${year}`)}
+
+function buildPDF(J,year){
+  const doc=new J({unit:'pt',format:'a4'}),W=595.28,H=841.89,M=40,u=state.settings.unit,today=todayKey();
+  const C={ink:[28,28,28],muted:[110,116,116],line:[196,203,203],faint:[232,237,237],berry:[169,70,95],spot:[236,198,208],light:[220,157,175],medium:[194,106,130],heavy:[169,70,95],tealSoft:[214,239,237],teal:[168,220,217],tealStrong:[68,163,156],cloud:[158,166,171]};
+  const FCOL={spotting:C.spot,light:C.light,medium:C.medium,heavy:C.heavy};
+  const fill=c=>doc.setFillColor(...c),draw=c=>doc.setDrawColor(...c),tcol=c=>doc.setTextColor(...c);
+  const font=(f,s,st='normal')=>{doc.setFont(f,st);doc.setFontSize(s)};
+  const dash=on=>doc.setLineDashPattern(on?[2.2,1.8]:[],0);
+  const cloud=(x,y,s)=>{fill(C.cloud);[[0,.1,.34],[.3,-.12,.42],[.62,.06,.32],[-.22,.28,.24],[.85,.28,.22]].forEach(([dx,dy,r])=>doc.circle(x+dx*s,y+dy*s,r*s,'F'));doc.roundedRect(x-.22*s,y+.05*s,1.07*s,.45*s,.2*s,.2*s,'F')};
+  const logo=(x,y)=>{draw(C.ink);doc.setLineWidth(1.2);doc.circle(x,y,12,'S');fill(C.berry);doc.circle(x-3.5,y+2.5,3.2,'F');fill(C.ink);doc.circle(x+4,y-3.5,2.3,'F');doc.circle(x+3.5,y+5,1.5,'F')};
+  const header=(title,right)=>{logo(M+12,58);font('times',26,'bold');tcol(C.ink);doc.text(title,M+32,67);font('helvetica',11);tcol(C.muted);doc.text(right,W-M,66,{align:'right'});draw(C.ink);doc.setLineWidth(1);doc.line(M,82,W-M,82)};
+  const legend=y=>{font('helvetica',7.5,'bold');tcol(C.muted);doc.text('FLOW',M,y+7);let x=M+34;font('helvetica',9);
+    FLOWS.forEach(([k,l,f])=>{cellBox(x,y,11,11,k,false);tcol(C.ink);doc.text(l,x+15,y+8.5);x+=doc.getTextWidth(l)+30});
+    fill(C.tealSoft);draw(C.tealStrong);doc.setLineWidth(.8);doc.roundedRect(x,y,11,11,2,2,'FD');tcol(C.ink);doc.text('Fertile',x+15,y+8.5);x+=doc.getTextWidth('Fertile')+30;
+    fill(C.tealStrong);doc.circle(x+5.5,y+5.5,3.5,'F');doc.text('Ovulation',x+13,y+8.5);x+=doc.getTextWidth('Ovulation')+28;
+    cloud(x+2,y+3,9);tcol(C.ink);doc.text('PMS',x+15,y+8.5)};
+  function cellBox(x,y,w,h,flow,fert,ovu,pp,r=2.5){
+    if(fert){fill(fert==='pred'?[234,246,245]:C.tealSoft);doc.roundedRect(x,y,w,h,r,r,'F')}
+    if(flow){const f=FILL[flow];fill(FCOL[flow]);if(f>=1)doc.roundedRect(x,y,w,h,r,r,'F');else doc.rect(x+.4,y+h*(1-f),w-.8,h*f-.4,'F')}
+    doc.setLineWidth(pp?.9:.6);draw(pp?C.berry:(fert?C.tealStrong:C.line));dash(!!pp||fert==='pred');doc.roundedRect(x,y,w,h,r,r,'S');dash(false);
+    if(ovu){fill(C.tealStrong);if(ovu==='pred'){draw(C.tealStrong);doc.circle(x+w-4,y+4,2,'S')}else doc.circle(x+w-4,y+4,2.2,'F')}}
+  const cyclesIn=model.cycles.filter(c=>c.start.startsWith(year));
+  const lens=cyclesIn.filter(c=>c.complete).map(c=>c.len);
+  /* ---- page 1: year overview ---- */
+  header(`Cycles ${year}`,`Exported ${fmt(today,{day:'numeric',month:'short',year:'numeric'})}`);
+  legend(100);
+  const gx=M+22,gy=140,cw=(W-M-gx)/12,rh=(770-gy-14)/31;
+  font('helvetica',7.5,'bold');tcol(C.muted);
+  ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'].forEach((mn,i)=>doc.text(mn,gx+i*cw+cw/2,gy,{align:'center'}));
+  for(let dd=1;dd<=31;dd++){const y=gy+8+(dd-1)*rh;font('helvetica',7.5);tcol(C.muted);doc.text(String(dd),gx-6,y+rh/2+2.5,{align:'right'});
+    for(let mo=0;mo<12;mo++){if(dd>new Date(+year,mo+1,0).getDate())continue;const k=`${year}-${pad(mo+1)}-${pad(dd)}`,d=state.days[k]||{},mk=model.marks[k]||{};
+      const x=gx+mo*cw+1.5,w=cw-3,h=rh-2.5;cellBox(x,y,w,h,d.flow,mk.fert,mk.ovu,!d.flow&&mk.pp&&k>=today);
+      const sh=(d.pain?'P':'')+(d.mood?'M':'')+(d.energy?'E':'')+(d.lh&&d.lh!=='neg'?'O':'');
+      if(sh){font('helvetica',5.6,'bold');tcol(d.flow==='heavy'||d.flow==='medium'?[255,255,255]:C.ink);doc.text(sh,x+2.5,y+h-2.6)}
+      if(d.pms)cloud(x+w-9.5,y+h-6.5,6);if(d.sex){fill(C.berry);doc.circle(x+w-(d.pms?13:4),y+h-4,1.4,'F')}}}
+  let fy=782;font('helvetica',7.5,'bold');tcol(C.muted);doc.text('SHORTHAND',M,fy);font('helvetica',8);tcol(C.ink);
+  doc.text('P = Pain   M = Mood   E = Energy   O = positive OPK   pink dot = sex   cloud = PMS   dashed = predicted',M+58,fy);
+  font('helvetica',8);tcol(C.muted);
+  doc.text(`${plural(cyclesIn.length,'cycle')} started in ${year}${lens.length?`, median length ${Math.round(median(lens))} days (range ${Math.min(...lens)}-${Math.max(...lens)})`:''}. Predictions are estimates; this is not medical advice or contraception.`,M,fy+14,{maxWidth:W-2*M});
+  /* ---- month pages ---- */
+  const DOWS=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  for(let mo=0;mo<12;mo++){const dim=new Date(+year,mo+1,0).getDate(),keys=[];for(let dd=1;dd<=dim;dd++){const k=`${year}-${pad(mo+1)}-${pad(dd)}`;if(state.days[k])keys.push(k)}
+    if(!keys.length)continue;doc.addPage();const first=new Date(+year,mo,1),mName=first.toLocaleDateString(undefined,{month:'long'});
+    header(`Cycles ${mName} ${year}`,`${plural(keys.length,'day')} logged`);legend(100);
+    const cx0=M,cy0=138,ccw=(W-2*M)/7,lead=(first.getDay()+6)%7,rows=Math.ceil((lead+dim)/7),crh=Math.min(64,300/rows);
+    font('helvetica',7.5,'bold');tcol(C.muted);DOWS.forEach((d,i)=>doc.text(d,cx0+i*ccw+ccw/2,cy0,{align:'center'}));
+    for(let dd=1;dd<=dim;dd++){const pos=lead+dd-1,x=cx0+(pos%7)*ccw+2,y=cy0+8+Math.floor(pos/7)*crh,w=ccw-4,h=crh-4;
+      const k=`${year}-${pad(mo+1)}-${pad(dd)}`,d=state.days[k]||{},mk=model.marks[k]||{},dark=d.flow==='heavy';
+      cellBox(x,y,w,h,d.flow,mk.fert,mk.ovu,!d.flow&&mk.pp&&k>=today,5);
+      font('helvetica',8.5,'bold');tcol(dark?[255,255,255]:C.ink);doc.text(String(dd),x+4,y+10);
+      font('helvetica',6.3);let ly=y+20;const cdn=cdOf(k);if(cdn){tcol(dark?[255,255,255]:C.muted);doc.text('CD '+cdn,x+w-4,y+10,{align:'right'})}
+      tcol(dark?[255,255,255]:C.ink);
+      if(d.bbt!=null){doc.text(toUnit(d.bbt).toFixed(2)+'°',x+4,ly);ly+=8}
+      if(d.lh){doc.text('LH '+LABEL.lh[d.lh].toLowerCase(),x+4,ly);ly+=8}
+      if(d.mucus&&ly<y+h-3){doc.text(LABEL.mucus[d.mucus],x+4,ly);ly+=8}
+      if(d.pms)cloud(x+w-12,y+h-9,8);if(d.sex){fill(C.berry);if(dark)fill([255,255,255]);doc.circle(x+w-(d.pms?17:6),y+h-5.5,2,'F')}}
+    let sy=cy0+14+rows*crh;font('helvetica',7.5,'bold');tcol(C.muted);doc.text('SYMPTOMS',M,sy);
+    const lx=M+64,scw=(W-M-lx)/dim,srh=13;sy+=8;font('helvetica',6);
+    for(let dd=1;dd<=dim;dd++){tcol(C.muted);doc.text(String(dd),lx+(dd-.5)*scw,sy+5,{align:'center'})}sy+=9;
+    const SR=[['Pain',d=>d.pain?'dot':''],['Mood',d=>d.mood?LABEL.mood[d.mood[0]][0]:''],['Energy',d=>d.energy?{low:'L',mid:'M',high:'H'}[d.energy]:''],['PMS',d=>d.pms?'cloud':''],
+      ['OPK',d=>d.lh?{neg:'-',low:'L',high:'H',peak:'P'}[d.lh]:''],['Cervical mucus',d=>d.mucus?{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[d.mucus]:''],
+      ['Cervix',d=>d.cervixPos?{low:'L',mid:'M',high:'H'}[d.cervixPos]:''],['Sex',d=>d.sex?(d.sex.includes('unprotected')?'dot':'ring'):'']];
+    SR.forEach(([lab,fn],ri)=>{const y=sy+ri*srh;font('helvetica',8);tcol(C.ink);doc.text(lab,M,y+9);
+      for(let dd=1;dd<=dim;dd++){const k=`${year}-${pad(mo+1)}-${pad(dd)}`,d=state.days[k]||{},x=lx+(dd-1)*scw;draw(C.line);doc.setLineWidth(.5);doc.roundedRect(x+.8,y+1,scw-1.6,srh-2,1.5,1.5,'S');
+        const v=fn(d);if(!v)continue;const mx=x+scw/2,my=y+srh/2;
+        if(v==='dot'){fill(C.berry);doc.circle(mx,my,2.2,'F')}else if(v==='ring'){draw(C.berry);doc.setLineWidth(.8);doc.circle(mx,my,2.1,'S')}else if(v==='cloud')cloud(mx-3.4,my-1.6,6.4);
+        else{font('helvetica',6.5,'bold');tcol(lab==='OPK'||lab==='Cervical mucus'?C.tealStrong:C.ink);doc.text(v,mx,my+2.3,{align:'center'})}}});
+    let ny=sy+SR.length*srh+22;font('helvetica',7.5,'bold');tcol(C.muted);doc.text('NOTES',M,ny);ny+=12;font('helvetica',8.5);tcol(C.ink);
+    const notes=keys.filter(k=>state.days[k].note);if(!notes.length){tcol(C.muted);doc.text('No notes this month.',M,ny)}
+    for(const k of notes){const lines=doc.splitTextToSize(`${fromKey(k).getDate()} ${mName.slice(0,3)}: ${state.days[k].note.replace(/\s+/g,' ')}`,W-2*M);
+      if(ny+lines.length*11>H-30){tcol(C.muted);doc.text('More notes in the CSV export.',M,ny);break}doc.text(lines,M,ny);ny+=lines.length*11+3}}
+  /* ---- temperature charts, one per cycle ---- */
+  for(const c of cyclesIn){const len=c.len||c.days,temps=[];for(let i=0;i<len;i++){const d=state.days[addDays(c.start,i)];if(d&&d.bbt!=null)temps.push({i,v:toUnit(d.bbt),fl:!!(d.bbtFlags&&d.bbtFlags.length)})}
+    if(temps.length<3)continue;doc.addPage();
+    header('Basal body temperature',`Cycle starting ${fmt(c.start,{day:'numeric',month:'short',year:'numeric'})}`);
+    font('helvetica',9);tcol(C.muted);
+    doc.text(`${c.complete?`${c.len} days`:`Day ${c.days}, ongoing`}. ${c.ovu?(c.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${c.ovu.cd} by the temperature shift; dashed line is the coverline.`:`Ovulation estimated on cycle day ${c.ovu.cd} from the LH peak.`):'No ovulation detected.'}`,M,102,{maxWidth:W-2*M});
+    const N=Math.max(35,len),step=u==='F'?.1:.05,vs=temps.map(t=>t.v);
+    let lo=Math.min(u==='F'?96.8:36.0,Math.floor(Math.min(...vs)/step-1)*step),hi=Math.max(u==='F'?98.6:37.0,Math.ceil(Math.max(...vs)/step+1)*step);
+    const rowsN=Math.round((hi-lo)/step),gx0=M+34,gw=W-M-gx0-30,gy0=124,gh=430,cwid=gw/N,yOf=v=>gy0+(hi-v)/(hi-lo)*gh,xOf=i=>gx0+(i+.5)*cwid;
+    for(let i=0;i<len;i++){const k=addDays(c.start,i),d=state.days[k]||{},mk=model.marks[k]||{},x=gx0+i*cwid;
+      if(d.flow){fill(FILL[d.flow]>=.7?[244,224,229]:[249,236,239]);doc.rect(x,gy0,cwid,gh,'F')}
+      else if(c.ovu&&c.ovu.cd===i+1){fill(C.teal);doc.rect(x,gy0,cwid,gh,'F')}else if(mk.fert){fill(C.tealSoft);doc.rect(x,gy0,cwid,gh,'F')}}
+    for(let j=0;j<=rowsN;j++){const v=lo+j*step,y=yOf(v),major=Math.round(v/step)%(u==='F'?2:2)===0;draw(major?C.line:C.faint);doc.setLineWidth(.4);doc.line(gx0,y,gx0+gw,y);
+      if(major){font('helvetica',6.5);tcol(C.muted);doc.text(v.toFixed(u==='F'?1:2),gx0-4,y+2.2,{align:'right'});doc.text(v.toFixed(u==='F'?1:2),gx0+gw+4,y+2.2)}}
+    for(let i=0;i<=N;i++){draw(C.faint);doc.setLineWidth(.4);doc.line(gx0+i*cwid,gy0,gx0+i*cwid,gy0+gh)}
+    if(c.ovu&&c.ovu.basis==='bbt'){draw(C.tealStrong);doc.setLineWidth(1.1);doc.setLineDashPattern([5,3],0);const y=yOf(toUnit(c.ovu.cover));doc.line(gx0,y,gx0+gw,y);dash(false)}
+    const good=temps.filter(t=>!t.fl);draw(C.berry);doc.setLineWidth(1.2);for(let j=1;j<good.length;j++)doc.line(xOf(good[j-1].i),yOf(good[j-1].v),xOf(good[j].i),yOf(good[j].v));
+    temps.forEach(t=>{if(t.fl){fill([255,255,255]);draw(C.berry);doc.setLineWidth(1);doc.circle(xOf(t.i),yOf(t.v),2.4,'FD')}else{fill(C.berry);doc.circle(xOf(t.i),yOf(t.v),2.4,'F')}});
+    let ry=gy0+gh+6;const RR=[['Cycle day',i=>String(i+1)],['Date',i=>{const dt=fromKey(addDays(c.start,i));return`${dt.getDate()}/${dt.getMonth()+1}`}],['Time taken',(i,d)=>d.bbtTime||''],
+      ['LH',(i,d)=>d.lhRatio!=null?d.lhRatio.toFixed(1):(d.lh?{neg:'-',low:'L',high:'H',peak:'P'}[d.lh]:'')],['Mucus',(i,d)=>d.mucus?{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[d.mucus]:''],['Sex',(i,d)=>d.sex?'dot':'']];
+    RR.forEach(([lab,fn])=>{font('helvetica',6.8,'bold');tcol(C.muted);doc.text(lab,gx0-4,ry+8.5,{align:'right',maxWidth:40});
+      for(let i=0;i<N;i++){const x=gx0+i*cwid,d=state.days[addDays(c.start,i)]||{};draw(C.faint);doc.setLineWidth(.4);doc.rect(x,ry,cwid,12,'S');if(i>=len)continue;const v=fn(i,d);if(!v)continue;
+        if(v==='dot'){fill(C.berry);doc.circle(x+cwid/2,ry+6,1.8,'F')}else{font('helvetica',v.length>3?4.6:5.8);tcol(C.ink);doc.text(v,x+cwid/2,ry+8.2,{align:'center'})}}ry+=12});
+    font('helvetica',7.5);tcol(C.muted);doc.text('A temperature rise follows ovulation rather than warning of it. Pink columns are period days, teal the fertile window, darker teal ovulation; hollow dots were flagged and left out. Not medical advice or contraception.',M,ry+22,{maxWidth:W-2*M})}
+  return doc;
 }
 
 /* ================= home-screen icon & boot ================= */

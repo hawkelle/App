@@ -39,8 +39,8 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Icons and fonts: use the saved copy, fetch and save it the first time.
-  const fonts = /(^|\.)fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
+  // Icons, fonts and the PDF tool: use the saved copy, fetch and save it the first time.
+  const fonts = /(^|\.)fonts\.(googleapis|gstatic)\.com$/.test(url.hostname) || url.hostname === 'cdnjs.cloudflare.com';
   if (url.origin === self.location.origin || fonts) {
     e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => {
       if (res.ok || res.type === 'opaque') {
