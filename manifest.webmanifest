@@ -1,6 +1,6 @@
 {
-  "name": "My period tracker",
-  "short_name": "Cycle",
+  "name": "Cycles",
+  "short_name": "Cycles",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
