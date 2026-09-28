@@ -388,6 +388,7 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 .rotrow .iconbtn{width:34px;height:34px;font-size:16px}
 #rotVal{font:600 13px var(--sans);min-width:44px;text-align:right;color:var(--muted)}
 #tapBtns{margin-top:10px}
+#scanner .mcard,#scanCanvas{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .pickrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .pickrow label{position:relative;overflow:hidden}
 #loupe{position:fixed;z-index:90;width:220px;height:120px;border-radius:14px;border:2px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,.45);pointer-events:none}
@@ -1115,6 +1116,8 @@ async function onPhotoPicked(e){const f=e.target.files&&e.target.files[0];e.targ
   const s=Math.min(1,1600/Math.max(im.w,im.h)),c=document.createElement('canvas');c.width=Math.round(im.w*s);c.height=Math.round(im.h*s);c.getContext('2d').drawImage(im.src,0,0,c.width,c.height);
   scan.orig=c;scan.rot=0;scan.fine=0;scan.view={x:0,y:0,w:1,h:1};$('#rotFine').value=0;$('#rotVal').textContent='0.0°';scan.src=c;scan.rect={x:.1,y:.1,w:.8,h:.8};scan.mode='crop';scan.taps=[];$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop()}
 $$('.scanIn').forEach(inp=>inp.addEventListener('change',onPhotoPicked));
+$('#scanCanvas').addEventListener('touchstart',e=>{if(scan.mode==='crop'||scan.mode==='tap')e.preventDefault()},{passive:false});
+$('#scanCanvas').addEventListener('contextmenu',e=>e.preventDefault());
 function cropGeom(){const c=scan.cv,v=scan.view,r=scan.rect;return{rx:c.pad+(r.x-v.x)/v.w*c.iw,ry:c.pad+(r.y-v.y)/v.h*c.ih,rw:r.w/v.w*c.iw,rh:r.h/v.h*c.ih}}
 function drawCrop(){const cv=$('#scanCanvas'),s=scan.src,v=scan.view,vx=v.x*s.width,vy=v.y*s.height,vw=Math.max(8,v.w*s.width),vh=Math.max(8,v.h*s.height),z=Math.min(3,1400/Math.max(vw,vh));
   const iw=Math.round(vw*z),ih=Math.round(vh*z),pad=Math.round(Math.max(iw,ih)*.06);scan.cv={iw,ih,pad};
@@ -1152,8 +1155,8 @@ $$('[data-nudge]').forEach(b=>b.addEventListener('click',()=>{scan.fine=Math.max
 function startTap(canvas,cropped){const cv=$('#scanCanvas');cv.width=canvas.width;cv.height=canvas.height;const x=cv.getContext('2d',{willReadFrequently:true});x.drawImage(canvas,0,0);
   fitCanvas();scan.data=x.getImageData(0,0,cv.width,cv.height);scan.w=cv.width;scan.h=cv.height;scan.cropped=cropped;scan.taps=[];scan.out=canvas;scan.prof=null;
   if(cropped){const d=scan.data.data,w=scan.w,h=scan.h,y0=Math.floor(h*.25),y1=Math.ceil(h*.75),p=new Float32Array(w);
-    for(let xx=0;xx<w;xx++){let s=0;for(let yy=y0;yy<y1;yy++){const i=(yy*w+xx)*4;s+=(d[i]+d[i+2])/2-d[i+1]}p[xx]=s/(y1-y0)}
-    const sm=new Float32Array(w);for(let xx=0;xx<w;xx++){let s=0,n=0;for(let k=-2;k<=2;k++){const j=xx+k;if(j>=0&&j<w){s+=p[j];n++}}sm[xx]=s/n}
+    for(let xx=0;xx<w;xx++){let s=0;for(let yy=y0;yy<y1;yy++){const i=(yy*w+xx)*4,r=d[i],g=d[i+1],b=d[i+2];s+=(255-(.299*r+.587*g+.114*b))*.7+Math.max(0,(r+b)/2-g)}p[xx]=s/(y1-y0)}
+    const sm=new Float32Array(w);for(let xx=0;xx<w;xx++){let s=0,n=0;for(let k=-1;k<=1;k++){const j=xx+k;if(j>=0&&j<w){s+=p[j];n++}}sm[xx]=s/n}
     const sorted=[...sm].sort((a,b)=>a-b);scan.prof={p:sm,bg:sorted[sorted.length>>1]}}
   scan.mode='tap';$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI()}
 $('#cropSkip').addEventListener('click',()=>startTap(scan.src,false));
@@ -1191,7 +1194,9 @@ function win(cx,cy,r){const d=scan.data.data,v=[];const x0=Math.max(0,cx-r|0),x1
   for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const i=(y*scan.w+x)*4;v.push((d[i]+d[i+2])/2-d[i+1])}return v.sort((a,b)=>a-b)}
 function analyse(){const[C,T]=scan.taps;let ci,ti;
   // Line dye is pink/purple: it absorbs green far more than red/blue, so (R+B)/2−G ignores shadows and grey tones.
-  if(scan.prof){const pr=scan.prof.p,bg=scan.prof.bg,at=x=>{const i=Math.round(x);let m=-1e9;for(let k=-2;k<=2;k++){const j=i+k;if(j>=0&&j<scan.w)m=Math.max(m,pr[j])}return m-bg};ci=at(C.x);ti=Math.max(0,at(T.x))}
+  if(scan.prof){const pr=scan.prof.p,bg=scan.prof.bg,at=x=>{const w=scan.w,i=Math.round(x);let m=-1e9;for(let k=-3;k<=3;k++){const j=i+k;if(j>=0&&j<w)m=Math.max(m,pr[j])}
+    const gap=Math.max(4,Math.round(w*.025)),bw=Math.max(12,Math.round(w*.09)),v=[];for(let j=i-bw;j<=i+bw;j++){if(j<0||j>=w||Math.abs(j-i)<gap)continue;v.push(pr[j])}
+    if(!v.length)return m-bg;v.sort((a,b)=>a-b);return m-v[v.length>>1]};ci=at(C.x);ti=Math.max(0,at(T.x))}
   else{const r=Math.max(6,scan.w*.03),top=v=>{const n=Math.max(1,Math.floor(v.length*.12));let s=0;for(let i=v.length-n;i<v.length;i++)s+=v[i];return s/n};
     const bgv=win((C.x+T.x)/2,(C.y+T.y)/2,r*.4),bg=bgv[bgv.length>>1];ci=top(win(C.x,C.y,r))-bg;ti=Math.max(0,top(win(T.x,T.y,r))-bg)}
   if(ci<4){$('#scanOut').innerHTML='<p class="warn">No clear control line found where you tapped. Tap right on it, or crop closer and try again.</p>';return}
