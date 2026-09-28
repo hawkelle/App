@@ -211,6 +211,20 @@ h2.sect{font:500 21px/1.2 var(--serif);margin:28px 0 12px}
 .dotm{width:6px;height:6px;border-radius:50%;background:var(--berry)}
 .dotn{width:6px;height:6px;border-radius:50%;background:var(--muted)}
 .ckey{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.6}
+.stack{border-top:1.5px solid var(--rule)}
+.shead2,.srow{display:grid;grid-template-columns:62px 1fr 44px;gap:10px;align-items:center}
+.shead2{height:22px}.sa0{position:relative;height:100%;flex:1}.sa0 em{position:absolute;transform:translateX(-50%);font:700 11px var(--sans);font-style:normal;color:var(--muted);top:4px}
+.srow{width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:6px 0;color:var(--ink);text-align:left;font:inherit;cursor:pointer}
+.sl{font-size:11.5px;color:var(--muted);line-height:1.25}.sl b{display:block;color:var(--ink);font-size:13px;font-weight:600}
+.tst{position:relative;display:flex;align-items:center;height:30px;border:1.5px solid var(--cell);border-radius:15px;padding:0 11% 0 15%;background:var(--surface)}
+.tst::before{content:"";position:absolute;left:5%;top:9px;bottom:9px;width:6px;border-left:1.5px solid var(--cell);border-right:1.5px solid var(--cell)}
+.tst::after{content:"";position:absolute;right:4%;top:50%;width:6px;height:6px;border-top:1.5px solid var(--cell);border-right:1.5px solid var(--cell);transform:translateY(-50%) rotate(45deg)}
+.tst.ghost{border-color:transparent;background:none;height:20px}.tst.ghost::before,.tst.ghost::after{display:none}
+.sa{position:relative;flex:1;height:14px;overflow:hidden;border-radius:3px;background:var(--surface-2);box-shadow:0 0 0 1px var(--line)}
+.sa img{position:absolute;top:50%;transform:translateY(-50%);height:auto;max-width:none}
+.sa .g{position:absolute;top:0;bottom:0;width:1px;background:var(--ink);opacity:.25}
+.sph img{display:block;width:100%;height:auto;max-height:64px;object-fit:contain;border-radius:4px}
+.sr{font:600 13px var(--sans);text-align:right}.sr.lh-high,.sr.lh-peak{color:var(--teal-strong)}
 .strips{display:flex;gap:10px;overflow-x:auto;padding:4px 0 8px}
 .strips figure{margin:0;flex:none;width:112px}
 .strips img{width:112px;height:150px;object-fit:cover;border-radius:8px;border:1px solid var(--line);display:block;background:var(--surface-2)}
@@ -341,6 +355,10 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 .bbtrow .field{max-width:130px}
 .bbtrow .field[type=time]{max-width:130px}
 .lhrow{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.lhfull{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);margin-bottom:10px;background:var(--surface-2)}
+.lhfull img{display:block;width:100%;height:auto;max-height:120px;object-fit:cover}
+.lhfull .mk{position:absolute;top:0;transform:translateX(-50%);font:700 10px var(--sans);font-style:normal;color:#fff;padding:1px 5px 2px;border-radius:0 0 5px 5px}
+.lhfull .mk.c{background:#e0708f}.lhfull .mk.t{background:#3faea6}
 .lhthumb{width:56px;height:74px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--surface-2)}
 .ratio{font:500 15px var(--sans)}
 .addrow{display:flex;gap:8px;margin-top:10px}
@@ -354,7 +372,17 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 .mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .mhead h4{font:500 21px var(--serif);margin:0}
 .stage{margin:14px 0;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#000}
-.stage canvas{width:100%;display:block;touch-action:manipulation}
+.stage{display:flex;justify-content:center;background:#111}
+.stage canvas{display:block;touch-action:none}
+.mcard.full{max-height:100%;height:100%;border-radius:0;padding-top:calc(env(safe-area-inset-top,0px) + 16px)}
+.rotrow{display:flex;align-items:center;gap:10px;margin:12px 0 2px}
+.rotrow input{flex:1;accent-color:var(--berry);height:30px}
+.rotrow .iconbtn{width:34px;height:34px;font-size:16px}
+#rotVal{font:600 13px var(--sans);min-width:44px;text-align:right;color:var(--muted)}
+#tapBtns{margin-top:10px}
+#cropBtns .rowend{justify-content:center}
+#cropOk{flex-basis:100%;padding:14px;font-size:16px}
+#cropBtns[hidden],#tapBtns[hidden],#scanPick[hidden]{display:none}
 .scanres{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:6px 0 14px}
 .scanres b{font:700 36px/1 var(--serif)}
 .warn{color:var(--berry);font-size:14px}
@@ -435,10 +463,12 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 <div class="modal" id="scanner" role="dialog" aria-modal="true" aria-label="Scan LH strip"><div class="mcard">
   <div class="mhead"><h4>Scan an LH strip</h4><button class="iconbtn" data-close="scanner" aria-label="Close">✕</button></div>
   <p class="hint" id="scanHint"></p>
-  <div style="margin-top:14px"><label class="btn ghost small" style="cursor:pointer">Take or choose photo<input type="file" accept="image/*" id="scanFile" hidden></label></div>
+  <div id="scanPick" style="margin-top:14px"><label class="btn ghost small" style="cursor:pointer">Take or choose photo<input type="file" accept="image/*" id="scanFile" hidden></label></div>
   <div class="stage" id="scanStage" hidden><canvas id="scanCanvas"></canvas></div>
+  <div id="cropBtns" hidden><div class="rotrow"><button class="iconbtn" data-nudge="-0.5" aria-label="Rotate left a little">‹</button><input type="range" id="rotFine" min="-45" max="45" step="0.5" value="0" aria-label="Straighten"><button class="iconbtn" data-nudge="0.5" aria-label="Rotate right a little">›</button><span id="rotVal">0.0°</span></div>
+    <div class="rowend"><button class="btn ghost small" id="cropZoom">Zoom in</button><button class="btn ghost small" id="cropRot">Turn 90°</button><button class="btn ghost small" id="cropSkip">Skip cropping</button><button class="btn small" id="cropOk">Crop</button></div></div>
   <div id="scanOut"></div>
-  <div class="rowend"><button class="btn ghost small" id="scanReset">Redo taps</button><button class="btn small" id="scanSave" disabled>Save to this day</button></div>
+  <div class="rowend" id="tapBtns" hidden><button class="btn ghost small" id="scanReset">Redo taps</button><button class="btn small" id="scanSave" disabled>Save to this day</button></div>
 </div></div>
 
 <div class="modal" id="peek" role="dialog" aria-modal="true" aria-label="Day"><div class="mcard half">
@@ -868,9 +898,14 @@ function renderChart(){
   loadStrips(c,N);
 }
 async function loadStrips(c,N){const items=[];for(let i=0;i<N;i++){const k=addDays(c.start,i),d=state.days[k];if(d&&d.lhPhoto)items.push({k,i,d})}
-  if(!items.length)return;const figs=[];
-  for(const it of items){const src=await DB.get(it.d.lhPhoto);if(src)figs.push(`<figure data-date="${it.k}"><img src="${src}" alt="LH strip ${short(it.k)}"><figcaption><b>Day ${it.i+1}</b>, ${short(it.k)}<br>${it.d.lhRatio!=null?'T/C '+it.d.lhRatio.toFixed(2):''} ${it.d.lh?LABEL.lh[it.d.lh]:''}</figcaption></figure>`)}
-  const w=$('#stripWrap');if(w&&figs.length)w.innerHTML=`<h2 class="sect">LH strips</h2><div class="strips">${figs.join('')}</div>`}
+  if(!items.length)return;const rows=[],figs=[],TP=30,CP=74;
+  for(const it of items){const src=await DB.get(it.d.lhPhoto);if(!src)continue;const d=it.d;
+    if(d.lhCrop&&d.lhC!=null&&d.lhT!=null){let cc=d.lhC,tt=d.lhT,flip=false;if(cc<tt){cc=1-cc;tt=1-tt;flip=true}
+      const gap=cc-tt;let style;if(gap>.04){const dw=(CP-TP)/gap;style=`width:${dw.toFixed(2)}%;left:${(TP-tt*dw).toFixed(2)}%`}else style='width:100%;left:0';
+      rows.push(`<button type="button" class="srow" data-date="${it.k}"><span class="sl"><b>CD ${it.i+1}</b>${short(it.k)}</span><span class="sph"><img src="${src}" alt="LH strip ${short(it.k)}"${flip?' style="transform:rotate(180deg)"':''}></span><span class="sr lh-${d.lh||'neg'}">${d.lhRatio!=null?d.lhRatio.toFixed(2):(d.lh?LABEL.lh[d.lh]:'')}</span></button>`)}
+    else figs.push(`<figure data-date="${it.k}"><img src="${src}" alt="LH strip ${short(it.k)}"><figcaption><b>Day ${it.i+1}</b>, ${short(it.k)}<br>${d.lhRatio!=null?'T/C '+d.lhRatio.toFixed(2):''} ${d.lh?LABEL.lh[d.lh]:''}</figcaption></figure>`)}
+  const w=$('#stripWrap');if(!w||(!rows.length&&!figs.length))return;
+  w.innerHTML=`<h2 class="sect">LH strips</h2>${rows.length?`<div class="stack">${rows.join('')}</div>`:''}${figs.length?`<div class="strips">${figs.join('')}</div>`:''}`}
 
 /* ================= insights & settings ================= */
 function segHTML(key,opts){return`<div class="seg">${opts.map(([v,l])=>`<button data-set="${key}" data-v="${v}" aria-pressed="${state.settings[key]===v}">${l}</button>`).join('')}</div>`}
@@ -962,8 +997,10 @@ function renderLog(){
     else if(s.type==='bbt'){const val=d.bbt!=null?toUnit(d.bbt).toFixed(2):'';
       h+=`<div class="bbtrow"><input class="field" id="bbtIn" inputmode="decimal" autocomplete="off" placeholder="${u==='F'?'97.70':'36.50'}" value="${val}" aria-label="Temperature"><span class="unit">°${u}</span><input class="field" type="time" id="bbtTime" value="${d.bbtTime||''}" aria-label="Time taken"></div>
       <div class="sub">Anything that could throw it off?</div><div class="chips">${BBT_FLAGS.map(([v,l])=>chip('bbtFlags',v,l,'multi')).join('')}</div>`}
-    else if(s.type==='lh'){h+=`<div class="lhrow">${d.lhPhoto?'<img class="lhthumb" id="lhThumb" alt="Strip photo">':''}<button type="button" class="btn ghost small" id="scanBtn">${d.lhPhoto?'Rescan strip':'Scan a strip'}</button>${d.lhRatio!=null?`<span class="ratio">T/C ${d.lhRatio.toFixed(2)}</span>`:''}</div>
-      <div class="chips">${LH_OPTS.map(([v,l])=>chip('lh',v,l,'single','t')).join('')}</div>`}
+    else if(s.type==='lh'){const del=d.lhPhoto?'<button type="button" class="btn ghost small" id="delStrip">Delete photo</button>':'',rt=d.lhRatio!=null?`<span class="ratio">T/C ${d.lhRatio.toFixed(2)}</span>`:'';
+      h+=d.lhPhoto&&d.lhCrop?`<div class="lhfull"><img id="lhThumb" alt="Cropped LH strip">${d.lhC!=null?`<i class="mk c" style="left:${d.lhC*100}%">C</i><i class="mk t" style="left:${d.lhT*100}%">T</i>`:''}</div><div class="lhrow">${rt}<span style="flex:1"></span><button type="button" class="btn ghost small" id="scanBtn">Rescan</button>${del}</div>`
+        :`<div class="lhrow">${d.lhPhoto?'<img class="lhthumb" id="lhThumb" alt="Strip photo">':''}<button type="button" class="btn ghost small" id="scanBtn">${d.lhPhoto?'Rescan strip':'Scan a strip'}</button>${del}${rt}</div>`;
+      h+=`<div class="chips">${LH_OPTS.map(([v,l])=>chip('lh',v,l,'single','t')).join('')}</div>`}
     else if(s.type==='meds')h+=`<div class="chips">${state.settings.meds.map(v=>chip('meds',v,esc(v),'multi')).join('')}</div><div class="addrow"><input class="field" id="medIn" placeholder="Add one, e.g. Vitamin D"><button type="button" class="btn ghost small" id="medAdd">Add</button></div>`;
     else if(s.type==='note')h+=`<textarea class="field" id="noteIn" rows="4" placeholder="Anything else about today">${esc(d.note||'')}</textarea>`;
   }
@@ -979,6 +1016,7 @@ $('#sBody').addEventListener('click',e=>{
     else{const s=new Set(d[f]||[]);s.has(v)?s.delete(v):s.add(v);setField(logDate,f,[...s])}
     $$(`[data-f="${f}"]`,$('#sBody')).forEach(x=>x.setAttribute('aria-pressed',isOn(f,x.dataset.v)));sheetHead();renderStrip();refreshSummaries();return}
   if(e.target.closest('#scanBtn'))openScanner();
+  if(e.target.closest('#delStrip'))deleteStripPhoto();
   if(e.target.closest('#medAdd'))addMed();
 });
 function addMed(){const i=$('#medIn'),v=i.value.trim();if(!v)return;if(!state.settings.meds.includes(v))state.settings.meds.push(v);
@@ -1024,39 +1062,100 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-close]');i
 function askConfirm(msg,ok='OK',danger=false){return new Promise(res=>{$('#confirmMsg').textContent=msg;const y=$('#confirmYes');y.textContent=ok;y.classList.toggle('danger',danger);openModal('confirm');
   const done=v=>{closeModal('confirm');y.onclick=null;$('#confirmNo').onclick=null;res(v)};y.onclick=()=>done(true);$('#confirmNo').onclick=()=>done(false)})}
 
-/* ================= LH strip scanner ================= */
-const scan={data:null,w:0,h:0,taps:[],ratio:null,result:null,thumb:null};
-function scanHint(){const n=scan.taps.length;$('#scanHint').textContent=!scan.data?'Lay the strip on something plain and white, in even daylight with no flash, and get close so the strip fills most of the photo.':
-  n===0?'Tap the control line (C), the one that always appears.':n===1?'Now tap where the test line (T) is, even if it’s faint or blank.':'Check the reading below and adjust it if it looks off.'}
-function openScanner(){Object.assign(scan,{data:null,taps:[],ratio:null,result:null,thumb:null});$('#scanStage').hidden=true;$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanHint();openModal('scanner')}
+/* ================= LH strip scanner: crop, rotate, tap C and T ================= */
+const scan={view:{x:0,y:0,w:1,h:1},fine:0,orig:null,src:null,rot:0,rect:null,mode:'pick',data:null,w:0,h:0,taps:[],ratio:null,result:null,out:null,cropped:false,prof:null,drag:null};
+function scanHint(){const n=scan.taps.length,t={pick:'Lay the strip on something plain and white, in even daylight with no flash, and get close.',
+  crop:'Straighten the strip with the slider so the lines stand upright, then drag the corners around it.',
+  tap:n===0?'Tap the control line (C), the one that always appears.':n===1?'Now tap where the test line (T) is, even if it’s faint or blank.':'Check the reading below and adjust it if it looks off.'}[scan.mode];$('#scanHint').textContent=t}
+function scanUI(){$('#scanner .mcard').classList.toggle('full',scan.mode!=='pick');$('#scanPick').hidden=scan.mode!=='pick'&&scan.mode!=='crop';$('#scanStage').hidden=scan.mode==='pick';$('#cropBtns').hidden=scan.mode!=='crop';$('#tapBtns').hidden=scan.mode!=='tap';scanHint()}
+function openScanner(){Object.assign(scan,{orig:null,src:null,rot:0,rect:null,mode:'pick',data:null,taps:[],ratio:null,result:null,out:null,cropped:false,prof:null});$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();openModal('scanner')}
+function rotated(c,deg){if(!deg)return c;const a=deg*Math.PI/180,cs=Math.abs(Math.cos(a)),sn=Math.abs(Math.sin(a)),o=document.createElement('canvas');
+  o.width=Math.round(c.width*cs+c.height*sn);o.height=Math.round(c.width*sn+c.height*cs);const x=o.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,o.width,o.height);
+  x.translate(o.width/2,o.height/2);x.rotate(a);x.drawImage(c,-c.width/2,-c.height/2);return o}
+function fitCanvas(){const cv=$('#scanCanvas'),st=$('#scanStage'),aw=st.clientWidth||340,ah=Math.max(220,window.innerHeight*(scan.mode==='crop'?.56:.4)),k=Math.min(aw/cv.width,ah/cv.height);
+  cv.style.width=Math.round(cv.width*k)+'px';cv.style.height=Math.round(cv.height*k)+'px'}
+let rotRaf=0;function applyRotation(){scan.src=rotated(scan.orig,scan.rot+scan.fine);$('#rotVal').textContent=(scan.fine>0?'+':'')+scan.fine.toFixed(1)+'°';drawCrop()}
 $('#scanFile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const url=URL.createObjectURL(f),img=new Image();
-  img.onload=()=>{const s=Math.min(1,1400/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.round(img.naturalWidth*s),h=Math.round(img.naturalHeight*s);
-    const cv=$('#scanCanvas');cv.width=w;cv.height=h;const x=cv.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,w,h);
-    scan.data=x.getImageData(0,0,w,h);scan.w=w;scan.h=h;scan.taps=[];
-    const tc=document.createElement('canvas'),ts=Math.min(1,720/Math.max(w,h));tc.width=Math.round(w*ts);tc.height=Math.round(h*ts);tc.getContext('2d').drawImage(cv,0,0,tc.width,tc.height);
-    scan.thumb=tc.toDataURL('image/jpeg',.74);URL.revokeObjectURL(url);$('#scanStage').hidden=false;$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanHint()};
+  img.onload=()=>{const s=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);
+    scan.orig=c;scan.rot=0;scan.fine=0;scan.view={x:0,y:0,w:1,h:1};$('#rotFine').value=0;$('#rotVal').textContent='0.0°';scan.src=c;scan.rect={x:.1,y:.1,w:.8,h:.8};scan.mode='crop';scan.taps=[];$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop()};
   img.onerror=()=>toast('That image couldn’t be opened. Try a JPEG or PNG.');img.src=url});
-function drawScan(){const x=$('#scanCanvas').getContext('2d');x.putImageData(scan.data,0,0);const r=Math.max(9,scan.w*.03);
-  scan.taps.forEach((t,i)=>{x.lineWidth=Math.max(2,scan.w*.005);x.strokeStyle=x.fillStyle=i?'#4fd6cc':'#ff86a8';x.beginPath();x.arc(t.x,t.y,r,0,7);x.stroke();
-    x.font=`700 ${Math.round(r*1.3)}px sans-serif`;x.fillText(i?'T':'C',t.x+r*1.35,t.y+r*.45)})}
-$('#scanCanvas').addEventListener('click',e=>{if(!scan.data||scan.taps.length>=2)return;const r=e.currentTarget.getBoundingClientRect();
-  scan.taps.push({x:(e.clientX-r.left)/r.width*scan.w,y:(e.clientY-r.top)/r.height*scan.h});drawScan();scanHint();if(scan.taps.length===2)analyse()});
-$('#scanReset').addEventListener('click',()=>{if(!scan.data)return;scan.taps=[];scan.ratio=null;scan.result=null;drawScan();scanHint();$('#scanOut').innerHTML='';$('#scanSave').disabled=true});
+function cropGeom(){const c=scan.cv,v=scan.view,r=scan.rect;return{rx:c.pad+(r.x-v.x)/v.w*c.iw,ry:c.pad+(r.y-v.y)/v.h*c.ih,rw:r.w/v.w*c.iw,rh:r.h/v.h*c.ih}}
+function drawCrop(){const cv=$('#scanCanvas'),s=scan.src,v=scan.view,vx=v.x*s.width,vy=v.y*s.height,vw=Math.max(8,v.w*s.width),vh=Math.max(8,v.h*s.height),z=Math.min(3,1400/Math.max(vw,vh));
+  const iw=Math.round(vw*z),ih=Math.round(vh*z),pad=Math.round(Math.max(iw,ih)*.06);scan.cv={iw,ih,pad};
+  cv.width=iw+2*pad;cv.height=ih+2*pad;const x=cv.getContext('2d'),W=cv.width,H=cv.height;x.fillStyle='#111';x.fillRect(0,0,W,H);x.drawImage(s,vx,vy,vw,vh,pad,pad,iw,ih);
+  const{rx,ry,rw,rh}=cropGeom(),u=Math.max(iw,ih)/360;
+  $('#cropZoom').textContent=v.w<1||v.h<1?'Zoom out':'Zoom in';
+  x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,W,ry);x.fillRect(0,ry+rh,W,H-ry-rh);x.fillRect(0,ry,rx,rh);x.fillRect(rx+rw,ry,W-rx-rw,rh);
+  x.strokeStyle=scan.drag?'rgba(255,255,255,.7)':'rgba(255,255,255,.3)';x.lineWidth=Math.max(1,u*.8);
+  for(let k=1;k<3;k++){x.beginPath();x.moveTo(rx+rw*k/3,ry);x.lineTo(rx+rw*k/3,ry+rh);x.moveTo(rx,ry+rh*k/3);x.lineTo(rx+rw,ry+rh*k/3);x.stroke()}
+  x.strokeStyle='#fff';x.lineWidth=Math.max(1,u*1.2);x.strokeRect(rx,ry,rw,rh);
+  const t=Math.max(3,u*3.2),L=Math.min(18*u,rw/2.2,rh/2.2),o=t/2;x.lineWidth=t;x.lineCap='butt';x.beginPath();
+  [[rx,ry,1,1],[rx+rw,ry,-1,1],[rx,ry+rh,1,-1],[rx+rw,ry+rh,-1,-1]].forEach(([a,b,sx,sy])=>{const ax=a-sx*o,by=b-sy*o;x.moveTo(ax,by+sy*L);x.lineTo(ax,by);x.lineTo(ax+sx*L,by)});
+  const E=Math.min(16*u,rw/4,rh/4);x.moveTo(rx+rw/2-E/2,ry-o);x.lineTo(rx+rw/2+E/2,ry-o);x.moveTo(rx+rw/2-E/2,ry+rh+o);x.lineTo(rx+rw/2+E/2,ry+rh+o);
+  x.moveTo(rx-o,ry+rh/2-E/2);x.lineTo(rx-o,ry+rh/2+E/2);x.moveTo(rx+rw+o,ry+rh/2-E/2);x.lineTo(rx+rw+o,ry+rh/2+E/2);x.stroke();fitCanvas()}
+function cropPoint(e){const p=cvPoint(e),cv=$('#scanCanvas'),c=scan.cv,v=scan.view,px=p.x*cv.width,py=p.y*cv.height;return{x:v.x+(px-c.pad)/c.iw*v.w,y:v.y+(py-c.pad)/c.ih*v.h,px,py}}
+function cvPoint(e){const cv=$('#scanCanvas'),b=cv.getBoundingClientRect();return{x:(e.clientX-b.left)/b.width,y:(e.clientY-b.top)/b.height}}
+$('#scanCanvas').addEventListener('pointerdown',e=>{if(scan.mode!=='crop')return;e.preventDefault();const cv=e.currentTarget,p=cropPoint(e),{rx,ry,rw,rh}=cropGeom(),T=30*cv.width/cv.getBoundingClientRect().width;
+  const ix=Math.min(T,rw*.28),iy=Math.min(T,rh*.28),nl=p.px>rx-T&&p.px<rx+ix,nr=p.px<rx+rw+T&&p.px>rx+rw-ix,nt=p.py>ry-T&&p.py<ry+iy,nb=p.py<ry+rh+T&&p.py>ry+rh-iy,inX=p.px>rx-T&&p.px<rx+rw+T,inY=p.py>ry-T&&p.py<ry+rh+T;
+  let k=null;if(inX&&inY){const v=nt?'t':nb?'b':'',h=nl?'l':nr?'r':'';k=v+h||null;if(!k&&p.px>rx&&p.px<rx+rw&&p.py>ry&&p.py<ry+rh)k='move'}
+  if(!k)return;scan.drag={k,sx:p.x,sy:p.y,r:{...scan.rect}};cv.setPointerCapture(e.pointerId);drawCrop()});
+$('#scanCanvas').addEventListener('pointermove',e=>{if(scan.mode!=='crop'||!scan.drag)return;const d=scan.drag,p=cropPoint(e),dx=p.x-d.sx,dy=p.y-d.sy,s=d.r,v=scan.view,cl=(a,lo,hi)=>Math.max(lo,Math.min(hi,a));
+  // keep a comfortable minimum size, so the box never collapses onto a single line
+  const mx=Math.max(.1*v.w,.02),my=Math.max(.1*v.h,.02);let x0=s.x,y0=s.y,x1=s.x+s.w,y1=s.y+s.h;
+  if(d.k==='move'){x0=cl(s.x+dx,0,1-s.w);y0=cl(s.y+dy,0,1-s.h);x1=x0+s.w;y1=y0+s.h}
+  else{if(d.k.includes('l'))x0=cl(s.x+dx,0,x1-mx);if(d.k.includes('r'))x1=cl(s.x+s.w+dx,x0+mx,1);if(d.k.includes('t'))y0=cl(s.y+dy,0,y1-my);if(d.k.includes('b'))y1=cl(s.y+s.h+dy,y0+my,1)}
+  scan.rect={x:x0,y:y0,w:x1-x0,h:y1-y0};drawCrop()});
+$('#scanCanvas').addEventListener('pointerup',()=>{if(scan.drag){scan.drag=null;if(scan.mode==='crop')drawCrop()}});
+$('#scanCanvas').addEventListener('pointercancel',()=>{scan.drag=null});
+$('#cropRot').addEventListener('click',()=>{scan.rot=(scan.rot+90)%360;scan.fine=0;scan.view={x:0,y:0,w:1,h:1};$('#rotFine').value=0;scan.rect={x:.1,y:.1,w:.8,h:.8};applyRotation()});
+$('#cropZoom').addEventListener('click',()=>{const v=scan.view;if(v.w<1||v.h<1){scan.view={x:0,y:0,w:1,h:1}}else{const r=scan.rect,W=scan.src.width,H=scan.src.height;
+    let pw=Math.max(r.w*W,r.h*H*1.2)*1.5/W,ph=Math.max(r.h*H,r.w*W*.6)*1.5/H;pw=Math.min(1,pw);ph=Math.min(1,ph);
+    const cx=r.x+r.w/2,cy=r.y+r.h/2;scan.view={x:Math.max(0,Math.min(1-pw,cx-pw/2)),y:Math.max(0,Math.min(1-ph,cy-ph/2)),w:pw,h:ph}}drawCrop()});
+$('#rotFine').addEventListener('input',e=>{scan.fine=+e.target.value;if(!rotRaf)rotRaf=requestAnimationFrame(()=>{rotRaf=0;applyRotation()})});
+$$('[data-nudge]').forEach(b=>b.addEventListener('click',()=>{scan.fine=Math.max(-45,Math.min(45,scan.fine+ +b.dataset.nudge));$('#rotFine').value=scan.fine;applyRotation()}));
+function startTap(canvas,cropped){const cv=$('#scanCanvas');cv.width=canvas.width;cv.height=canvas.height;const x=cv.getContext('2d',{willReadFrequently:true});x.drawImage(canvas,0,0);
+  fitCanvas();scan.data=x.getImageData(0,0,cv.width,cv.height);scan.w=cv.width;scan.h=cv.height;scan.cropped=cropped;scan.taps=[];scan.out=canvas;scan.prof=null;
+  if(cropped){const d=scan.data.data,w=scan.w,h=scan.h,y0=Math.floor(h*.25),y1=Math.ceil(h*.75),p=new Float32Array(w);
+    for(let xx=0;xx<w;xx++){let s=0;for(let yy=y0;yy<y1;yy++){const i=(yy*w+xx)*4;s+=(d[i]+d[i+2])/2-d[i+1]}p[xx]=s/(y1-y0)}
+    const sm=new Float32Array(w);for(let xx=0;xx<w;xx++){let s=0,n=0;for(let k=-2;k<=2;k++){const j=xx+k;if(j>=0&&j<w){s+=p[j];n++}}sm[xx]=s/n}
+    const sorted=[...sm].sort((a,b)=>a-b);scan.prof={p:sm,bg:sorted[sorted.length>>1]}}
+  scan.mode='tap';$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI()}
+$('#cropSkip').addEventListener('click',()=>startTap(scan.src,false));
+$('#cropOk').addEventListener('click',()=>{const s=scan.src,r=scan.rect,sx=Math.round(r.x*s.width),sy=Math.round(r.y*s.height),sw=Math.max(8,Math.round(r.w*s.width)),sh=Math.max(8,Math.round(r.h*s.height));
+  let c=document.createElement('canvas');c.width=sw;c.height=sh;c.getContext('2d').drawImage(s,sx,sy,sw,sh,0,0,sw,sh);if(sh>sw)c=rotated(c,90);
+  const k=Math.min(1,900/c.width);if(k<1){const o=document.createElement('canvas');o.width=Math.round(c.width*k);o.height=Math.round(c.height*k);o.getContext('2d').drawImage(c,0,0,o.width,o.height);c=o}
+  startTap(c,true)});
+function drawTaps(){const x=$('#scanCanvas').getContext('2d');x.putImageData(scan.data,0,0);const W=scan.w,H=scan.h,bw=Math.max(9,W*.045);
+  scan.taps.forEach((t,i)=>{const col=i?'79,214,204':'255,134,168';x.strokeStyle=`rgb(${col})`;x.lineWidth=Math.max(2,W*.006);
+    const top=scan.cropped?0:Math.max(0,t.y-H*.08),hh=scan.cropped?H:Math.min(H,H*.16);x.strokeRect(t.x-bw/2,top+x.lineWidth/2,bw,hh-x.lineWidth);
+    const fs=Math.max(12,Math.min(W*.04,H*.35));x.font=`700 ${fs}px sans-serif`;x.fillStyle=`rgb(${col})`;x.textAlign='center';
+    const ly=scan.cropped?fs+2:top-4;x.lineWidth=3;x.strokeStyle='rgba(0,0,0,.6)';x.strokeText(i?'T':'C',t.x,ly);x.fillText(i?'T':'C',t.x,ly)})}
+$('#scanCanvas').addEventListener('click',e=>{if(scan.mode!=='tap'||scan.taps.length>=2)return;const p=cvPoint(e);let x=p.x*scan.w,y=p.y*scan.h;
+  if(scan.prof){const r=Math.max(3,Math.round(scan.w*.04)),pr=scan.prof.p;let bx=Math.round(x),bv=-1e9;for(let k=Math.max(0,bx-r);k<=Math.min(scan.w-1,bx+r);k++)if(pr[k]>bv){bv=pr[k];bx=k}
+    if(scan.taps.length===1||bv-scan.prof.bg>4)x=bx}
+  scan.taps.push({x,y});drawTaps();scanHint();if(scan.taps.length===2)analyse()});
+$('#scanReset').addEventListener('click',()=>{if(!scan.data)return;scan.taps=[];scan.ratio=null;scan.result=null;drawTaps();scanHint();$('#scanOut').innerHTML='';$('#scanSave').disabled=true});
 function win(cx,cy,r){const d=scan.data.data,v=[];const x0=Math.max(0,cx-r|0),x1=Math.min(scan.w-1,Math.ceil(cx+r)),y0=Math.max(0,cy-r|0),y1=Math.min(scan.h-1,Math.ceil(cy+r));
   for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const i=(y*scan.w+x)*4;v.push((d[i]+d[i+2])/2-d[i+1])}return v.sort((a,b)=>a-b)}
-function analyse(){
+function analyse(){const[C,T]=scan.taps;let ci,ti;
   // Line dye is pink/purple: it absorbs green far more than red/blue, so (R+B)/2−G ignores shadows and grey tones.
-  const r=Math.max(6,scan.w*.03),[C,T]=scan.taps,top=v=>{const n=Math.max(1,Math.floor(v.length*.12));let s=0;for(let i=v.length-n;i<v.length;i++)s+=v[i];return s/n};
-  const bgv=win((C.x+T.x)/2,(C.y+T.y)/2,r*.4),bg=bgv[bgv.length>>1];
-  const ci=top(win(C.x,C.y,r))-bg,ti=Math.max(0,top(win(T.x,T.y,r))-bg);
-  if(ci<5){$('#scanOut').innerHTML='<p class="warn">No clear control line found where you tapped. Tap right on it, or retake the photo closer and in brighter light.</p>';return}
+  if(scan.prof){const pr=scan.prof.p,bg=scan.prof.bg,at=x=>{const i=Math.round(x);let s=0,n=0;for(let k=-1;k<=1;k++){const j=i+k;if(j>=0&&j<scan.w){s+=pr[j];n++}}return s/n-bg};ci=at(C.x);ti=Math.max(0,at(T.x))}
+  else{const r=Math.max(6,scan.w*.03),top=v=>{const n=Math.max(1,Math.floor(v.length*.12));let s=0;for(let i=v.length-n;i<v.length;i++)s+=v[i];return s/n};
+    const bgv=win((C.x+T.x)/2,(C.y+T.y)/2,r*.4),bg=bgv[bgv.length>>1];ci=top(win(C.x,C.y,r))-bg;ti=Math.max(0,top(win(T.x,T.y,r))-bg)}
+  if(ci<4){$('#scanOut').innerHTML='<p class="warn">No clear control line found where you tapped. Tap right on it, or crop closer and try again.</p>';return}
   const ratio=Math.min(2.5,ti/ci);scan.ratio=Math.round(ratio*100)/100;scan.result=ratio<.3?'neg':ratio<.8?'low':ratio<1?'high':'peak';renderScanOut()}
 function renderScanOut(){$('#scanOut').innerHTML=`<div class="scanres"><div><div class="muted" style="font-size:13px">T/C ratio</div><b>${scan.ratio.toFixed(2)}</b></div>
   <div class="chips">${LH_OPTS.map(([v,l])=>`<button type="button" class="chip t" data-scanres="${v}" aria-pressed="${scan.result===v}">${l}</button>`).join('')}</div></div>
   <p class="hint">Estimated from the photo: under 0.3 negative, up to 0.8 faint, up to 1.0 high, 1.0 or more peak. Lighting affects this, so trust your eyes if they disagree.</p>`;$('#scanSave').disabled=false}
 $('#scanOut').addEventListener('click',e=>{const b=e.target.closest('[data-scanres]');if(b){scan.result=b.dataset.scanres;renderScanOut()}});
-$('#scanSave').addEventListener('click',async()=>{const d=dayData(logDate),id=`photo:${logDate}:${Date.now()}`;await DB.set(id,scan.thumb);if(d.lhPhoto)DB.del(d.lhPhoto);
-  setField(logDate,'lhPhoto',id);setField(logDate,'lhRatio',scan.ratio);setField(logDate,'lh',scan.result);closeModal('scanner');rerenderLog();toast('Strip saved')});
+$('#scanSave').addEventListener('click',async()=>{const d=dayData(logDate),id=`photo:${logDate}:${Date.now()}`;let c=scan.out;
+  if(!scan.cropped){const k=Math.min(1,720/Math.max(c.width,c.height));if(k<1){const o=document.createElement('canvas');o.width=Math.round(c.width*k);o.height=Math.round(c.height*k);o.getContext('2d').drawImage(c,0,0,o.width,o.height);c=o}}
+  await DB.set(id,c.toDataURL('image/jpeg',scan.cropped?.86:.74));if(d.lhPhoto)DB.del(d.lhPhoto);
+  setField(logDate,'lhPhoto',id);setField(logDate,'lhRatio',scan.ratio);setField(logDate,'lh',scan.result);
+  setField(logDate,'lhCrop',scan.cropped||null);setField(logDate,'lhC',scan.cropped?Math.round(scan.taps[0].x/scan.w*1000)/1000:null);setField(logDate,'lhT',scan.cropped?Math.round(scan.taps[1].x/scan.w*1000)/1000:null);
+  closeModal('scanner');rerenderLog();toast('Strip saved')});
+async function deleteStripPhoto(){const d=dayData(logDate);if(!d.lhPhoto)return;if(!await askConfirm('Delete this strip photo? Your LH result stays logged.','Delete photo',true))return;
+  await DB.del(d.lhPhoto);['lhPhoto','lhCrop','lhC','lhT'].forEach(f=>setField(logDate,f,null));rerenderLog();toast('Photo deleted')}
 
 /* ================= backup & import ================= */
 async function exportBackup(){await persist();const photos={};for(const k of await DB.keys())if(k.startsWith('photo:'))photos[k]=await DB.get(k);
