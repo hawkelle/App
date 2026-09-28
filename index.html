@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -49,7 +49,7 @@
 }
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *,*::before,*::after{box-sizing:inherit}
-html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg);touch-action:manipulation;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;padding-bottom:88px;-webkit-tap-highlight-color:transparent}
 body.locked{overflow:hidden}
 button{font-family:inherit;cursor:pointer}
@@ -72,7 +72,7 @@ h2.sect{font:500 21px/1.2 var(--serif);margin:28px 0 12px}
 .ring-wrap circle[data-date]{cursor:pointer}
 .ring-center{position:absolute;inset:18%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
 .ring-center .cdl{font:500 14px var(--sans);color:var(--muted)}
-.ring-center .big{font:700 76px/1 var(--serif);letter-spacing:-.03em;margin:2px 0 6px}
+.ring-center .big{font:700 70px/1 var(--serif);letter-spacing:-.03em;margin:2px 0 6px}
 .ring-center .st{font:600 16px var(--sans)}
 .ring-center .st2{font-size:13px;color:var(--muted);margin-top:4px;max-width:190px}
 .ring-center .empty{font:500 20px/1.3 var(--serif);max-width:180px}
@@ -82,7 +82,28 @@ h2.sect{font:500 21px/1.2 var(--serif);margin:28px 0 12px}
 .btn.danger{background:#c0392b;color:#fff}
 .btn:disabled{opacity:.4}
 .center{text-align:center}
-.logtoday{margin:10px auto 0;display:flex;width:max-content}
+.ringbtns{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.ring-center .big small{font:600 17px var(--sans);color:var(--muted);letter-spacing:0;margin-right:5px}
+.dpo{font:600 13px var(--sans);background:var(--teal-soft);color:var(--teal-ink);border:1px solid var(--teal-strong);border-radius:999px;padding:2px 10px;margin:0 0 6px}
+.ring-wrap .hit{cursor:pointer}
+.ctools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.cg.cmp>div{height:20px}
+.cg.cmp>.lab{font-size:11px;padding:0 4px 0 0}
+.cg.cmp>.bbtl,.cg.cmp>.bbtc{height:160px}
+.cg.cmp>.dayc{justify-content:flex-start;overflow:visible;font-size:9.5px;color:var(--muted)}
+.cg.cmp>.dayc .dn{position:relative;z-index:2;white-space:nowrap}
+.cb{display:block;width:calc(100% - 1px);height:11px;border-radius:2px}
+.cb.lh-neg,.cb.mu-dry{background:var(--line)}
+.cb.lh-low{background:color-mix(in srgb,var(--teal-strong) 35%,transparent)}
+.cb.lh-high{background:color-mix(in srgb,var(--teal-strong) 65%,transparent)}
+.cb.lh-peak,.cb.mu-eggwhite{background:var(--teal-strong)}
+.cb.mu-sticky{background:color-mix(in srgb,var(--teal-strong) 22%,transparent)}
+.cb.mu-creamy{background:color-mix(in srgb,var(--teal-strong) 42%,transparent)}
+.cb.mu-watery{background:color-mix(in srgb,var(--teal-strong) 70%,transparent)}
+.cg.cmp>.tdy{box-shadow:none}
+.cg.cmp>.dayc.tdy{box-shadow:inset 0 -2px 0 var(--ink)}
+.cdt{width:5px;height:5px;border-radius:50%;background:var(--berry)}
+.bbtsvg{cursor:pointer}
 .facts{margin-top:26px;border-top:1.5px solid var(--rule)}
 .fact{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);align-items:baseline}
 .fact .k{font:600 13px var(--sans);color:var(--muted)}
@@ -395,7 +416,7 @@ LABEL.flow=Object.fromEntries(FLOWS.map(f=>[f[0],f[1]]));LABEL.lh=Object.fromEnt
 /* ================= state ================= */
 const DEFAULTS={mode:'auto',cycleLen:32,lutealMode:'auto',lutealLen:13,unit:'C',theme:'auto',meds:[],excluded:[]};
 let state={version:1,days:{},settings:{...DEFAULTS}};
-let model=null, logDate=null, chartIdx=null, calBack=18, openYears=null;
+let model=null, logDate=null, chartIdx=null, chartPin=null, calBack=18, openYears=null;
 const dayData=k=>state.days[k]||{};
 const toUnit=c=>state.settings.unit==='F'?c*9/5+32:c;
 
@@ -470,7 +491,9 @@ let curView='today';const dirty={today:1,cal:1,chart:1,ins:1};
 function renderView(v){if(!dirty[v])return;dirty[v]=0;({today:renderToday,cal:renderCalendar,chart:renderChart,ins:renderInsights})[v]()}
 function showView(v){curView=v;renderView(v);$$('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));$$('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.tab===v));
   window.scrollTo(0,0);if(v==='cal'){requestAnimationFrame(()=>{const el=document.getElementById('m-'+todayKey().slice(0,7));el&&el.scrollIntoView({block:'start'})})}}
-$$('.tab').forEach(t=>t.addEventListener('click',()=>showView(t.dataset.tab)));
+$$('.tab').forEach(t=>t.addEventListener('click',()=>{if(t.dataset.tab==='chart'){chartPin=null;dirty.chart=1}if(t.dataset.tab==='today'&&ringSel){ringSel=null;dirty.today=1}showView(t.dataset.tab)}));
+document.addEventListener('gesturestart',e=>e.preventDefault());
+let rsT=null;window.addEventListener('resize',()=>{clearTimeout(rsT);rsT=setTimeout(()=>{dirty.chart=1;if(curView==='chart')renderView('chart')},150)});
 function renderAll(){$('#headDate').textContent=fmt(todayKey(),{day:'numeric',month:'long'});for(const k in dirty)dirty[k]=1;renderView(curView)}
 
 /* ================= today ================= */
@@ -493,43 +516,51 @@ function daySummary(d){const out=[];
   ['energy','sleep','libido'].forEach(f=>{if(d[f])out.push(`${f[0].toUpperCase()+f.slice(1)}: ${LABEL[f][d[f]].toLowerCase()}`)});
   if(d.preg)out.push('Pregnancy test: '+LABEL.preg[d.preg].toLowerCase());
   (d.meds||[]).forEach(v=>out.push(v));if(d.note)out.push('Note');return out}
-function ringSVG(){
+let ringSel=null;
+function dpoOf(k){const cf=cycleFor(k);if(!cf||!cf.c.ovu)return null;if(cf.c.next&&k>=cf.c.next)return null;const n=diffDays(cf.c.ovu.date,k);return n>0?n:null}
+function ringSVG(sel){
   const m=model,today=todayKey(),C=170,R=146;
-  if(!m.pred){let s='';for(let i=0;i<30;i++){const a=-Math.PI/2+i/30*2*Math.PI;s+=`<circle cx="${C+R*Math.cos(a)}" cy="${C+R*Math.sin(a)}" r="5.5" fill="none" stroke="var(--dot-future)" stroke-width="1.4"/>`}return s}
-  const n=m.pred.ringLen,S=m.cur.start,dr=Math.max(2.6,Math.min(7.5,(2*Math.PI*R/n)*.33));let s='',t='';
+  if(!m.pred){let s='';for(let i=0;i<30;i++){const a=-Math.PI/2+i/30*2*Math.PI;s+=`<circle cx="${C+R*Math.cos(a)}" cy="${C+R*Math.sin(a)}" r="6.5" fill="none" stroke="var(--dot-future)" stroke-width="1.4"/>`}return s}
+  const n=m.pred.ringLen,S=m.cur.start,step=2*Math.PI*R/n,dr=Math.max(3.5,Math.min(10,step*.4));let s='',mark='',hit='';
   for(let i=0;i<n;i++){
-    const a=-Math.PI/2+i/n*2*Math.PI,x=C+R*Math.cos(a),y=C+R*Math.sin(a),k=addDays(S,i),d=state.days[k]||{},mk=m.marks[k]||{},past=k<=today;
+    const a=-Math.PI/2+i/n*2*Math.PI,x=(C+R*Math.cos(a)).toFixed(1),y=(C+R*Math.sin(a)).toFixed(1),k=addDays(S,i),d=state.days[k]||{},mk=m.marks[k]||{},past=k<=today;
     let fill,stroke,r=dr;
     if(d.flow){fill=stroke=`var(${FC[d.flow]})`}
-    else if(mk.ovu){r=dr*1.4;stroke='var(--teal-strong)';fill=mk.ovu==='pred'?'none':'var(--teal-strong)'}
+    else if(mk.ovu){r=dr*1.25;stroke='var(--teal-strong)';fill=mk.ovu==='pred'?'none':'var(--teal-strong)'}
     else if(mk.fert){stroke='var(--teal-strong)';fill=mk.fert==='pred'?'none':'var(--teal)'}
     else{fill=past?'var(--dot-past)':'none';stroke=past?'transparent':'var(--dot-future)'}
-    s+=`<circle data-date="${k}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"><title>${short(k)}</title></circle>`;
-    if(k===today){t=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(r+5).toFixed(1)}" fill="none" stroke="var(--ink)" stroke-width="1.8"/>`;
-}
+    s+=`<circle cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
+    if(k===today)mark+=`<circle cx="${x}" cy="${y}" r="${(r+5).toFixed(1)}" fill="none" stroke="var(--ink)" stroke-width="1.8"/>`;
+    if(k===sel&&sel!==today)mark+=`<circle cx="${x}" cy="${y}" r="${(r+5.5).toFixed(1)}" fill="none" stroke="var(--berry)" stroke-width="2.6"/>`;
+    hit+=`<circle class="hit" data-date="${k}" cx="${x}" cy="${y}" r="${(step/2).toFixed(1)}" fill="transparent"><title>${short(k)}</title></circle>`;
   }
-  return s+t;
+  return s+mark+hit;
 }
 function renderToday(){
-  const m=model,p=m.pred,today=todayKey(),d=dayData(today);
-  let center,facts='';
+  const m=model,p=m.pred,today=todayKey();
+  if(ringSel&&(!p||ringSel<m.cur.start||diffDays(m.cur.start,ringSel)>=p.ringLen))ringSel=null;
+  const sel=ringSel||today,isT=sel===today,d=dayData(sel);let center,facts='';
   if(!p){center=`<div class="empty">Log a period to start your cycle</div>`}
   else{
-    let st2='';const inF=today>=p.fertStart&&today<=p.fertEnd;
-    if(p.ovuKnown&&today>p.fertEnd)st2=m.cur.ovu.basis==='bbt'?'Ovulation confirmed by temperature':'Ovulation estimated from LH peak';
-    else if(inF)st2=p.ovuKnown?'In your fertile window':'Likely fertile window';
-    else if(today<p.fertStart)st2=`Fertile window from ${short(p.fertStart)}`;
-    else st2='Waiting for a temperature shift';
-    center=`<div class="cdl">Cycle day</div><div class="big">${p.cd}</div><div class="st">${statusLine(p)}</div><div class="st2">${st2}</div>`;
-    const summ=daySummary(d);
+    const cd=diffDays(m.cur.start,sel)+1,dpo=dpoOf(sel),mk=m.marks[sel]||{};let st,st2='';
+    if(isT){st=statusLine(p);const inF=today>=p.fertStart&&today<=p.fertEnd;
+      if(p.ovuKnown&&today>p.fertEnd)st2=m.cur.ovu.basis==='bbt'?'Ovulation confirmed by temperature':'Ovulation estimated from LH peak';
+      else if(inF)st2=p.ovuKnown?'In your fertile window':'Likely fertile window';
+      else if(today<p.fertStart)st2=`Fertile window from ${short(p.fertStart)}`;
+      else st2='Waiting for a temperature shift'}
+    else{st=d.flow?`${LABEL.flow[d.flow]} flow`:mk.ovu?(mk.ovu==='pred'?'Predicted ovulation':'Ovulation day'):mk.fert?(mk.fert==='pred'?'Likely fertile':'Fertile window'):mk.pp?'Predicted period':sel>today?'Coming up':'Not fertile';
+      const sm=daySummary(d).filter(x=>!/ flow$/.test(x));st2=sm.length?sm.slice(0,3).join(', ')+(sm.length>3?'…':''):(sel>today?'':'Nothing else logged')}
+    center=`<div class="cdl">${isT?'Today':fmt(sel,{weekday:'short',day:'numeric',month:'short'})}</div><div class="big"><small>CD</small>${cd}</div>${dpo?`<div class="dpo">${dpo} DPO</div>`:''}<div class="st">${st}</div><div class="st2">${esc(st2)}</div>`;
+    const summ=daySummary(dayData(today));
     facts=`<div class="facts">
       <div class="fact"><div class="k">Next period</div><div class="v">${fmt(p.next<today?today:p.next,{weekday:'short',day:'numeric',month:'long'})}${p.late?' or later':''}<small>${basisText(p)}</small></div></div>
       <div class="fact"><div class="k">Fertile window</div><div class="v">${short(p.fertStart)} – ${short(p.fertEnd)}<small>${p.ovuKnown?(m.cur.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${m.cur.ovu.cd}`:`Estimated from your LH peak`):'Predicted, not yet confirmed'}</small></div></div>
       <div class="fact"><div class="k">Today</div><div class="v">${summ.length?`<div class="tags">${summ.map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div>`:'<small style="margin:0">Nothing logged yet</small>'}</div></div>
     </div>`;
   }
-  $('#v-today').innerHTML=`<div class="ring-wrap"><svg viewBox="0 0 340 340" role="img" aria-label="Cycle ring">${ringSVG()}</svg><div class="ring-center">${center}</div></div>
-    <button class="btn logtoday" id="logToday">Log today</button>${facts}
+  $('#v-today').innerHTML=`<div class="ring-wrap"><svg id="ringSvg" viewBox="0 0 340 340" role="img" aria-label="Cycle ring">${ringSVG(sel)}</svg><div class="ring-center">${center}</div></div>
+    <div class="ringbtns"><button class="btn" id="logSel">${isT?'Log today':'Log '+short(sel)}</button>${isT?'':'<button class="btn ghost" id="ringToday">Back to today</button>'}</div>
+    ${p?'<p class="hint center" style="margin-top:8px">Tap a dot to see that day, tap it again to log it.</p>':''}${facts}
     ${!p?`<p class="hint center" style="margin-top:22px">You can also tap the first day of your last period in the calendar, or <button class="linkbtn" id="goImport">import your Clue data</button>.</p>`:''}`;
 }
 
@@ -568,20 +599,21 @@ function renderCalendar(){
 function renderChart(){
   const m=model,el=$('#v-chart');
   if(!m.cycles.length){el.innerHTML=`<h2 class="sect">Cycle chart</h2><p class="muted">Your temperature, LH, mucus, cervix and flow will line up here once you've logged the start of a period.</p>`;return}
-  if(chartIdx==null||chartIdx>=m.cycles.length)chartIdx=m.cycles.length-1;
-  const c=m.cycles[chartIdx],isCur=chartIdx===m.cycles.length-1,today=todayKey(),u=state.settings.unit;
+  let idx=chartPin?m.cycles.findIndex(c=>c.start===chartPin):-1;if(idx<0){idx=m.cycles.length-1;chartPin=null}chartIdx=idx;
+  const c=m.cycles[idx],isCur=idx===m.cycles.length-1,today=todayKey(),u=state.settings.unit,det=!!state.settings.chartDetail;
   const N=Math.min(150,Math.max(1,isCur&&m.pred?Math.max(c.days,diffDays(c.start,m.pred.next)):(c.len||c.days)));
-  const CW=30,W=N*CW,H=190,pt=14,pb=14;
+  const LW=det?78:44,avail=Math.min(560,document.documentElement.clientWidth)-40;
+  const CW=det?30:Math.max(6,Math.floor((avail-LW)/N)),W=N*CW,H=det?190:160,pt=12,pb=12;
   const temps=[];for(let i=0;i<N;i++){const d=state.days[addDays(c.start,i)];if(d&&typeof d.bbt==='number')temps.push({i,v:toUnit(d.bbt),fl:!!(d.bbtFlags&&d.bbtFlags.length)})}
   const step=u==='F'?.2:.1,span=u==='F'?1.2:.7;
   let lo=temps.length?Math.min(...temps.map(t=>t.v))-step:toUnit(36.2),hi=temps.length?Math.max(...temps.map(t=>t.v))+step:toUnit(36.9);
   if(hi-lo<span){const mid=(hi+lo)/2;lo=mid-span/2;hi=mid+span/2}
   lo=Math.floor(lo/step+1e-6)*step;hi=Math.ceil(hi/step-1e-6)*step;
   const yOf=v=>pt+(hi-v)/(hi-lo)*(H-pt-pb),xOf=i=>i*CW+CW/2;
-  let grid='',axis='';const nT=Math.round((hi-lo)/step);
+  let grid='',axis='';const nT=Math.round((hi-lo)/step),AW=det?50:LW;
   for(let j=0;j<=nT;j++){const v=lo+j*step,y=yOf(v).toFixed(1);grid+=`<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;
-    if(j%2===0)axis+=`<text x="44" y="${(+y+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--muted)" font-family="Figtree,sans-serif">${v.toFixed(u==='F'?1:2)}</text>`}
-  const colType=[];let ovuRect='';
+    if(j%2===0)axis+=`<text x="${AW-6}" y="${(+y+3.5).toFixed(1)}" text-anchor="end" font-size="${det?10:9}" fill="var(--muted)" font-family="Figtree,sans-serif">${v.toFixed(u==='F'?1:(det?2:1))}</text>`}
+  const colType=[];let blocks='';
   const BLK={pcol:['var(--f-medium)',.32],'pcol spot':['var(--f-medium)',.16],ppcol:['var(--berry)',.1],fcol:['var(--teal)',.55],'fcol pred':['var(--teal)',.28],ovc:['var(--teal-strong)',.75],'ovc pred':['var(--teal-strong)',.38]};
   for(let i=0;i<N;i++){const k=addDays(c.start,i),d=state.days[k]||{},mk=m.marks[k]||{};let t='';
     if(d.flow)t=d.flow==='spotting'?'pcol spot':'pcol';
@@ -589,38 +621,52 @@ function renderChart(){
     else if(mk.ovu==='pred'&&isCur)t='ovc pred';
     else if(mk.fert)t=mk.fert==='pred'?'fcol pred':'fcol';
     else if(mk.pp&&isCur)t='ppcol';
-    colType[i]=t;if(t){const[f,o]=BLK[t];ovuRect+=`<rect x="${i*CW}" y="0" width="${CW}" height="${H}" fill="${f}" opacity="${o}"/>`}}
+    colType[i]=t;if(t){const[f,o]=BLK[t];blocks+=`<rect x="${i*CW}" y="0" width="${CW}" height="${H}" fill="${f}" opacity="${o}"/>`}}
   let cover='';if(c.ovu&&c.ovu.basis==='bbt'){const y=yOf(toUnit(c.ovu.cover)).toFixed(1);cover=`<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="var(--teal-strong)" stroke-width="1.5" stroke-dasharray="5 4"/>`}
-  const good=temps.filter(t=>!t.fl);const path=good.map((t,j)=>`${j?'L':'M'}${xOf(t.i)},${yOf(t.v).toFixed(1)}`).join('');
-  const pts=temps.map(t=>`<circle cx="${xOf(t.i)}" cy="${yOf(t.v).toFixed(1)}" r="4" fill="${t.fl?'var(--bg)':'var(--berry)'}" stroke="var(--berry)" stroke-width="1.6"/>`).join('');
-  const bbtSvg=`<svg width="${W}" height="${H}" style="display:block">${ovuRect}${grid}${cover}<path d="${path}" fill="none" stroke="var(--berry)" stroke-width="1.8" stroke-linejoin="round"/>${pts}</svg>`;
-  const axisSvg=`<svg width="50" height="${H}">${axis}<text x="4" y="12" font-size="11" fill="var(--muted)" font-family="Figtree,sans-serif">°${u}</text></svg>`;
-  let h=`<div class="cg" style="grid-template-columns:78px repeat(${N},${CW}px)">`;
+  const good=temps.filter(t=>!t.fl),pr=det?4:Math.min(3.5,Math.max(2,CW*.36));
+  const path=good.map((t,j)=>`${j?'L':'M'}${xOf(t.i)},${yOf(t.v).toFixed(1)}`).join('');
+  const pts=temps.map(t=>`<circle cx="${xOf(t.i)}" cy="${yOf(t.v).toFixed(1)}" r="${pr}" fill="${t.fl?'var(--bg)':'var(--berry)'}" stroke="var(--berry)" stroke-width="${det?1.6:1.2}"/>`).join('');
+  const bbtSvg=`<svg class="bbtsvg" data-start="${c.start}" data-cw="${CW}" width="${W}" height="${H}" style="display:block">${blocks}${grid}${cover}<path d="${path}" fill="none" stroke="var(--berry)" stroke-width="${det?1.8:1.4}" stroke-linejoin="round"/>${pts}</svg>`;
+  const axisSvg=`<svg width="${AW}" height="${H}">${axis}${det?`<text x="4" y="10" font-size="11" fill="var(--muted)" font-family="Figtree,sans-serif">°${u}</text>`:''}</svg>`;
+  let h=`<div class="cg${det?'':' cmp'}" style="grid-template-columns:${LW}px repeat(${N},${CW}px)">`;
   const row=(label,fn,extra='')=>{h+=`<div class="lab ${extra}">${label}</div>`;for(let i=0;i<N;i++){const k=addDays(c.start,i),d=state.days[k]||{};
     const cl=['c',extra];if(colType[i])cl.push(colType[i]);if(k===today)cl.push('tdy');if(k>today)cl.push('fut');
     h+=`<div class="${cl.join(' ')}" data-date="${k}">${fn(i,k,d)}</div>`}};
-  row('Cycle day',i=>i+1);
-  row('Date',(i,k)=>{const dt=fromKey(k),dd=dt.getDate();return(dd===1||i===0)?`<span class="mo">${dt.toLocaleDateString(undefined,{month:'short'})}</span>${dd}`:dd},'datec');
-  h+=`<div class="lab bbtl">${axisSvg}</div><div class="bbtc" style="grid-column:span ${N}">${bbtSvg}</div>`;
-  row('LH',(i,k,d)=>d.lh?`<span class="lhc ${d.lh}">${{neg:'–',low:'L',high:'H',peak:'P'}[d.lh]}</span>`:'');
-  row('Mucus',(i,k,d)=>d.mucus?`<span class="muc ${d.mucus}">${{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[d.mucus]}</span>`:'');
-  row('Cervix',(i,k,d)=>{if(!d.cervixPos&&!d.cervixFirm&&!d.cervixOpen)return'';const pk=d.cervixPos==='high'&&d.cervixFirm==='soft';
-    return`<span class="cx ${pk?'peak':''}">${{low:'↓',mid:'–',high:'↑'}[d.cervixPos]||''}<small>${{firm:'F',mid:'M',soft:'S'}[d.cervixFirm]||''}${{closed:'•',mid:'◦',open:'○'}[d.cervixOpen]||''}</small></span>`});
-  row('Flow',(i,k,d)=>d.flow?`<i class="fi" style="--fill:${FILL[d.flow]};--fc:var(${FC[d.flow]});width:15px;height:15px"></i>`:'');
-  row('Sex',(i,k,d)=>d.sex?(d.sex.includes('unprotected')?'<span class="hrt">♥</span>':'<span class="hrt o">♥</span>'):'');
-  row('Pain',(i,k,d)=>d.pain?'<span class="dotm"></span>':'');
-  row('Notes',(i,k,d)=>d.note?'<span class="dotn"></span>':'');
+  const bbtRow=()=>{h+=`<div class="lab bbtl">${axisSvg}</div><div class="bbtc" style="grid-column:span ${N}">${bbtSvg}</div>`};
+  if(det){
+    row('Cycle day',i=>i+1);
+    if(c.ovu)row('DPO',i=>i+1>c.ovu.cd?i+1-c.ovu.cd:'');
+    row('Date',(i,k)=>{const dt=fromKey(k),dd=dt.getDate();return(dd===1||i===0)?`<span class="mo">${dt.toLocaleDateString(undefined,{month:'short'})}</span>${dd}`:dd},'datec');
+    bbtRow();
+    row('LH',(i,k,d)=>d.lh?`<span class="lhc ${d.lh}">${{neg:'–',low:'L',high:'H',peak:'P'}[d.lh]}</span>`:'');
+    row('Mucus',(i,k,d)=>d.mucus?`<span class="muc ${d.mucus}">${{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[d.mucus]}</span>`:'');
+    row('Cervix',(i,k,d)=>{if(!d.cervixPos&&!d.cervixFirm&&!d.cervixOpen)return'';const pk=d.cervixPos==='high'&&d.cervixFirm==='soft';
+      return`<span class="cx ${pk?'peak':''}">${{low:'↓',mid:'–',high:'↑'}[d.cervixPos]||''}<small>${{firm:'F',mid:'M',soft:'S'}[d.cervixFirm]||''}${{closed:'•',mid:'◦',open:'○'}[d.cervixOpen]||''}</small></span>`});
+    row('Flow',(i,k,d)=>d.flow?`<i class="fi" style="--fill:${FILL[d.flow]};--fc:var(${FC[d.flow]});width:15px;height:15px"></i>`:'');
+    row('Sex',(i,k,d)=>d.sex?(d.sex.includes('unprotected')?'<span class="hrt">♥</span>':'<span class="hrt o">♥</span>'):'');
+    row('Pain',(i,k,d)=>d.pain?'<span class="dotm"></span>':'');
+    row('Notes',(i,k,d)=>d.note?'<span class="dotn"></span>':'');
+  }else{
+    row('Day',i=>(i===0||(i+1)%5===0)?`<span class="dn">${i+1}</span>`:'','dayc');
+    bbtRow();
+    row('LH',(i,k,d)=>d.lh?`<i class="cb lh-${d.lh}"></i>`:'');
+    row('Mucus',(i,k,d)=>d.mucus?`<i class="cb mu-${d.mucus}"></i>`:'');
+    row('Flow',(i,k,d)=>d.flow?`<i class="cb" style="background:var(${FC[d.flow]})"></i>`:'');
+    row('Sex',(i,k,d)=>d.sex?'<i class="cdt"></i>':'');
+  }
   h+='</div>';
   const title=isCur?'Current cycle':`Cycle of ${fmt(c.start,{month:'long',year:'numeric'})}`;
-  const sub=isCur?`Started ${short(c.start)}, day ${c.days}`:`${short(c.start)} – ${short(addDays(c.next,-1))}, ${c.len} days`;
+  const dpoNow=isCur?dpoOf(today):null;
+  const sub=isCur?`Started ${short(c.start)}, day ${c.days}${dpoNow?`, ${dpoNow} DPO`:''}`:`${short(c.start)} – ${short(addDays(c.next,-1))}, ${c.len} days`;
   const ovTxt=c.ovu?(c.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${c.ovu.cd} by the temperature shift. The dashed line is your coverline.`:`Ovulation estimated on cycle day ${c.ovu.cd}, the day after your LH peak.`):'No ovulation detected yet in this cycle.';
-  el.innerHTML=`<div class="cnav"><button class="iconbtn" data-cnav="-1" ${chartIdx===0?'disabled':''} aria-label="Earlier cycle">‹</button><div class="t"><b>${title}</b><span>${sub}</span></div><button class="iconbtn" data-cnav="1" ${isCur?'disabled':''} aria-label="Later cycle">›</button></div>
+  el.innerHTML=`<div class="cnav"><button class="iconbtn" data-cnav="-1" ${idx===0?'disabled':''} aria-label="Earlier cycle">‹</button><div class="t"><b>${title}</b><span>${sub}</span></div><button class="iconbtn" data-cnav="1" ${isCur?'disabled':''} aria-label="Later cycle">›</button></div>
     <div class="cscroll" id="cscroll">${h}</div>
     <div class="ckeyrow"><span><i style="background:color-mix(in srgb,var(--f-medium) 45%,transparent)"></i>Period</span><span><i style="background:color-mix(in srgb,var(--teal) 70%,transparent)"></i>Fertile window</span><span><i style="background:var(--teal-strong)"></i>Ovulation</span>${isCur?'<span><i style="background:color-mix(in srgb,var(--teal) 30%,transparent)"></i>Predicted</span>':''}</div>
-    ${c.complete?`<div style="margin-top:12px"><button class="chip ${c.excluded?'':'t'}" data-excl="${c.start}" aria-pressed="${!c.excluded}">${c.excluded?'Left out of predictions, tap to count it':'Counted in predictions, tap to leave out'}</button></div>`:''}
-    <p class="ckey">${ovTxt} Hollow temperatures are flagged (poor sleep, alcohol…) and left out of detection. Mucus: D dry, S sticky, C creamy, W watery, E egg white. Cervix: ↑ high, ↓ low, S soft, F firm, ○ open, • closed. Tap any column to edit that day.</p>
+    <div class="ctools"><button class="btn ghost small" data-chartmode>${det?'Show compact chart':'Show details'}</button>
+    ${c.complete?`<button class="chip ${c.excluded?'':'t'}" data-excl="${c.start}" aria-pressed="${!c.excluded}">${c.excluded?'Left out of predictions':'Counted in predictions'}</button>`:''}</div>
+    ${det?`<p class="ckey">${ovTxt} Hollow temperatures are flagged (poor sleep, alcohol…) and left out of detection. Mucus: D dry, S sticky, C creamy, W watery, E egg white. Cervix: ↑ high, ↓ low, S soft, F firm, ○ open, • closed. Tap any column to edit that day.</p>`:`<p class="ckey">${ovTxt} Temperatures in °${u}. Tap anywhere on the chart to open that day.</p>`}
     <div id="stripWrap"></div>`;
-  if(isCur){const sc=$('#cscroll');const ti=diffDays(c.start,today);sc.scrollLeft=Math.max(0,ti*CW-sc.clientWidth/2)}
+  if(isCur&&det){const sc=$('#cscroll');const ti=diffDays(c.start,today);sc.scrollLeft=Math.max(0,ti*CW-sc.clientWidth/2)}
   loadStrips(c,N);
 }
 async function loadStrips(c,N){const items=[];for(let i=0;i<N;i++){const k=addDays(c.start,i),d=state.days[k];if(d&&d.lhPhoto)items.push({k,i,d})}
@@ -665,7 +711,7 @@ function renderInsights(){
 }
 $('#v-ins').addEventListener('click',async e=>{
   const s=e.target.closest('[data-set]');if(s){state.settings[s.dataset.set]=s.dataset.v;if(s.dataset.set==='theme')applyTheme();save();renderAll();return}
-  const r=e.target.closest('[data-cycle]');if(r){chartIdx=+r.dataset.cycle;dirty.chart=1;showView('chart');return}
+  const r=e.target.closest('[data-cycle]');if(r){const i=+r.dataset.cycle;chartPin=i===model.cycles.length-1?null:model.cycles[i].start;dirty.chart=1;showView('chart');return}
   const a=e.target.closest('[data-act]');if(!a)return;
   if(a.dataset.act==='import')$('#importFile').click();
   if(a.dataset.act==='export')exportBackup();
@@ -675,7 +721,11 @@ $('#v-ins').addEventListener('click',async e=>{
 $('#v-ins').addEventListener('toggle',e=>{const d=e.target;if(!d.matches||!d.matches('details.yr')||!openYears)return;d.open?openYears.add(d.dataset.year):openYears.delete(d.dataset.year)},true);
 $('#v-ins').addEventListener('change',e=>{const n=e.target.closest('[data-num]');if(!n)return;const f=n.dataset.num,[lo,hi]=f==='cycleLen'?[18,90]:[7,18];
   let v=Math.round(+n.value);if(!isFinite(v))v=DEFAULTS[f];v=Math.min(hi,Math.max(lo,v));state.settings[f]=v;save();renderAll()});
-$('#v-chart').addEventListener('click',e=>{const b=e.target.closest('[data-cnav]');if(b){chartIdx+= +b.dataset.cnav;renderChart()}});
+$('#v-chart').addEventListener('click',e=>{
+  const b=e.target.closest('[data-cnav]');if(b){const ni=chartIdx+ +b.dataset.cnav;chartPin=ni===model.cycles.length-1?null:model.cycles[ni].start;renderChart();return}
+  if(e.target.closest('[data-chartmode]')){state.settings.chartDetail=!state.settings.chartDetail;save();renderChart();return}
+  const sv=e.target.closest('.bbtsvg');if(sv){const r=sv.getBoundingClientRect(),i=Math.floor((e.clientX-r.left)/+sv.dataset.cw);openLog(addDays(sv.dataset.start,Math.max(0,i)))}
+});
 
 /* ================= log sheet ================= */
 const isOn=(f,v)=>{const x=dayData(logDate)[f];return Array.isArray(x)?x.includes(v):x===v};
@@ -683,7 +733,7 @@ const chip=(f,v,label,mode,cls='')=>`<button type="button" class="chip ${cls}" d
 function openLog(k){logDate=k;renderLog();$('#sheet').classList.add('open');document.body.classList.add('locked');$('#sBody').scrollTop=0}
 function closeLog(){$('#sheet').classList.remove('open');document.body.classList.remove('locked');persist();renderAll()}
 function sheetHead(){const k=logDate,t=todayKey();$('#sDate').textContent=fmt(k,{weekday:'long',day:'numeric',month:'long'});
-  const cf=cycleFor(k);const bits=[];if(k===t)bits.push('Today');if(cf&&(!cf.c.next||k<cf.c.next))bits.push('Cycle day '+(diffDays(cf.c.start,k)+1));$('#sSub').textContent=bits.join(', ')}
+  const cf=cycleFor(k);const bits=[];if(k===t)bits.push('Today');if(cf&&(!cf.c.next||k<cf.c.next))bits.push('Cycle day '+(diffDays(cf.c.start,k)+1));const dp=dpoOf(k);if(dp)bits.push(dp+' DPO');$('#sSub').textContent=bits.join(', ')}
 function renderLog(){
   const d=dayData(logDate),u=state.settings.unit;sheetHead();let h='<div class="inner">',open=false;
   for(const s of SECTIONS){
@@ -731,7 +781,9 @@ $('#sNext').addEventListener('click',()=>{flushInputs();logDate=addDays(logDate,
 
 /* open log from anywhere a date is tapped */
 $('#views').addEventListener('click',e=>{
-  if(e.target.closest('#logToday'))return openLog(todayKey());
+  const hit=e.target.closest('#ringSvg [data-date]');if(hit){const k=hit.getAttribute('data-date');if(k===(ringSel||todayKey()))openLog(k);else{ringSel=k;renderToday()}return}
+  if(e.target.closest('#logSel'))return openLog(ringSel||todayKey());
+  if(e.target.closest('#ringToday')){ringSel=null;renderToday();return}
   if(e.target.closest('#calMore')){const h0=document.documentElement.scrollHeight,y0=window.scrollY;calBack+=24;renderCalendar();window.scrollTo(0,y0+document.documentElement.scrollHeight-h0);return}
   const xb=e.target.closest('[data-excl]');if(xb){const st=xb.dataset.excl,S=state.settings,set=new Set(S.excluded||[]);const was=set.has(st);was?set.delete(st):set.add(st);S.excluded=[...set];save();renderAll();toast(was?'Cycle counted in predictions again':'Cycle left out of predictions');return}
   if(e.target.closest('#goImport')){showView('ins');requestAnimationFrame(()=>$('#dataSec')?.scrollIntoView());return}
