@@ -342,6 +342,7 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 .tagbtn:active{transform:scale(.96)}
 .tag.t{background:var(--teal-soft);border-color:var(--teal-strong)}
 .tag.o{background:transparent;border-style:dashed}
+.pkph{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.pkph img{height:56px;border-radius:6px;border:1px solid var(--line);background:var(--surface-2)}.pkph img.wide{height:32px;max-width:100%}
 .pknote{white-space:pre-wrap;margin:14px 0 0;font-size:15px;line-height:1.5;border-left:3px solid var(--line);padding-left:12px}
 .sec .sv{flex:1;min-width:0;text-align:right;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sec>summary>svg{flex:none;color:var(--muted);transition:transform .2s}
@@ -359,6 +360,13 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 .lhfull img{display:block;width:100%;height:auto;max-height:120px;object-fit:cover}
 .lhfull .mk{position:absolute;top:0;transform:translateX(-50%);font:700 10px var(--sans);font-style:normal;color:#fff;padding:1px 5px 2px;border-radius:0 0 5px 5px}
 .lhfull .mk.c{background:#e0708f}.lhfull .mk.t{background:#3faea6}
+.tcard{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px;background:var(--surface)}
+.tcard .lhfull{margin-bottom:8px}
+.trow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.trow .ttime{width:112px;padding:7px 10px;font-size:16px}
+.trow .btn.small{padding:7px 11px;font-size:13px}
+.addrow2{display:flex;gap:8px;flex-wrap:wrap}
+.addrow2 .ico{width:16px;height:16px;margin-right:2px}
 .lhthumb{width:56px;height:74px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--surface-2)}
 .ratio{font:500 15px var(--sans)}
 .addrow{display:flex;gap:8px;margin-top:10px}
@@ -468,7 +476,7 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
   <div id="cropBtns" hidden><div class="rotrow"><button class="iconbtn" data-nudge="-0.5" aria-label="Rotate left a little">‹</button><input type="range" id="rotFine" min="-45" max="45" step="0.5" value="0" aria-label="Straighten"><button class="iconbtn" data-nudge="0.5" aria-label="Rotate right a little">›</button><span id="rotVal">0.0°</span></div>
     <div class="rowend"><button class="btn ghost small" id="cropZoom">Zoom in</button><button class="btn ghost small" id="cropRot">Turn 90°</button><button class="btn ghost small" id="cropSkip">Skip cropping</button><button class="btn small" id="cropOk">Crop</button></div></div>
   <div id="scanOut"></div>
-  <div class="rowend" id="tapBtns" hidden><button class="btn ghost small" id="scanReset">Redo taps</button><button class="btn small" id="scanSave" disabled>Save to this day</button></div>
+  <div class="rowend" id="tapBtns" hidden><button class="btn ghost small" id="scanRecrop">Redo crop</button><button class="btn ghost small" id="scanReset">Redo taps</button><button class="btn small" id="scanSave" disabled>Save to this day</button></div>
 </div></div>
 
 <div class="modal" id="peek" role="dialog" aria-modal="true" aria-label="Day"><div class="mcard half">
@@ -521,12 +529,13 @@ const FILL=Object.fromEntries(FLOWS.map(f=>[f[0],f[2]]));
 const FC={spotting:'--f-spot',light:'--f-light',medium:'--f-medium',heavy:'--f-heavy'};
 const BLEED=new Set(['light','medium','heavy']);
 const LH_OPTS=[['neg','Negative'],['low','Faint'],['high','High'],['peak','Peak']];
+const PREG_OPTS=[['neg','Negative'],['faint','Faint line'],['pos','Positive']];
 const BBT_FLAGS=[['excluded','Ignore this one'],['sleep','Poor sleep'],['alcohol','Alcohol'],['sick','Sick'],['time','Different time'],['travel','Travel'],['stress','Stress']];
 const SECTIONS=[
  {key:'flow',title:'Flow',type:'flow'},
  {key:'bbt',title:'Temperature',type:'bbt'},
  {key:'lh',title:'Tests',label:'Ovulation test (LH)',type:'lh'},
- {key:'preg',label:'Pregnancy test',type:'single',cls:'t',opts:[['neg','Negative'],['faint','Faint line'],['pos','Positive']]},
+ {key:'preg',label:'Pregnancy test',type:'preg'},
  {key:'mucus',title:'Mucus and cervix',label:'Cervical mucus',type:'single',cls:'t',opts:[['dry','Dry'],['sticky','Sticky'],['creamy','Creamy'],['watery','Watery'],['eggwhite','Egg white']]},
  {key:'mucusColor',label:'Mucus colour',type:'single',cls:'t',opts:[['clear','Clear'],['white','White'],['yellow','Yellowish'],['pink','Pinkish'],['brown','Brownish']]},
  {key:'cervixPos',label:'Cervix position',type:'single',cls:'t',opts:[['low','Low'],['mid','Medium'],['high','High']]},
@@ -549,7 +558,7 @@ const SEC_ICON={Flow:'flow',Temperature:'bbt',Tests:'lh','Mucus and cervix':'muc
 const ICON={flow:['drop','cp'],pms:['cloud','cb'],pain:['zap','cp'],ovu:['egg','cf'],lh:['eggo','cf'],bbt:['thermo','cf'],mucus:['wave','cf'],cervix:['cervix','cf'],preg:['stick','cf'],sex:['heart','ci'],libido:['flame','ci'],mood:['face','cb'],energy:['battery','cb'],sleep:['moon','cb'],digestion:['swirl','cb'],skin:['sparkle','cb'],cravings:['cookie','cb'],meds:['pill','cb'],note:['lines','cb']};
 const ic=(k,extra='')=>{const[n,c]=ICON[k]||['lines','cb'];return`<svg class="ico ${c} ${extra}" viewBox="0 0 24 24" aria-hidden="true"><use href="#${n==='cloud'?'cloud':'i-'+n}"/></svg>`};
 const LABEL={};SECTIONS.forEach(s=>{if(s.opts)LABEL[s.key]=Object.fromEntries(s.opts)});
-LABEL.flow=Object.fromEntries(FLOWS.map(f=>[f[0],f[1]]));LABEL.lh=Object.fromEntries(LH_OPTS);
+LABEL.flow=Object.fromEntries(FLOWS.map(f=>[f[0],f[1]]));LABEL.preg=Object.fromEntries(PREG_OPTS);LABEL.lh=Object.fromEntries(LH_OPTS);
 
 /* ================= state ================= */
 const DEFAULTS={openSecs:['Flow','Temperature','Tests','Mucus and cervix'],mode:'auto',cycleLen:32,lutealMode:'auto',lutealLen:13,unit:'C',theme:'auto',meds:[],excluded:[]};
@@ -648,7 +657,7 @@ function basisText(p){const m=model;return{
 function dayTags(d){const out=[],t=(k,txt,v)=>out.push({k,txt,v});
   if(d.flow)t('flow',LABEL.flow[d.flow]+' flow',d.flow);
   if(d.bbt!=null)t('bbt',toUnit(d.bbt).toFixed(2)+'°'+state.settings.unit);
-  if(d.lh)t('lh','LH '+LABEL.lh[d.lh].toLowerCase(),d.lh);
+  if(d.lh)t('lh','LH '+LABEL.lh[d.lh].toLowerCase()+((d.lhTests||[]).length>1?`, ${d.lhTests.length} tests`:''),d.lh);
   if(d.preg)t('preg','Pregnancy test '+LABEL.preg[d.preg].toLowerCase(),d.preg);
   if(d.mucus)t('mucus',LABEL.mucus[d.mucus]+' mucus',d.mucus);
   if(d.cervixPos)t('cervix','Cervix '+LABEL.cervixPos[d.cervixPos].toLowerCase(),d.cervixPos);
@@ -897,15 +906,17 @@ function renderChart(){
   if(isCur&&det){const sc=$('#cscroll');const ti=diffDays(c.start,today);sc.scrollLeft=Math.max(0,ti*CW-sc.clientWidth/2)}
   loadStrips(c,N);
 }
-async function loadStrips(c,N){const items=[];for(let i=0;i<N;i++){const k=addDays(c.start,i),d=state.days[k];if(d&&d.lhPhoto)items.push({k,i,d})}
-  if(!items.length)return;const rows=[],figs=[],TP=30,CP=74;
-  for(const it of items){const src=await DB.get(it.d.lhPhoto);if(!src)continue;const d=it.d;
-    if(d.lhCrop&&d.lhC!=null&&d.lhT!=null){let cc=d.lhC,tt=d.lhT,flip=false;if(cc<tt){cc=1-cc;tt=1-tt;flip=true}
-      const gap=cc-tt;let style;if(gap>.04){const dw=(CP-TP)/gap;style=`width:${dw.toFixed(2)}%;left:${(TP-tt*dw).toFixed(2)}%`}else style='width:100%;left:0';
-      rows.push(`<button type="button" class="srow" data-date="${it.k}"><span class="sl"><b>CD ${it.i+1}</b>${short(it.k)}</span><span class="sph"><img src="${src}" alt="LH strip ${short(it.k)}"${flip?' style="transform:rotate(180deg)"':''}></span><span class="sr lh-${d.lh||'neg'}">${d.lhRatio!=null?d.lhRatio.toFixed(2):(d.lh?LABEL.lh[d.lh]:'')}</span></button>`)}
-    else figs.push(`<figure data-date="${it.k}"><img src="${src}" alt="LH strip ${short(it.k)}"><figcaption><b>Day ${it.i+1}</b>, ${short(it.k)}<br>${d.lhRatio!=null?'T/C '+d.lhRatio.toFixed(2):''} ${d.lh?LABEL.lh[d.lh]:''}</figcaption></figure>`)}
-  const w=$('#stripWrap');if(!w||(!rows.length&&!figs.length))return;
-  w.innerHTML=`<h2 class="sect">LH strips</h2>${rows.length?`<div class="stack">${rows.join('')}</div>`:''}${figs.length?`<div class="strips">${figs.join('')}</div>`:''}`}
+async function loadStrips(c,N){const out={lhTests:{rows:[],figs:[]},pregTests:{rows:[],figs:[]}};
+  for(let i=0;i<N;i++){const k=addDays(c.start,i),d=state.days[k];if(!d)continue;
+    for(const key of['lhTests','pregTests'])for(const t of[...(d[key]||[])].sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'))){if(!t.photo)continue;const src=await DB.get(t.photo);if(!src)continue;
+      const lab=key==='pregTests'?LABEL.preg:LABEL.lh,val=t.ratio!=null?t.ratio.toFixed(2):(t.result?lab[t.result]:''),hi=key==='pregTests'?t.result==='pos':(t.result==='high'||t.result==='peak');
+      if(t.crop&&t.c!=null&&t.t!=null){const flip=t.c<t.t;
+        out[key].rows.push(`<button type="button" class="srow" data-date="${k}"><span class="sl"><b>CD ${i+1}</b>${short(k)}${t.time?`<br>${t.time}`:''}</span><span class="sph"><img src="${src}" alt="Test ${short(k)}"${flip?' style="transform:rotate(180deg)"':''}></span><span class="sr${hi?' lh-high':''}">${val}</span></button>`)}
+      else out[key].figs.push(`<figure data-date="${k}"><img src="${src}" alt="Test ${short(k)}"><figcaption><b>Day ${i+1}</b>, ${short(k)}${t.time?' '+t.time:''}<br>${val}</figcaption></figure>`)}}
+  const w=$('#stripWrap');if(!w)return;let h='';
+  for(const[key,title]of[['lhTests','LH strips'],['pregTests','Pregnancy tests']]){const o=out[key];if(!o.rows.length&&!o.figs.length)continue;
+    h+=`<h2 class="sect">${title}</h2>${o.rows.length?`<div class="stack">${o.rows.join('')}</div>`:''}${o.figs.length?`<div class="strips">${o.figs.join('')}</div>`:''}`}
+  w.innerHTML=h}
 
 /* ================= insights & settings ================= */
 function segHTML(key,opts){return`<div class="seg">${opts.map(([v,l])=>`<button data-set="${key}" data-v="${v}" aria-pressed="${state.settings[key]===v}">${l}</button>`).join('')}</div>`}
@@ -997,26 +1008,39 @@ function renderLog(){
     else if(s.type==='bbt'){const val=d.bbt!=null?toUnit(d.bbt).toFixed(2):'';
       h+=`<div class="bbtrow"><input class="field" id="bbtIn" inputmode="decimal" autocomplete="off" placeholder="${u==='F'?'97.70':'36.50'}" value="${val}" aria-label="Temperature"><span class="unit">°${u}</span><input class="field" type="time" id="bbtTime" value="${d.bbtTime||''}" aria-label="Time taken"></div>
       <div class="sub">Anything that could throw it off?</div><div class="chips">${BBT_FLAGS.map(([v,l])=>chip('bbtFlags',v,l,'multi')).join('')}</div>`}
-    else if(s.type==='lh'){const del=d.lhPhoto?'<button type="button" class="btn ghost small" id="delStrip">Delete photo</button>':'',rt=d.lhRatio!=null?`<span class="ratio">T/C ${d.lhRatio.toFixed(2)}</span>`:'';
-      h+=d.lhPhoto&&d.lhCrop?`<div class="lhfull"><img id="lhThumb" alt="Cropped LH strip">${d.lhC!=null?`<i class="mk c" style="left:${d.lhC*100}%">C</i><i class="mk t" style="left:${d.lhT*100}%">T</i>`:''}</div><div class="lhrow">${rt}<span style="flex:1"></span><button type="button" class="btn ghost small" id="scanBtn">Rescan</button>${del}</div>`
-        :`<div class="lhrow">${d.lhPhoto?'<img class="lhthumb" id="lhThumb" alt="Strip photo">':''}<button type="button" class="btn ghost small" id="scanBtn">${d.lhPhoto?'Rescan strip':'Scan a strip'}</button>${del}${rt}</div>`;
-      h+=`<div class="chips">${LH_OPTS.map(([v,l])=>chip('lh',v,l,'single','t')).join('')}</div>`}
+    else if(s.type==='lh'||s.type==='preg')h+=testsHTML(s.type,d);
     else if(s.type==='meds')h+=`<div class="chips">${state.settings.meds.map(v=>chip('meds',v,esc(v),'multi')).join('')}</div><div class="addrow"><input class="field" id="medIn" placeholder="Add one, e.g. Vitamin D"><button type="button" class="btn ghost small" id="medAdd">Add</button></div>`;
     else if(s.type==='note')h+=`<textarea class="field" id="noteIn" rows="4" placeholder="Anything else about today">${esc(d.note||'')}</textarea>`;
   }
   $('#sBody').innerHTML=h+'</div></details></div>';
-  if(d.lhPhoto)DB.get(d.lhPhoto).then(src=>{const im=$('#lhThumb');if(im&&src)im.src=src});
+  $$('img[data-photo]',$('#sBody')).forEach(im=>DB.get(im.dataset.photo).then(src=>{if(src)im.src=src}));
 }
+function testsHTML(kind,d){const key=kind==='preg'?'pregTests':'lhTests',opts=kind==='preg'?PREG_OPTS:LH_OPTS,lbl=kind==='preg'?'Line':'T/C';
+  const L=[...(d[key]||[])].sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'));let h='';
+  for(const t of L){const mk=t.crop&&t.c!=null?`<i class="mk c" style="left:${t.c*100}%">C</i><i class="mk t" style="left:${t.t*100}%">T</i>`:'';
+    h+=`<div class="tcard" data-kind="${kind}" data-tid="${t.id}">${t.photo&&t.crop?`<div class="lhfull"><img data-photo="${t.photo}" alt="Cropped test photo">${mk}</div>`:''}
+      <div class="trow">${t.photo&&!t.crop?`<img class="lhthumb" data-photo="${t.photo}" alt="Test photo">`:''}<input class="field ttime" type="time" value="${t.time||''}" aria-label="Time taken">${t.ratio!=null?`<span class="ratio">${lbl} ${t.ratio.toFixed(2)}</span>`:''}<span style="flex:1"></span>
+      <button type="button" class="btn ghost small" data-tact="scan">${t.photo?'Rescan':'Add photo'}</button><button type="button" class="btn ghost small" data-tact="del">Delete</button></div>
+      <div class="chips">${opts.map(([v,l])=>`<button type="button" class="chip t" data-tres="${v}" aria-pressed="${t.result===v}">${l}</button>`).join('')}</div></div>`}
+  return h+`<div class="addrow2"><button type="button" class="btn ghost small" data-add="${kind}-scan">${ic(kind==='preg'?'preg':'lh')}${L.length?'Scan another':kind==='preg'?'Scan a test':'Scan a strip'}</button><button type="button" class="btn ghost small" data-add="${kind}-manual">Add without photo</button></div>`}
+function testList(kind){const key=kind==='preg'?'pregTests':'lhTests';return{key,list:(dayData(logDate)[key]||[]).map(t=>({...t}))}}
+async function handleTest(b){
+  if(b.dataset.add){const[kind,how]=b.dataset.add.split('-');if(how==='scan')return openScanner(kind,null);const{key,list}=testList(kind);list.push({id:newId(),time:logDate===todayKey()?nowHM():null,result:null});setField(logDate,key,list);syncTests(logDate);return rerenderLog()}
+  const card=b.closest('.tcard'),kind=card.dataset.kind,{key,list}=testList(kind),t=list.find(x=>x.id===card.dataset.tid);if(!t)return;
+  if(b.dataset.tres){t.result=t.result===b.dataset.tres?null:b.dataset.tres;setField(logDate,key,list);syncTests(logDate);return rerenderLog()}
+  if(b.dataset.tact==='scan')return openScanner(kind,t.id);
+  if(b.dataset.tact==='del'){const c=t.photo?await askChoice('Delete this test? You can keep its result and remove only the photo.','Photo only','Whole test'):(await askConfirm('Delete this test?','Delete',true)?'all':null);if(!c)return;
+    if(t.photo)await DB.del(t.photo);if(c==='all')list.splice(list.indexOf(t),1);else Object.assign(t,{photo:null,crop:null,c:null,t:null});
+    setField(logDate,key,list);syncTests(logDate);rerenderLog();toast(c==='all'?'Test deleted':'Photo deleted')}}
 function rerenderLog(){const st=$('#sBody').scrollTop;renderLog();$('#sBody').scrollTop=st}
 $('#sBody').addEventListener('toggle',e=>{const el=e.target;if(!el.matches||!el.matches('details.sec'))return;const set=new Set(state.settings.openSecs||[]);el.open?set.add(el.dataset.sec):set.delete(el.dataset.sec);state.settings.openSecs=[...set];clearTimeout(saveT);saveT=setTimeout(persist,500)},true);
 $('#sBody').addEventListener('click',e=>{
+  const tb=e.target.closest('[data-tres],[data-tact],[data-add]');if(tb){handleTest(tb);return}
   const b=e.target.closest('[data-f]');
   if(b){const f=b.dataset.f,v=b.dataset.v,d=dayData(logDate);
-    if(b.dataset.m==='single'){const off=d[f]===v;setField(logDate,f,off?null:v);if(f==='lh'&&off&&dayData(logDate).lhRatio!=null){setField(logDate,'lhRatio',null);rerenderLog();return}}
+    if(b.dataset.m==='single')setField(logDate,f,d[f]===v?null:v);
     else{const s=new Set(d[f]||[]);s.has(v)?s.delete(v):s.add(v);setField(logDate,f,[...s])}
     $$(`[data-f="${f}"]`,$('#sBody')).forEach(x=>x.setAttribute('aria-pressed',isOn(f,x.dataset.v)));sheetHead();renderStrip();refreshSummaries();return}
-  if(e.target.closest('#scanBtn'))openScanner();
-  if(e.target.closest('#delStrip'))deleteStripPhoto();
   if(e.target.closest('#medAdd'))addMed();
 });
 function addMed(){const i=$('#medIn'),v=i.value.trim();if(!v)return;if(!state.settings.meds.includes(v))state.settings.meds.push(v);
@@ -1029,6 +1053,7 @@ $('#sBody').addEventListener('change',e=>{
     if(F)v=(v-32)*5/9;setField(logDate,'bbt',Math.round(v*1000)/1000);
     if(!dayData(logDate).bbtTime){const n=new Date();const t=`${pad(n.getHours())}:${pad(n.getMinutes())}`;if(logDate===todayKey()){setField(logDate,'bbtTime',t);$('#bbtTime').value=t}}}
   if(e.target.id==='bbtTime')setField(logDate,'bbtTime',e.target.value||null);
+  if(e.target.classList.contains('ttime')){const card=e.target.closest('.tcard'),{key,list}=testList(card.dataset.kind),t=list.find(x=>x.id===card.dataset.tid);if(t){t.time=e.target.value||null;setField(logDate,key,list)}}
   refreshSummaries();
 });
 let noteT=null;$('#sBody').addEventListener('input',e=>{if(e.target.id==='noteIn'){const v=e.target.value;clearTimeout(noteT);noteT=setTimeout(()=>setField(logDate,'note',v.trim()?v:null),300)}});
@@ -1068,7 +1093,7 @@ function scanHint(){const n=scan.taps.length,t={pick:'Lay the strip on something
   crop:'Straighten the strip with the slider so the lines stand upright, then drag the corners around it.',
   tap:n===0?'Tap the control line (C), the one that always appears.':n===1?'Now tap where the test line (T) is, even if it’s faint or blank.':'Check the reading below and adjust it if it looks off.'}[scan.mode];$('#scanHint').textContent=t}
 function scanUI(){$('#scanner .mcard').classList.toggle('full',scan.mode!=='pick');$('#scanPick').hidden=scan.mode!=='pick'&&scan.mode!=='crop';$('#scanStage').hidden=scan.mode==='pick';$('#cropBtns').hidden=scan.mode!=='crop';$('#tapBtns').hidden=scan.mode!=='tap';scanHint()}
-function openScanner(){Object.assign(scan,{orig:null,src:null,rot:0,rect:null,mode:'pick',data:null,taps:[],ratio:null,result:null,out:null,cropped:false,prof:null});$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();openModal('scanner')}
+function openScanner(kind='lh',target=null){$('#scanner h4').textContent=kind==='preg'?'Scan a pregnancy test':'Scan an LH strip';Object.assign(scan,{kind,target,orig:null,src:null,rot:0,rect:null,mode:'pick',data:null,taps:[],ratio:null,result:null,out:null,cropped:false,prof:null});$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();openModal('scanner')}
 function rotated(c,deg){if(!deg)return c;const a=deg*Math.PI/180,cs=Math.abs(Math.cos(a)),sn=Math.abs(Math.sin(a)),o=document.createElement('canvas');
   o.width=Math.round(c.width*cs+c.height*sn);o.height=Math.round(c.width*sn+c.height*cs);const x=o.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,o.width,o.height);
   x.translate(o.width/2,o.height/2);x.rotate(a);x.drawImage(c,-c.width/2,-c.height/2);return o}
@@ -1134,6 +1159,7 @@ $('#scanCanvas').addEventListener('click',e=>{if(scan.mode!=='tap'||scan.taps.le
   if(scan.prof){const r=Math.max(3,Math.round(scan.w*.04)),pr=scan.prof.p;let bx=Math.round(x),bv=-1e9;for(let k=Math.max(0,bx-r);k<=Math.min(scan.w-1,bx+r);k++)if(pr[k]>bv){bv=pr[k];bx=k}
     if(scan.taps.length===1||bv-scan.prof.bg>4)x=bx}
   scan.taps.push({x,y});drawTaps();scanHint();if(scan.taps.length===2)analyse()});
+$('#scanRecrop').addEventListener('click',()=>{if(!scan.src)return;scan.mode='crop';scan.taps=[];scan.ratio=null;scan.result=null;$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop()});
 $('#scanReset').addEventListener('click',()=>{if(!scan.data)return;scan.taps=[];scan.ratio=null;scan.result=null;drawTaps();scanHint();$('#scanOut').innerHTML='';$('#scanSave').disabled=true});
 function win(cx,cy,r){const d=scan.data.data,v=[];const x0=Math.max(0,cx-r|0),x1=Math.min(scan.w-1,Math.ceil(cx+r)),y0=Math.max(0,cy-r|0),y1=Math.min(scan.h-1,Math.ceil(cy+r));
   for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const i=(y*scan.w+x)*4;v.push((d[i]+d[i+2])/2-d[i+1])}return v.sort((a,b)=>a-b)}
@@ -1143,24 +1169,20 @@ function analyse(){const[C,T]=scan.taps;let ci,ti;
   else{const r=Math.max(6,scan.w*.03),top=v=>{const n=Math.max(1,Math.floor(v.length*.12));let s=0;for(let i=v.length-n;i<v.length;i++)s+=v[i];return s/n};
     const bgv=win((C.x+T.x)/2,(C.y+T.y)/2,r*.4),bg=bgv[bgv.length>>1];ci=top(win(C.x,C.y,r))-bg;ti=Math.max(0,top(win(T.x,T.y,r))-bg)}
   if(ci<4){$('#scanOut').innerHTML='<p class="warn">No clear control line found where you tapped. Tap right on it, or crop closer and try again.</p>';return}
-  const ratio=Math.min(2.5,ti/ci);scan.ratio=Math.round(ratio*100)/100;scan.result=ratio<.3?'neg':ratio<.8?'low':ratio<1?'high':'peak';renderScanOut()}
-function renderScanOut(){$('#scanOut').innerHTML=`<div class="scanres"><div><div class="muted" style="font-size:13px">T/C ratio</div><b>${scan.ratio.toFixed(2)}</b></div>
-  <div class="chips">${LH_OPTS.map(([v,l])=>`<button type="button" class="chip t" data-scanres="${v}" aria-pressed="${scan.result===v}">${l}</button>`).join('')}</div></div>
-  <p class="hint">Estimated from the photo: under 0.3 negative, up to 0.8 faint, up to 1.0 high, 1.0 or more peak. Lighting affects this, so trust your eyes if they disagree.</p>`;$('#scanSave').disabled=false}
+  const ratio=Math.min(2.5,ti/ci);scan.ratio=Math.round(ratio*100)/100;scan.result=scan.kind==='preg'?(ratio<.08?'neg':ratio<.5?'faint':'pos'):(ratio<.3?'neg':ratio<.8?'low':ratio<1?'high':'peak');renderScanOut()}
+function renderScanOut(){const P=scan.kind==='preg';$('#scanOut').innerHTML=`<div class="scanres"><div><div class="muted" style="font-size:13px">${P?'Line strength':'T/C ratio'}</div><b>${scan.ratio.toFixed(2)}</b></div>
+  <div class="chips">${(P?PREG_OPTS:LH_OPTS).map(([v,l])=>`<button type="button" class="chip t" data-scanres="${v}" aria-pressed="${scan.result===v}">${l}</button>`).join('')}</div></div>
+  <p class="hint">${P?'Estimated from the photo. Any visible test line usually counts, however faint, so check the leaflet and confirm with a new test if unsure.':'Estimated from the photo: under 0.3 negative, up to 0.8 faint, up to 1.0 high, 1.0 or more peak. Lighting affects this, so trust your eyes if they disagree.'}</p>`;$('#scanSave').disabled=false}
 $('#scanOut').addEventListener('click',e=>{const b=e.target.closest('[data-scanres]');if(b){scan.result=b.dataset.scanres;renderScanOut()}});
-$('#scanSave').addEventListener('click',async()=>{const d=dayData(logDate),id=`photo:${logDate}:${Date.now()}`;let c=scan.out;
+$('#scanSave').addEventListener('click',async()=>{const id=`photo:${logDate}:${Date.now()}`;let c=scan.out;
   if(!scan.cropped){const k=Math.min(1,720/Math.max(c.width,c.height));if(k<1){const o=document.createElement('canvas');o.width=Math.round(c.width*k);o.height=Math.round(c.height*k);o.getContext('2d').drawImage(c,0,0,o.width,o.height);c=o}}
-  await DB.set(id,c.toDataURL('image/jpeg',scan.cropped?.86:.74));if(d.lhPhoto)DB.del(d.lhPhoto);
-  setField(logDate,'lhPhoto',id);setField(logDate,'lhRatio',scan.ratio);setField(logDate,'lh',scan.result);
-  setField(logDate,'lhCrop',scan.cropped||null);setField(logDate,'lhC',scan.cropped?Math.round(scan.taps[0].x/scan.w*1000)/1000:null);setField(logDate,'lhT',scan.cropped?Math.round(scan.taps[1].x/scan.w*1000)/1000:null);
-  closeModal('scanner');rerenderLog();toast('Strip saved')});
+  await DB.set(id,c.toDataURL('image/jpeg',scan.cropped?.86:.74));
+  const{key,list}=testList(scan.kind);let t=list.find(x=>x.id===scan.target);if(!t){t={id:newId(),time:logDate===todayKey()?nowHM():null};list.push(t)}
+  if(t.photo)DB.del(t.photo);Object.assign(t,{photo:id,crop:scan.cropped||null,c:scan.cropped?Math.round(scan.taps[0].x/scan.w*1000)/1000:null,t:scan.cropped?Math.round(scan.taps[1].x/scan.w*1000)/1000:null,ratio:scan.ratio,result:scan.result});
+  setField(logDate,key,list);syncTests(logDate);closeModal('scanner');rerenderLog();toast(scan.kind==='preg'?'Test saved':'Strip saved')});
 function askChoice(msg,altLabel,yesLabel){return new Promise(res=>{$('#confirmMsg').textContent=msg;const y=$('#confirmYes'),a=$('#confirmAlt'),n=$('#confirmNo');
   y.textContent=yesLabel;y.classList.add('danger');a.textContent=altLabel;a.hidden=false;openModal('confirm');
   const done=v=>{closeModal('confirm');a.hidden=true;y.onclick=a.onclick=n.onclick=null;res(v)};y.onclick=()=>done('all');a.onclick=()=>done('photo');n.onclick=()=>done(null)})}
-async function deleteStripPhoto(){const d=dayData(logDate);if(!d.lhPhoto)return;
-  const c=await askChoice('Delete this strip photo? You can keep the LH result, or remove it too.','Photo only','Photo and result');if(!c)return;
-  await DB.del(d.lhPhoto);const fields=['lhPhoto','lhCrop','lhC','lhT'];if(c==='all')fields.push('lh','lhRatio');fields.forEach(f=>setField(logDate,f,null));
-  rerenderLog();toast(c==='all'?'Photo and result deleted':'Photo deleted')}
 
 /* ================= backup & import ================= */
 async function exportBackup(){await persist();const photos={};for(const k of await DB.keys())if(k.startsWith('photo:'))photos[k]=await DB.get(k);
@@ -1170,7 +1192,7 @@ $('#importFile').addEventListener('change',async e=>{const f=e.target.files[0];e
   try{json=JSON.parse(await f.text())}catch(err){toast('That file isn’t readable JSON. Choose a Clue export or a backup from this app.');return}
   if(json&&json.app==='my-period-tracker'&&json.state){if(!await askConfirm('Replace everything on this phone with this backup?','Restore backup'))return;
     state={version:1,days:json.state.days||{},settings:{...DEFAULTS,...(json.state.settings||{})}};for(const[k,v]of Object.entries(json.photos||{}))await DB.set(k,v);
-    applyTheme();save();await persist();renderAll();toast('Backup restored');return}
+    migrate();applyTheme();save();await persist();renderAll();toast('Backup restored');return}
   const r=importClue(json);migrate();if(!r.days){toast('No dated entries found in that file.');return}
   save();await persist();renderAll();
   await showInfo(`Imported ${plural(r.days,'day')} from Clue, ${fmt(r.first,{month:'short',year:'numeric'})} to ${fmt(r.last,{month:'short',year:'numeric'})}.`+
@@ -1178,7 +1200,18 @@ $('#importFile').addEventListener('change',async e=>{const f=e.target.files[0];e
 function showInfo(msg){return new Promise(res=>{$('#confirmMsg').textContent=msg;$('#confirmMsg').style.whiteSpace='pre-line';const y=$('#confirmYes'),n=$('#confirmNo');y.textContent='OK';y.classList.remove('danger');n.hidden=true;openModal('confirm');
   y.onclick=()=>{closeModal('confirm');n.hidden=false;y.onclick=null;res()}})}
 
-function migrate(){{const titles=new Set(SECTIONS.filter(x=>x.title).map(x=>x.title)),o=state.settings.openSecs;if(!o||o.some(t=>!titles.has(t)))state.settings.openSecs=[...DEFAULTS.openSecs]}for(const d of Object.values(state.days)){if(d.mood&&d.mood.includes('pms')){d.mood=d.mood.filter(x=>x!=='pms');if(!d.mood.length)delete d.mood;if(!d.pms)d.pms='moderate'}}}
+const LHRANK={neg:0,low:1,high:2,peak:3},PRANK={neg:0,faint:1,pos:2};
+const newId=()=>'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const nowHM=()=>{const n=new Date();return`${pad(n.getHours())}:${pad(n.getMinutes())}`};
+function syncDay(d){for(const[key,sum,rank,rk]of[['lhTests','lh',LHRANK,'lhRatio'],['pregTests','preg',PRANK,null]]){const L=d[key]||[];
+    if(!L.length){delete d[key];delete d[sum];if(rk)delete d[rk];continue}
+    let best=null;for(const t of L)if(t.result&&(best==null||rank[t.result]>rank[best]))best=t.result;if(best)d[sum]=best;else delete d[sum];
+    if(rk){const rs=L.map(t=>t.ratio).filter(r=>r!=null);if(rs.length)d[rk]=Math.max(...rs);else delete d[rk]}}}
+function syncTests(k){const d=state.days[k];if(!d)return;syncDay(d);if(!Object.keys(d).length)delete state.days[k];save()}
+function migrate(){for(const d of Object.values(state.days)){
+    if(!d.lhTests&&(d.lh||d.lhPhoto||d.lhRatio!=null)){d.lhTests=[{id:newId(),time:null,result:d.lh||null,ratio:d.lhRatio??null,photo:d.lhPhoto||null,crop:d.lhCrop||null,c:d.lhC??null,t:d.lhT??null}]}
+    if(!d.pregTests&&d.preg)d.pregTests=[{id:newId(),time:null,result:d.preg}];
+    delete d.lhPhoto;delete d.lhCrop;delete d.lhC;delete d.lhT;if(d.lhTests||d.pregTests)syncDay(d)}{const titles=new Set(SECTIONS.filter(x=>x.title).map(x=>x.title)),o=state.settings.openSecs;if(!o||o.some(t=>!titles.has(t)))state.settings.openSecs=[...DEFAULTS.openSecs]}for(const d of Object.values(state.days)){if(d.mood&&d.mood.includes('pms')){d.mood=d.mood.filter(x=>x!=='pms');if(!d.mood.length)delete d.mood;if(!d.pms)d.pms='moderate'}}}
 function toStrings(v){if(v==null)return[];if(typeof v==='string')return[v];if(typeof v==='number'||typeof v==='boolean')return[String(v)];if(Array.isArray(v))return v.flatMap(toStrings);
   if(typeof v==='object'){const o=[];for(const k of['option','options','value','values','name','type','selected','tag','tags','text'])if(k in v)o.push(...toStrings(v[k]));if(o.length)return o;for(const[k,x]of Object.entries(v)){if(x===true)o.push(k);else if(typeof x==='string'||typeof x==='number')o.push(String(x));else if(x&&typeof x==='object')o.push(...toStrings(x))}return o}return[]}
 function importClue(json){
@@ -1235,9 +1268,9 @@ function renderPeek(){const k=peekDate,d=dayData(k),mk=model.marks[k]||{},cd=cdO
   let h=st.length?`<div class="tags pk">${st.map(([c,t,f])=>f?`<button type="button" class="tag tagbtn ${c}" data-pf="${f}">${t}</button>`:`<span class="tag ${c}">${t}</span>`).join('')}</div>`:'';
   h+=tags.length?`<div class="tags pk">${tags.map(x=>{const f=FBY[x.k]?x.k:null;return`<button type="button" class="tag tagbtn" ${f?`data-pf="${f}"${x.v!=null&&x.k!=='bbt'?` data-po="${esc(x.v)}"`:''}`:`data-pq="${esc(x.txt.toLowerCase())}" data-pl="${esc(x.txt)}"`}>${ic(x.k)}${esc(x.txt)}</button>`}).join('')}</div><p class="hint" style="margin-top:10px">Tap a tag to find every day with it.</p>`:'<p class="muted" style="margin:14px 0 4px">Nothing logged for this day.</p>';
   if(d.note)h+=`<p class="pknote">${esc(d.note)}</p>`;
-  if(d.lhPhoto)h+='<img class="lhthumb" id="pkThumb" alt="LH strip" style="margin-top:10px">';
+  const phs=[...(d.lhTests||[]),...(d.pregTests||[])].filter(t=>t.photo);if(phs.length)h+=`<div class="pkph">${phs.map(t=>`<img data-photo="${t.photo}" class="${t.crop?'wide':''}" alt="Test photo">`).join('')}</div>`;
   $('#pkBody').innerHTML=h;$('#pkEdit').textContent=Object.keys(d).length?'Edit this day':'Log this day';
-  if(d.lhPhoto)DB.get(d.lhPhoto).then(src=>{const im=$('#pkThumb');if(im&&src)im.src=src});
+  $$('img[data-photo]',$('#pkBody')).forEach(im=>DB.get(im.dataset.photo).then(src=>{if(src)im.src=src}));
 }
 $('#pkPrev').addEventListener('click',()=>{peekDate=addDays(peekDate,-1);renderPeek()});
 $('#pkNext').addEventListener('click',()=>{peekDate=addDays(peekDate,1);renderPeek()});
@@ -1254,7 +1287,7 @@ const FILTERS=[
   {k:'bbt',l:'Temperature',test:d=>d.bbt!=null},
   {k:'mucus',l:'Mucus',f:'mucus',opts:()=>optsOf('mucus')},
   {k:'cervix',l:'Cervix',f:'cervixPos',opts:()=>optsOf('cervixPos')},
-  {k:'preg',l:'Pregnancy test',f:'preg',opts:()=>optsOf('preg')},
+  {k:'preg',l:'Pregnancy test',f:'preg',opts:()=>PREG_OPTS},
   {k:'sex',l:'Sex',f:'sex',opts:()=>optsOf('sex')},
   {k:'pain',l:'Pain',f:'pain',opts:()=>optsOf('pain')},
   {k:'mood',l:'Mood',f:'mood',opts:()=>optsOf('mood')},
@@ -1431,11 +1464,11 @@ function buildPDF(J,year){
     font('helvetica',7.5);tcol(C.muted);doc.text('A temperature rise follows ovulation rather than warning of it. Pink columns are period days, teal the fertile window, darker teal (with the egg) ovulation. The teal line is your LH ratio; hollow marks are estimates or flagged temperatures. Not medical advice or contraception.',M,ry+20,{maxWidth:W-2*M})}
   return doc;
 }
-function exportCSV(year){const u=state.settings.unit,lab=(f,v)=>v==null?'':(LABEL[f]?.[v]??v),arr=(f,v)=>(v||[]).map(x=>LABEL[f]?.[x]??x).join('; ');
-  const head=['Date','Cycle day','DPO','Flow','Fertile window','Ovulation',`Temperature (°${u})`,'Temperature time','Temperature flags','LH test','LH T/C ratio','Pregnancy test','Cervical mucus','Mucus colour','Cervix position','Cervix firmness','Cervix opening','Sex','Libido','Pain','Mood','PMS','Energy','Sleep','Digestion','Skin','Cravings','Medication','Notes'];
+function exportCSV(year){const allT=(L,f)=>(L||[]).map(t=>[t.time,t.result?LABEL[f][t.result]:'',t.ratio!=null?t.ratio.toFixed(2):''].filter(Boolean).join(' ')).join('; '),u=state.settings.unit,lab=(f,v)=>v==null?'':(LABEL[f]?.[v]??v),arr=(f,v)=>(v||[]).map(x=>LABEL[f]?.[x]??x).join('; ');
+  const head=['Date','Cycle day','DPO','Flow','Fertile window','Ovulation',`Temperature (°${u})`,'Temperature time','Temperature flags','LH test (best)','LH T/C ratio (highest)','All LH tests','Pregnancy test (best)','All pregnancy tests','Cervical mucus','Mucus colour','Cervix position','Cervix firmness','Cervix opening','Sex','Libido','Pain','Mood','PMS','Energy','Sleep','Digestion','Skin','Cravings','Medication','Notes'];
   const rows=Object.keys(state.days).filter(k=>k.startsWith(year)).sort().map(k=>{const d=state.days[k],mk=model.marks[k]||{};
     return[k,cdOf(k)??'',dpoOf(k)??'',lab('flow',d.flow),mk.fert?(mk.fert==='pred'?'Predicted':'Yes'):'',mk.ovu?{bbt:'Confirmed by temperature',lh:'Estimated from LH',pred:'Predicted'}[mk.ovu]:'',
-      d.bbt!=null?toUnit(d.bbt).toFixed(2):'',d.bbtTime||'',arr('bbtFlags',d.bbtFlags),lab('lh',d.lh),d.lhRatio??'',lab('preg',d.preg),
+      d.bbt!=null?toUnit(d.bbt).toFixed(2):'',d.bbtTime||'',arr('bbtFlags',d.bbtFlags),lab('lh',d.lh),d.lhRatio??'',allT(d.lhTests,'lh'),lab('preg',d.preg),allT(d.pregTests,'preg'),
       lab('mucus',d.mucus),lab('mucusColor',d.mucusColor),lab('cervixPos',d.cervixPos),lab('cervixFirm',d.cervixFirm),lab('cervixOpen',d.cervixOpen),
       arr('sex',d.sex),lab('libido',d.libido),arr('pain',d.pain),arr('mood',d.mood),lab('pms',d.pms),lab('energy',d.energy),lab('sleep',d.sleep),arr('digestion',d.digestion),arr('skin',d.skin),arr('cravings',d.cravings),(d.meds||[]).join('; '),d.note||'']});
   const q=v=>{v=String(v);return/[",\n\r;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
