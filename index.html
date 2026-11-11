@@ -627,8 +627,10 @@ const SECTIONS=[
  {key:'bbt',title:'Temperature',type:'bbt'},
  {key:'lh',title:'Tests',label:'Ovulation test (LH)',type:'lh'},
  {key:'preg',label:'Pregnancy test',type:'preg'},
- {key:'mucus',title:'Mucus and cervix',label:'Cervical mucus',type:'single',cls:'t',opts:[['dry','Dry'],['sticky','Sticky'],['creamy','Creamy'],['watery','Watery'],['eggwhite','Egg white']]},
- {key:'mucusColor',label:'Mucus colour',type:'single',cls:'t',opts:[['clear','Clear'],['white','White'],['yellow','Yellowish'],['pink','Pinkish'],['brown','Brownish']]},
+ {key:'mucus',title:'Mucus and cervix',label:'Cervical mucus',type:'multi',cls:'t',opts:[['dry','Dry'],['sticky','Sticky'],['creamy','Creamy'],['watery','Watery'],['eggwhite','Egg white']]},
+ {key:'mucusFeel',label:'Consistency',type:'multi',cls:'t',opts:[['thin','Thin'],['thick','Thick'],['clumpy','Clumpy'],['stretchy','Stretchy'],['slippery','Slippery']]},
+ {key:'mucusAmt',label:'Amount',type:'single',cls:'t',opts:[['little','A little'],['some','Some'],['lots','A lot']]},
+ {key:'mucusColor',label:'Mucus colour',type:'multi',cls:'t',opts:[['clear','Clear'],['white','White'],['yellow','Yellowish'],['pink','Pinkish'],['brown','Brownish']]},
  {key:'cervixPos',label:'Cervix position',type:'single',cls:'t',opts:[['low','Low'],['mid','Medium'],['high','High']]},
  {key:'cervixFirm',label:'Cervix firmness',type:'single',cls:'t',opts:[['firm','Firm'],['mid','Medium'],['soft','Soft']]},
  {key:'cervixOpen',label:'Cervix opening',type:'single',cls:'t',opts:[['closed','Closed'],['mid','Partly open'],['open','Open']]},
@@ -762,7 +764,7 @@ function dayTags(d){const out=[],t=(k,txt,v)=>out.push({k,txt,v});
   if(d.bbt!=null)t('bbt',toUnit(d.bbt).toFixed(2)+'°'+state.settings.unit);
   if(d.lh)t('lh','LH '+LABEL.lh[d.lh].toLowerCase()+((d.lhTests||[]).length>1?`, ${d.lhTests.length} tests`:''),d.lh);
   if(d.preg)t('preg','Pregnancy test '+LABEL.preg[d.preg].toLowerCase(),d.preg);
-  if(d.mucus)t('mucus',LABEL.mucus[d.mucus]+' mucus',d.mucus);
+  arrOf(d.mucus).forEach(v=>t('mucus',(LABEL.mucus[v]||v)+' mucus',v));arrOf(d.mucusFeel).forEach(v=>t('mucus',(LABEL.mucusFeel[v]||v)+' mucus',null));
   if(d.cervixPos)t('cervix','Cervix '+LABEL.cervixPos[d.cervixPos].toLowerCase(),d.cervixPos);
   (d.sex||[]).forEach(v=>t('sex',LABEL.sex[v],v));if(d.libido)t('libido','Libido '+LABEL.libido[d.libido].toLowerCase());
   (d.pain||[]).forEach(v=>t('pain',LABEL.pain[v],v));
@@ -983,7 +985,7 @@ function renderChart(){
     row('Date',(i,k)=>{const dt=fromKey(k),dd=dt.getDate();return(dd===1||i===0)?`<span class="mo">${dt.toLocaleDateString(undefined,{month:'short'})}</span>${dd}`:dd},'datec');
     bbtRow();
     if(tracking('tests'))row('LH',(i,k,d)=>d.lh?`<span class="lhc ${d.lh}">${{neg:'–',low:'L',high:'H',peak:'P'}[d.lh]}</span>`:'');
-    if(tracking('mucus'))row('Mucus',(i,k,d)=>d.mucus?`<span class="muc ${d.mucus}">${{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[d.mucus]}</span>`:'');
+    if(tracking('mucus'))row('Mucus',(i,k,d)=>{const M=mucTop(d);return M?`<span class="muc ${M}">${{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[M]}</span>`:(arrOf(d.mucus).length?'<span class="muc">•</span>':'')});
     if(tracking('mucus'))row('Cervix',(i,k,d)=>{if(!d.cervixPos&&!d.cervixFirm&&!d.cervixOpen)return'';const pk=d.cervixPos==='high'&&d.cervixFirm==='soft';
       return`<span class="cx ${pk?'peak':''}">${{low:'↓',mid:'–',high:'↑'}[d.cervixPos]||''}<small>${{firm:'F',mid:'M',soft:'S'}[d.cervixFirm]||''}${{closed:'•',mid:'◦',open:'○'}[d.cervixOpen]||''}</small></span>`});
     row('Flow',(i,k,d)=>d.flow?`<i class="fi" style="--fill:${FILL[d.flow]};--fc:var(${FC[d.flow]});width:15px;height:15px"></i>`:'');
@@ -995,7 +997,7 @@ function renderChart(){
     row('Day',i=>(i===0||(i+1)%5===0)?`<span class="dn">${i+1}</span>`:'','dayc');
     bbtRow();
     if(tracking('tests'))row('LH',(i,k,d)=>d.lh?`<i class="cb lh-${d.lh}"></i>`:'');
-    if(tracking('mucus'))row('Mucus',(i,k,d)=>d.mucus?`<i class="cb mu-${d.mucus}"></i>`:'');
+    if(tracking('mucus'))row('Mucus',(i,k,d)=>{const M=mucTop(d);return M?`<i class="cb mu-${M}"></i>`:(arrOf(d.mucus).length?'<i class="cb mu-creamy"></i>':'')});
     row('Flow',(i,k,d)=>d.flow?`<i class="cb" style="background:var(${FC[d.flow]})"></i>`:'');
     if(tracking('sex'))row('Sex',(i,k,d)=>d.sex?'<i class="cdt"></i>':'');
   }
@@ -1392,7 +1394,10 @@ function clueNotesToMoods(){let n=0;for(const d of Object.values(state.days)){if
       const vals=m[2].split(/,\s*/).filter(Boolean),got=vals.map(clueMood).filter(Boolean),left=vals.filter(v=>!clueMood(v)&&!/pms/i.test(v));
       if(vals.some(v=>/pms/i.test(v))&&!d.pms)d.pms='moderate';if(got.length){d.mood=[...new Set([...(d.mood||[]),...got])];n++}if(left.length)keep.push(`Clue ${m[1]}: ${left.join(', ')}`)}
     const nt=keep.join('\n').trim();if(nt)d.note=nt;else delete d.note}return n}
-function migrate(){if(!state.settings.clueMoods2){state.settings.clueMoods2=1;clueNotesToMoods()}if(!state.settings.tracks){const has=f=>Object.values(state.days).some(f);state.settings.tracks=Object.fromEntries(TRACKS.map(([k,,,on])=>[k,on]));
+const MUC_RANK=['dry','sticky','creamy','watery','eggwhite'];
+const arrOf=v=>v==null?[]:Array.isArray(v)?v:[v];
+function mucTop(d){let b=null;for(const v of arrOf(d.mucus)){const r=MUC_RANK.indexOf(v);if(r>=0&&(b==null||r>MUC_RANK.indexOf(b)))b=v}return b}
+function migrate(){for(const d of Object.values(state.days)){for(const f of['mucus','mucusColor'])if(typeof d[f]==='string')d[f]=[d[f]]}if(!state.settings.clueMoods2){state.settings.clueMoods2=1;clueNotesToMoods()}if(!state.settings.tracks){const has=f=>Object.values(state.days).some(f);state.settings.tracks=Object.fromEntries(TRACKS.map(([k,,,on])=>[k,on]));
     if(has(d=>d.lhTests||d.pregTests||d.lh||d.preg))state.settings.tracks.tests=true;if(has(d=>d.mucus||d.cervixPos||d.cervixFirm||d.cervixOpen))state.settings.tracks.mucus=true;if(has(d=>d.sex||d.libido))state.settings.tracks.sex=true;if(has(d=>d.bbt!=null))state.settings.tracks.bbt=true}
   for(const d of Object.values(state.days))if(d.mood){const map={};d.mood=[...new Set(d.mood.map(x=>map[x]||x))];if(!d.mood.length)delete d.mood}for(const d of Object.values(state.days)){
     if(!d.lhTests&&(d.lh||d.lhPhoto||d.lhRatio!=null)){d.lhTests=[{id:newId(),time:null,result:d.lh||null,ratio:d.lhRatio??null,photo:d.lhPhoto||null,crop:d.lhCrop||null,c:d.lhC??null,t:d.lhT??null}]}
@@ -1419,7 +1424,7 @@ function importClue(json){
       if(/libido|drive/.test(kl)){set('libido',has('high')?'high':has('low')?'low':'mid');return}
       if(/sex|intim/.test(kl)){const v=[];if(has('unprotected','withdrawal'))v.push('unprotected');if(S.some(s=>/(^|[^n])protected/.test(s)&&!/unprotected/.test(s)))v.push('protected');add('sex',v);
         if(has('high_sex_drive','high drive'))set('libido','high');if(has('low_sex_drive'))set('libido','low');return}
-      if(/fluid|discharge|mucus|cervical/.test(kl)){set('mucus',has('egg','stretch')?'eggwhite':has('water')?'watery':has('cream')?'creamy':has('sticky')?'sticky':has('none','dry')?'dry':null);
+      if(/fluid|discharge|mucus|cervical/.test(kl)){{const mv=has('egg','stretch')?'eggwhite':has('water')?'watery':has('cream')?'creamy':has('sticky')?'sticky':has('none','dry')?'dry':null;if(mv)add('mucus',[mv])}
         if(has('atypical'))d.note=(d.note?d.note+'\n':'')+'Clue: atypical discharge';return}
       if(/bbt|temp/.test(kl)){let n;if(val&&typeof val==='object'&&!Array.isArray(val)){if(isFinite(val.celsius))n=+val.celsius;else if(isFinite(val.fahrenheit))n=(+val.fahrenheit-32)*5/9}
         if(n==null)n=S.map(parseFloat).find(isFinite);if(n==null)return;if(n>45)n=(n-32)*5/9;
@@ -1471,7 +1476,7 @@ const FILTERS=[
   {k:'ovu',l:'Ovulation',test:(d,k)=>{const o=(model.marks[k]||{}).ovu;return!!o&&o!=='pred'}},
   {k:'lh',l:'LH test',f:'lh',opts:()=>LH_OPTS},
   {k:'bbt',l:'Temperature',test:d=>d.bbt!=null},
-  {k:'mucus',l:'Mucus',f:'mucus',opts:()=>optsOf('mucus')},
+  {k:'mucus',l:'Mucus',f:'mucus',opts:()=>[...optsOf('mucus'),...customOpts('mucus')]},
   {k:'cervix',l:'Cervix',f:'cervixPos',opts:()=>optsOf('cervixPos')},
   {k:'preg',l:'Pregnancy test',f:'preg',opts:()=>PREG_OPTS},
   {k:'sex',l:'Sex',f:'sex',opts:()=>[...optsOf('sex'),...customOpts('sex')]},
@@ -1588,7 +1593,7 @@ function buildPDF(J,year){
     ['Sleep',I.moon,C.grey,d=>d.sleep?{poor:'P',ok:'O',good:'G'}[d.sleep]:''],
     ['LH test',I.eggo,C.tealStrong,d=>d.lh?[{neg:'-',low:'L',high:'H',peak:'P'}[d.lh],C.tealStrong]:''],
     ['Pregnancy',I.stick,C.tealStrong,d=>d.preg?[{neg:'-',faint:'F',pos:'+'}[d.preg],C.tealStrong]:''],
-    ['Mucus',I.wave,C.tealStrong,d=>d.mucus?[{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[d.mucus],C.tealStrong]:''],
+    ['Mucus',I.wave,C.tealStrong,d=>mucTop(d)?[{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[mucTop(d)],C.tealStrong]:''],
     ['Cervix',I.cervix,C.tealStrong,d=>d.cervixPos?[{low:'L',mid:'M',high:'H'}[d.cervixPos],C.tealStrong]:''],
     ['Sex',I.heart,C.pink,d=>d.sex?['heart',d.sex.includes('unprotected')?C.pink:C.light]:'']];
   for(let mo=0;mo<12;mo++){const dim=new Date(+year,mo+1,0).getDate(),keys=[];for(let dd=1;dd<=dim;dd++){const k=`${year}-${pad(mo+1)}-${pad(dd)}`;if(state.days[k])keys.push(k)}
@@ -1603,7 +1608,7 @@ function buildPDF(J,year){
       const cdn=cdOf(k);if(cdn){font('helvetica',6.3);tcol(dark?C.white:C.muted);doc.text('CD '+cdn,x+w-(mk.ovu?14:4),y+10,{align:'right'})}
       font('helvetica',6.3);let ly=y+19.5;const tc=dark?C.white:C.ink;
       if(d.bbt!=null){I.thermo(x+6,ly-2.2,6,dark?C.white:C.tealStrong);tcol(tc);doc.text(toUnit(d.bbt).toFixed(2)+'°',x+10.5,ly);ly+=8}
-      if(d.mucus&&ly<y+h-10){I.wave(x+6,ly-2.2,6,dark?C.white:C.tealStrong);tcol(tc);doc.text(LABEL.mucus[d.mucus],x+10.5,ly);ly+=8}
+      if(d.mucus&&ly<y+h-10){I.wave(x+6,ly-2.2,6,dark?C.white:C.tealStrong);tcol(tc);doc.text(arrOf(d.mucus).map(v=>LABEL.mucus[v]||v).join(', '),x+10.5,ly);ly+=8}
       iconRow(d,x+6,y+h-5.5,6.5,8.5,darkLow,5)}
     let sy=cy0+14+rows*crh;font('helvetica',7.5,'bold');tcol(C.muted);doc.text('SYMPTOMS',M,sy);
     const sx=M+66,scw=(W-M-sx)/dim,srh=13;sy+=8;font('helvetica',6);
@@ -1644,7 +1649,7 @@ function buildPDF(J,year){
     temps.forEach(t=>{if(t.fl){fill(C.white);draw(C.berry);doc.setLineWidth(1);doc.circle(xOf(t.i),yOf(t.v),2.4,'FD')}else{fill(C.berry);doc.circle(xOf(t.i),yOf(t.v),2.4,'F')}});
     let ry=gy0+gh+6;const RR=[['Cycle day',null,null,i=>String(i+1)],['Date',null,null,i=>{const dt=fromKey(addDays(c.start,i));return`${dt.getDate()}/${dt.getMonth()+1}`}],
       ['Time',I.thermo,C.tealStrong,(i,d)=>d.bbtTime||''],['LH',I.eggo,C.tealStrong,(i,d)=>d.lh?{neg:'-',low:'L',high:'H',peak:'P'}[d.lh]:''],
-      ['Mucus',I.wave,C.tealStrong,(i,d)=>d.mucus?{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[d.mucus]:''],['Sex',I.heart,C.pink,(i,d)=>d.sex?'heart':''],['PMS',I.cloud,C.grey,(i,d)=>d.pms?'cloud':'']];
+      ['Mucus',I.wave,C.tealStrong,(i,d)=>mucTop(d)?{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[mucTop(d)]:''],['Sex',I.heart,C.pink,(i,d)=>d.sex?'heart':''],['PMS',I.cloud,C.grey,(i,d)=>d.pms?'cloud':'']];
     RR.forEach(([lab,icon,icol,fn])=>{font('helvetica',6.8,'bold');tcol(C.muted);doc.text(lab,gx0-4,ry+8.5,{align:'right'});if(icon)icon(M+4,ry+6,7,icol);
       for(let i=0;i<N;i++){const x=gx0+i*cwid,d=state.days[addDays(c.start,i)]||{};draw(C.faint);doc.setLineWidth(.4);doc.rect(x,ry,cwid,12,'S');if(i>=len)continue;const v=fn(i,d);if(!v)continue;
         if(v==='heart')I.heart(x+cwid/2,ry+6.2,6.5,C.pink);else if(v==='cloud')I.cloud(x+cwid/2,ry+6,7);else{font('helvetica',v.length>3?4.6:5.8);tcol(C.ink);doc.text(v,x+cwid/2,ry+8.2,{align:'center'})}}ry+=12});
@@ -1652,11 +1657,11 @@ function buildPDF(J,year){
   return doc;
 }
 function exportCSV(year){const allT=(L,f)=>(L||[]).map(t=>[t.time,t.result?LABEL[f][t.result]:'',t.ratio!=null?t.ratio.toFixed(2):''].filter(Boolean).join(' ')).join('; '),u=state.settings.unit,lab=(f,v)=>v==null?'':(LABEL[f]?.[v]??v),arr=(f,v)=>(v||[]).map(x=>LABEL[f]?.[x]??x).join('; ');
-  const head=['Date','Cycle day','DPO','Flow','Fertile window','Ovulation',`Temperature (°${u})`,'Temperature time','Temperature flags','LH test (best)','LH T/C ratio (highest)','All LH tests','Pregnancy test (best)','All pregnancy tests','Cervical mucus','Mucus colour','Cervix position','Cervix firmness','Cervix opening','Sex','Libido','Pain','Mood','PMS','Energy','Sleep','Dreams','Digestion','Skin','Cravings','Medication','Notes'];
+  const head=['Date','Cycle day','DPO','Flow','Fertile window','Ovulation',`Temperature (°${u})`,'Temperature time','Temperature flags','LH test (best)','LH T/C ratio (highest)','All LH tests','Pregnancy test (best)','All pregnancy tests','Cervical mucus','Mucus consistency','Mucus amount','Mucus colour','Cervix position','Cervix firmness','Cervix opening','Sex','Libido','Pain','Mood','PMS','Energy','Sleep','Dreams','Digestion','Skin','Cravings','Medication','Notes'];
   const rows=Object.keys(state.days).filter(k=>k.startsWith(year)).sort().map(k=>{const d=state.days[k],mk=model.marks[k]||{};
     return[k,cdOf(k)??'',dpoOf(k)??'',lab('flow',d.flow),mk.fert?(mk.fert==='pred'?'Predicted':'Yes'):'',mk.ovu?{bbt:'Confirmed by temperature',lh:'Estimated from LH',pred:'Predicted'}[mk.ovu]:'',
       d.bbt!=null?toUnit(d.bbt).toFixed(2):'',d.bbtTime||'',arr('bbtFlags',d.bbtFlags),lab('lh',d.lh),d.lhRatio??'',allT(d.lhTests,'lh'),lab('preg',d.preg),allT(d.pregTests,'preg'),
-      lab('mucus',d.mucus),lab('mucusColor',d.mucusColor),lab('cervixPos',d.cervixPos),lab('cervixFirm',d.cervixFirm),lab('cervixOpen',d.cervixOpen),
+      arr('mucus',arrOf(d.mucus)),arr('mucusFeel',d.mucusFeel),lab('mucusAmt',d.mucusAmt),arr('mucusColor',arrOf(d.mucusColor)),lab('cervixPos',d.cervixPos),lab('cervixFirm',d.cervixFirm),lab('cervixOpen',d.cervixOpen),
       arr('sex',d.sex),lab('libido',d.libido),arr('pain',d.pain),arr('mood',d.mood),lab('pms',d.pms),lab('energy',d.energy),lab('sleep',d.sleep),arr('dreams',d.dreams),arr('digestion',d.digestion),arr('skin',d.skin),arr('cravings',d.cravings),(d.meds||[]).join('; '),d.note||'']});
   const q=v=>{v=String(v);return/[",\n\r;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
   const csv='\ufeff'+[head,...rows].map(r=>r.map(q).join(',')).join('\r\n');
@@ -1681,7 +1686,7 @@ const moodIco=i=>i?`<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use
 const moodPill=(k,l,c,i,on,extra='')=>`<button type="button" class="mp" ${extra} style="--c:${c}" aria-pressed="${on}">${moodIco(i)}${esc(l)}</button>`;
 function hexLum(h){const n=parseInt(h.slice(1),16),r=(n>>16)/255,g=(n>>8&255)/255,b=(n&255)/255;return .2126*r+.7152*g+.0722*b}
 /* ---- your own options: name for any section; name, colour and icon for moods ---- */
-const CUSTOMIZABLE=new Set(['sex','pain','dreams','digestion','skin','cravings']);
+const CUSTOMIZABLE=new Set(['mucus','mucusFeel','mucusColor','sex','pain','dreams','digestion','skin','cravings']);
 function customOpts(key){return(state.settings.custom?.[key]||[]).filter(o=>!o[2]).map(o=>[o[0],o[1]])}
 function refreshLabels(){LABEL.mood=Object.fromEntries([...MOODS_BUILTIN.map(m=>[m[0],m[1]]),...MOODS_RETIRED.map(m=>[m[0],m[1]]),...(state.settings.customMoods||[]).map(m=>[m.k,m.l])]);
   for(const[key,list]of Object.entries(state.settings.custom||{})){LABEL[key]=LABEL[key]||{};for(const o of list)LABEL[key][o[0]]=o[1]}}
