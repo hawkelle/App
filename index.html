@@ -1087,7 +1087,7 @@ function renderInsights(){
      <button class="btn small" data-act="csv">CSV</button><button class="btn small" data-act="pdf">PDF</button></div></div>
    <div class="setrow"><p class="lbl">Backup</p><p class="hint" style="margin:0 0 10px">Everything lives only on this phone. Save a backup to Files now and then; clearing Safari's website data would erase it.</p><div class="datarow"><button class="btn small" data-act="export">Save backup</button><button class="btn ghost small" data-act="import">Restore backup</button></div></div>
    <div class="setrow"><div class="datarow"><button class="btn ghost small" data-act="wipe" style="color:#d4574a;border-color:#d4574a">Delete all data</button></div></div>
-   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.<br>Cycles version 12 Nov 2026 (h)</p>`;
+   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.<br>Cycles version 12 Nov 2026 (i)</p>`;
 }
 $('#v-ins').addEventListener('click',async e=>{
   const dm=e.target.closest('[data-delm]');if(dm){const m=(state.settings.customMoods||[]).find(x=>x.k===dm.dataset.delm);if(m&&await askConfirm(`Remove ${m.l} from your mood options?`,'Remove')){m.hidden=true;save();renderAll()}return}
@@ -1166,7 +1166,9 @@ function testSVG(kind,t,src){const P=kind==='preg',id='tc'+(++tdN);
   const ok=false;let win;
   if(ok){let tt=t.t,cc=t.c,flip=false;if(cc<tt){tt=1-tt;cc=1-cc;flip=true}const dw=(L.C-L.T)/(cc-tt),x=L.T-tt*dw;
     win=`<clipPath id="${id}"><rect x="${L.wx}" y="${L.wy}" width="${L.ww}" height="${L.wh}" rx="${P?2:0}"/></clipPath><g clip-path="url(#${id})"><rect x="${L.wx}" y="${L.wy}" width="${L.ww}" height="${L.wh}" fill="#f4f1ef"/><image data-photo="${t.photo}"${src?` href="${src}"`:''} x="${x.toFixed(2)}" y="${(L.wy-L.wh*(1/.55-1)/2).toFixed(2)}" width="${dw.toFixed(2)}" height="${(L.wh/.55).toFixed(2)}" preserveAspectRatio="none"${flip?` transform="translate(${(2*x+dw).toFixed(2)} 0) scale(-1 1)"`:''}/></g>`}
-  else{const op=P?(t.ratio!=null?Math.min(1,Math.max(.06,t.ratio)):({neg:0,faint:.25,pos:1}[t.result]??0)):(t.ratio!=null?Math.min(1,Math.max(.06,t.ratio)):({neg:.08,low:.45,high:.85,peak:1}[t.result]??0));
+  else{// a line's darkness follows the reading; a negative result shows no test line at all
+    const shade=r=>r<.1?0:Math.min(1,Math.pow(r,1.6));
+    const op=t.result==='neg'?0:P?(t.ratio!=null?shade(t.ratio):({faint:.2,pos:1}[t.result]??0)):(t.ratio!=null?shade(t.ratio):({low:.3,high:.75,peak:1}[t.result]??0));
     win=`<rect x="${L.wx}" y="${L.wy}" width="${L.ww}" height="${L.wh}" fill="${P?'#fbfbfb':'#eceeee'}"/>${op?`<rect x="${L.T-L.lw/2}" y="${L.wy}" width="${L.lw}" height="${L.wh}" fill="#d24a72" opacity="${op}"/>`:''}<rect x="${L.C-L.lw/2}" y="${L.wy}" width="${L.lw}" height="${L.wh}" fill="#d24a72"/>`}
   if(P)return`<svg class="tsvg preg" viewBox="0 0 320 46" role="img" aria-label="Pregnancy test"><path d="M18 10h282a13 13 0 0 1 0 26H18a13 13 0 0 1 0-26z" fill="#eceeee"/><path d="M18 10h92v26H18a13 13 0 0 1 0-26z" fill="#e47fa3"/><rect x="24" y="19" width="22" height="8" rx="4" fill="#d26391"/><rect x="136" y="12" width="64" height="22" rx="11" fill="#d6d8d8"/>${win}<rect x="270" y="19" width="22" height="8" rx="4" fill="#d6d8d8"/><text x="${L.T}" y="8" class="tlb">T</text><text x="${L.C}" y="8" class="tlb">C</text></svg>`;
   return`<svg class="tsvg" viewBox="0 0 320 46" role="img" aria-label="LH strip"><rect x="4" y="12" width="312" height="22" rx="2" fill="#eceeee"/>${win}<rect x="244" y="12" width="72" height="22" fill="#424b7c"/><rect x="72" y="12" width="4" height="22" fill="#424b7c"/><path d="M62 23H44M44 23l4-3M44 23l4 3" stroke="#424b7c" stroke-width="1.6" fill="none"/><text x="${L.T}" y="9" class="tlb">T</text><text x="${L.C}" y="9" class="tlb">C</text></svg>`}
