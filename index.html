@@ -539,7 +539,7 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
       <div class="legend" id="calLegend"></div>
       <div class="calhead" id="calHead">
         <div class="calfilter"><div class="searchwrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input class="field search" id="calQ" type="search" placeholder="Search notes and symptoms" autocomplete="off" enterkeyhint="search"></div>
-          <div class="chips fchips" id="calChips"></div><div class="chips fchips opts" id="calOpts" hidden></div><div class="calcount"><span id="calCount"></span><button class="linkbtn" id="calClear" hidden>Clear</button></div></div>
+          <div class="chips fchips" id="calChips"></div><div class="chips fchips opts" id="calOpts" hidden></div><div class="calcount"><span id="calCount"></span><button class="linkbtn" id="calClear" hidden>Clear search</button></div></div>
         <div class="wk"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
       </div>
       <div id="calBody"></div>
@@ -607,8 +607,8 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 /* ================= Dutch translation (follows the phone's language, or the setting in Insights) ================= */
 const NL={
 'Today':'Vandaag','Calendar':'Kalender','Chart':'Grafiek','Insights':'Inzichten','Sections':'Onderdelen','Cycles':'Cycles',
-'Log today':'Log vandaag','Back to today':'Terug naar vandaag','Drag the bubble to any day, or tap a day on the ring.':'Sleep de bel naar een dag, of tik op een dag in de ring.',
-'Log a period to start your cycle':'Log een menstruatie om je cyclus te starten','Cycle day':'Cyclusdag','Cycle ring':'Cyclusring',
+'Log today':'Hoe gaat het vandaag?','Back to today':'Terug naar vandaag','Drag the bubble to any day, or tap a day on the ring.':'Sleep de bel naar een dag, of tik op een dag in de ring.',
+'Log a period to start your cycle':'Vul een menstruatie in om je cyclus te starten','Cycle day':'Cyclusdag','Cycle ring':'Cyclusring',
 'Next period':'Volgende menstruatie','Fertile window':'Vruchtbare periode','Nothing logged yet':'Nog niets gelogd','Predicted, not yet confirmed':'Voorspeld, nog niet bevestigd',
 'Confirmed by your LH surge':'Bevestigd door je LH-piek','Period expected today':'Menstruatie vandaag verwacht','Period expected tomorrow':'Menstruatie morgen verwacht',
 'Ovulation confirmed by temperature':'Eisprong bevestigd door temperatuur','Fertile window confirmed by LH surge':'Vruchtbare periode bevestigd door LH-piek',
@@ -619,8 +619,8 @@ const NL={
 'PMS likely around here':'Rond hier waarschijnlijk PMS','You can also tap the first day of your last period in the calendar, or':'Je kunt ook in de kalender op de eerste dag van je laatste menstruatie tikken, of',
 'import your Clue data':'je Clue-gegevens importeren',
 'MON':'MA','TUE':'DI','WED':'WO','THU':'DO','FRI':'VR','SAT':'ZA','SUN':'ZO',
-'Search notes and symptoms':'Zoek in notities en symptomen','Clear':'Wissen','Show earlier months':'Eerdere maanden tonen','Fertile':'Vruchtbaar','Predicted':'Voorspeld',
-'Ovulation':'Eisprong','No days match.':'Geen dagen gevonden.','Edit this day':'Deze dag bewerken','Log this day':'Deze dag loggen','Nothing logged for this day.':'Niets gelogd op deze dag.',
+'Search notes and symptoms':'Zoek in notities en symptomen','Clear search':'Wissen','Show earlier months':'Eerdere maanden tonen','Fertile':'Vruchtbaar','Predicted':'Voorspeld',
+'Ovulation':'Eisprong','No days match.':'Geen dagen gevonden.','Edit this day':'Deze dag bewerken','Log this day':'Deze dag invullen','Nothing logged for this day.':'Niets gelogd op deze dag.',
 'Tap a tag to find every day with it.':'Tik op een label om alle dagen ermee te vinden.','Previous day':'Vorige dag','Next day':'Volgende dag','Day':'Dag',
 'Period':'Menstruatie','Positive LH':'Positieve LH','LH test':'LH-test','Temperature':'Temperatuur','Mucus':'Slijm','Cervix':'Baarmoedermond','Pregnancy test':'Zwangerschapstest',
 'Sex':'Seks','Pain':'Pijn','Mood':'Stemming','PMS':'PMS','Energy':'Energie','Sleep':'Slaap','Dreams':'Dromen','Digestion':'Spijsvertering','Skin':'Huid','Cravings':'Trek',
@@ -635,8 +635,8 @@ const NL={
 'Tap any column to edit that day.':'Tik op een kolom om die dag te bewerken.','Emotions':'Emoties','Photos':'Foto’s','Drawn':'Getekend','LH strips':'LH-strips','Pregnancy tests':'Zwangerschapstests',
 'Mood ring for this cycle':'Stemmingsring voor deze cyclus','Tap or slide around the ring to see each day’s feelings. Tap a day again to log it. The ring shows two feelings per day, brightest on the outside. A cloud marks PMS.':'Tik of schuif over de ring om de gevoelens per dag te zien. Tik nogmaals op een dag om hem te loggen. De ring toont twee gevoelens per dag, de felste aan de buitenkant. Een wolkje betekent PMS.',
 "Tap or slide around the ring to see each day's feelings. Tap a day again to log it. The ring shows two feelings per day, brightest on the outside. A cloud marks PMS.":'Tik of schuif over de ring om de gevoelens per dag te zien. Tik nogmaals op een dag om hem te loggen. De ring toont twee gevoelens per dag, de felste aan de buitenkant. Een wolkje betekent PMS.',
-'No feelings logged in this cycle yet. Log them under Mood.':'Nog geen gevoelens gelogd in deze cyclus. Log ze onder Stemming.',
-'No period logged yet, so this shows your last days. Log the first day of your period to see cycle days and predictions.':'Nog geen menstruatie gelogd, dus dit toont je laatste dagen. Log de eerste dag van je menstruatie om cyclusdagen en voorspellingen te zien.',
+'No feelings logged in this cycle yet. Log them under Mood.':'Nog geen gevoelens gelogd in deze cyclus. Vul ze in onder Stemming.',
+'No period logged yet, so this shows your last days. Log the first day of your period to see cycle days and predictions.':'Nog geen menstruatie gelogd, dus dit toont je laatste dagen. Vul de eerste dag van je menstruatie in om cyclusdagen en voorspellingen te zien.',
 'Something went wrong drawing this chart. Please send this line to Claude:':'Er ging iets mis bij het tekenen van deze grafiek. Stuur deze regel naar Claude:',
 'Your temperature, LH, mucus, cervix and flow will line up here once you\'ve logged the start of a period.':'Je temperatuur, LH, slijm, baarmoedermond en bloeding verschijnen hier zodra je het begin van een menstruatie hebt gelogd.',
 'Median cycle, days':'Mediane cyclus, dagen','Range, days':'Spreiding, dagen','Median period, days':'Mediane menstruatie, dagen','Luteal phase (needs BBT)':'Luteale fase (BBT nodig)',
@@ -657,7 +657,7 @@ const NL={
 'Backup':'Back-up',"Everything lives only on this phone. Save a backup to Files now and then; clearing Safari's website data would erase it.":'Alles staat alleen op deze telefoon. Bewaar af en toe een back-up in Bestanden.',
 'Save backup':'Back-up bewaren','Restore backup':'Back-up terugzetten','Delete all data':'Alle gegevens wissen',
 "Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.":'Voorspellingen zijn schattingen op basis van je eigen logs. Deze app is geen medisch hulpmiddel en geen anticonceptiemethode.',
-'Log day':'Dag loggen','Done':'Klaar','Nearby days':'Dagen in de buurt','Basal body temperature':'Basale lichaamstemperatuur','Anything that could throw it off?':'Iets dat de meting kan beïnvloeden?',
+'Log day':'Dag invullen','Done':'Klaar','Nearby days':'Dagen in de buurt','Basal body temperature':'Basale lichaamstemperatuur','Anything that could throw it off?':'Iets dat de meting kan beïnvloeden?',
 'Time taken':'Tijdstip','Temperature':'Temperatuur','Ovulation test (LH)':'Ovulatietest (LH)','Scan a strip':'Strip scannen','Scan a test':'Test scannen','Scan another':'Nog een scannen','Add without photo':'Toevoegen zonder foto',
 'Add photo':'Foto toevoegen','New photo':'Nieuwe foto','Edit photo':'Foto bewerken','Delete':'Verwijderen','Photo':'Foto','Test photo':'Testfoto','Show the full photo':'Toon de hele foto',
 'Cervical mucus':'Baarmoederhalsslijm','Consistency':'Consistentie','Amount':'Hoeveelheid','Mucus colour':'Kleur slijm','Cervix position':'Positie baarmoedermond','Cervix firmness':'Stevigheid baarmoedermond','Cervix opening':'Opening baarmoedermond',
@@ -667,7 +667,7 @@ const NL={
 'Spotting':'Spotting','Medium':'Gemiddeld','Heavy':'Hevig','Ignore this one':'Deze negeren','Poor sleep':'Slecht geslapen','Alcohol':'Alcohol','Sick':'Ziek','Different time':'Ander tijdstip','Travel':'Reizen','Stress':'Stress',
 'Negative':'Negatief','Faint':'Zwak','High':'Hoog','Peak':'Piek','Faint line':'Vaag lijntje','Positive':'Positief',
 'Dry':'Droog','Sticky':'Kleverig','Creamy':'Romig','Watery':'Waterig','Egg white':'Eiwitachtig','Thin':'Dun','Thick':'Dik','Clumpy':'Klonterig','Stretchy':'Rekbaar','Slippery':'Glibberig',
-'A little':'Een beetje','Some':'Wat','A lot':'Veel','Clear':'Wissen','White':'Wit','Yellowish':'Gelig','Pinkish':'Roze','Brownish':'Bruinig',
+'A little':'Een beetje','Some':'Medium','A lot':'Veel','Clear':'Doorzichtig','White':'Wit','Yellowish':'Gelig','Pinkish':'Roze','Brownish':'Bruin',
 'Low':'Laag','Firm':'Stevig','Soft':'Zacht','Closed':'Dicht','Partly open':'Half open','Open':'Open','Protected':'Beschermd','Unprotected':'Onbeschermd',
 'Cramps':'Krampen','Headache':'Hoofdpijn','Migraine':'Migraine','Backache':'Rugpijn','Neck pain':'Nekpijn','Tender breasts':'Gevoelige borsten','Ovulation pain':'Eisprongpijn','Joint pain':'Gewrichtspijn',
 'Mild':'Mild','Moderate':'Matig','Strong':'Sterk','Okay':'Oké','Poor':'Slecht','Good':'Goed','Vivid dreams':'Levendige dromen','Nightmares':'Nachtmerries',
@@ -727,7 +727,7 @@ const NL_RULES=[
  [/^(\d+) cycles?, median (\d+) days$/,m=>`${m[1]} ${m[1]==='1'?'cyclus':'cycli'}, mediaan ${m[2]} dagen`],[/^(\d+) cycles?$/,m=>`${m[1]} ${m[1]==='1'?'cyclus':'cycli'}`],
  [/^Median cycle, days \((\d+) left out\)$/,m=>`Mediane cyclus, dagen (${m[1]} weggelaten)`],[/^Luteal phase, from (\d+) cycles?$/,m=>`Luteale fase, uit ${m[1]} ${m[1]==='1'?'cyclus':'cycli'}`],
  [/^(\d+) days? match, (.+)$/,m=>`${m[1]} ${m[1]==='1'?'dag':'dagen'} gevonden, ${m[2]}`],[/^(\d+) days? with (.+), (.+)$/,m=>`${m[1]} ${m[1]==='1'?'dag':'dagen'} met ${trWord(m[2]).toLowerCase()}, ${m[3]}`],
- [/^\+(\d+) below$/,m=>`+${m[1]} hieronder`],[/^Log (.+)$/,m=>`Log ${m[1]}`],[/^(.+) is ready\.$/,m=>`${m[1]} is klaar.`],[/^(.+) added$/,m=>`${m[1]} toegevoegd`],
+ [/^\+(\d+) below$/,m=>`+${m[1]} hieronder`],[/^Log (.+)$/,m=>`${m[1]} invullen`],[/^(.+) is ready\.$/,m=>`${m[1]} is klaar.`],[/^(.+) added$/,m=>`${m[1]} toegevoegd`],
  [/^Remove (.+) from your mood options\?$/,m=>`${m[1]} uit je stemmingsopties halen?`],[/^Remove (.+) from your options\?$/,m=>`${m[1]} uit je opties halen?`],
  [/^(.+) flow$/,m=>`Bloeding: ${trWord(m[1]).toLowerCase()}`],[/^(.+) mucus$/,m=>`Slijm: ${trWord(m[1]).toLowerCase()}`],[/^LH (.+?)(, (\d+) tests)?$/,m=>`LH ${trWord(m[1]).toLowerCase()}${m[2]?`, ${m[3]} tests`:''}`],
  [/^Pregnancy test (.+)$/,m=>`Zwangerschapstest ${trWord(m[1]).toLowerCase()}`],[/^(Cervix|Energy|Sleep|PMS|Libido) (.+)$/,m=>`${trWord(m[1])} ${trWord(m[2]).toLowerCase()}`],
@@ -834,7 +834,7 @@ LABEL.flow=Object.fromEntries(FLOWS.map(f=>[f[0],f[1]]));LABEL.preg=Object.fromE
 const TRACKS=[['bbt','Temperature','Basal body temperature and the chart',false],['tests','Tests','LH strips and pregnancy tests',false],['mucus','Mucus and cervix','Cervical mucus and cervix position',false],['sex','Sex','Sex and libido',false],['pain','Pain','Cramps, headaches and more',true],['mood','Mood','Moods and PMS',true],['body','Body','Energy, sleep, dreams, digestion, skin, cravings, medication',true],['notes','Notes','Free-text notes',true]];
 const TRACK_OF={Temperature:'bbt',Tests:'tests','Mucus and cervix':'mucus',Sex:'sex',Pain:'pain',Mood:'mood',Body:'body',Notes:'notes',lh:'tests',preg:'tests',cervix:'mucus',pms:'mood',energy:'body',sleep:'body',dreams:'body',digestion:'body',skin:'body',cravings:'body',meds:'body',note:'notes'};
 const tracking=k=>{const t=TRACK_OF[k]||k;return!state.settings.tracks||state.settings.tracks[t]!==false};
-const DEFAULTS={openSecs:['Flow','Temperature','Tests','Mucus and cervix'],mode:'auto',cycleLen:32,lutealMode:'auto',lutealLen:13,unit:'C',theme:'auto',lang:'auto',meds:[],excluded:[]};
+const DEFAULTS={openSecs:['Flow','Temperature','Tests','Mucus and cervix'],mode:'auto',cycleLen:28,lutealMode:'auto',lutealLen:13,unit:'C',theme:'auto',lang:'auto',meds:[],excluded:[]};
 let state={version:1,days:{},settings:{...DEFAULTS}};
 let model=null, logDate=null, chartIdx=null, chartPin=null, calBack=18, openYears=null;
 const dayData=k=>state.days[k]||{};
@@ -1018,7 +1018,7 @@ function centerFor(sel){
 }
 function belowFor(sel){const isT=sel===todayKey(),p=model.pred;
   return`<div class="ringbtns"><button class="btn big" id="logSel">${isT?'Log today':'Log '+fmt(sel,{day:'numeric',month:'long'})}</button></div>
-    <p class="hint center" style="margin-top:10px">${isT?(p?'Drag the bubble to any day, or tap a day on the ring.':''):'<button class="linkbtn" id="ringToday">Back to today</button>'}</p>`}
+    <p class="hint center" style="margin-top:10px">${isT?'':'<button class="linkbtn" id="ringToday">Back to today</button>'}</p>`}
 function updateRing(){const sel=ringSel||todayKey();$('#ringSvg').innerHTML=ringSVG(sel);$('#v-today .ring-center').innerHTML=centerFor(sel);$('#ringBelow').innerHTML=belowFor(sel)}
 function renderToday(){
   const m=model,p=m.pred,today=todayKey();
@@ -1253,7 +1253,7 @@ function renderInsights(){
      <button class="btn small" data-act="csv">CSV</button><button class="btn small" data-act="pdf">PDF</button></div></div>
    <div class="setrow"><p class="lbl">Backup</p><p class="hint" style="margin:0 0 10px">Everything lives only on this phone. Save a backup to Files now and then; clearing Safari's website data would erase it.</p><p class="hint" style="margin:-4px 0 10px">${state.settings.lastBackup?'Last backup: '+fmt(state.settings.lastBackup,{day:'numeric',month:'long',year:'numeric'}):'No backup saved yet'}</p><div class="datarow"><button class="btn small" data-act="export">Save backup</button><button class="btn ghost small" data-act="import">Restore backup</button></div></div>
    <div class="setrow"><div class="datarow"><button class="btn ghost small" data-act="wipe" style="color:#d4574a;border-color:#d4574a">Delete all data</button></div></div>
-   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.<br>Cycles version 12 Nov 2026 (o)</p>`;
+   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.<br>Cycles version 13 Nov 2026 (q)</p>`;
 }
 $('#v-ins').addEventListener('click',async e=>{
   const pp=e.target.closest('[data-pdfpart]');if(pp){const set=new Set(pdfParts()),k=pp.dataset.pdfpart;set.has(k)?set.delete(k):set.add(k);state.settings.pdfParts=PDF_PARTS.map(x=>x[0]).filter(x=>set.has(x));pp.setAttribute('aria-pressed',set.has(k));save();return}
@@ -1631,7 +1631,7 @@ function clueNotesToMoods(){let n=0;for(const d of Object.values(state.days)){if
 const MUC_RANK=['dry','sticky','creamy','watery','eggwhite'];
 const arrOf=v=>v==null?[]:Array.isArray(v)?v:[v];
 function mucTop(d){let b=null;for(const v of arrOf(d.mucus)){const r=MUC_RANK.indexOf(v);if(r>=0&&(b==null||r>MUC_RANK.indexOf(b)))b=v}return b}
-function migrate(){for(const d of Object.values(state.days)){for(const f of['mucus','mucusColor'])if(typeof d[f]==='string')d[f]=[d[f]]}if(!state.settings.clueMoods2){state.settings.clueMoods2=1;clueNotesToMoods()}if(!state.settings.tracks){const has=f=>Object.values(state.days).some(f);state.settings.tracks=Object.fromEntries(TRACKS.map(([k,,,on])=>[k,on]));
+function migrate(){if(!state.settings.cl28){state.settings.cl28=1;if(state.settings.cycleLen===32)state.settings.cycleLen=28}for(const d of Object.values(state.days)){for(const f of['mucus','mucusColor'])if(typeof d[f]==='string')d[f]=[d[f]]}if(!state.settings.clueMoods2){state.settings.clueMoods2=1;clueNotesToMoods()}if(!state.settings.tracks){const has=f=>Object.values(state.days).some(f);state.settings.tracks=Object.fromEntries(TRACKS.map(([k,,,on])=>[k,on]));
     if(has(d=>d.lhTests||d.pregTests||d.lh||d.preg))state.settings.tracks.tests=true;if(has(d=>d.mucus||d.cervixPos||d.cervixFirm||d.cervixOpen))state.settings.tracks.mucus=true;if(has(d=>d.sex||d.libido))state.settings.tracks.sex=true;if(has(d=>d.bbt!=null))state.settings.tracks.bbt=true}
   for(const d of Object.values(state.days))if(d.mood){const map={};d.mood=[...new Set(d.mood.map(x=>map[x]||x))];if(!d.mood.length)delete d.mood}for(const d of Object.values(state.days)){
     if(!d.lhTests&&(d.lh||d.lhPhoto||d.lhRatio!=null)){d.lhTests=[{id:newId(),time:null,result:d.lh||null,ratio:d.lhRatio??null,photo:d.lhPhoto||null,crop:d.lhCrop||null,c:d.lhC??null,t:d.lhT??null}]}
