@@ -28,6 +28,8 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .mp{color:color-mix(in srgb,var(--c) 78%,#fff)}
+  :root:not([data-theme="light"]) .emring .emc{fill:color-mix(in srgb,var(--c) 48%,transparent)}
   :root:not([data-theme="light"]){
     --bg:#141414; --surface:#1b1b1b; --surface-2:#252525; --ink:#f1eeed; --muted:#9c9a99;
     --rule:#bdbab9; --line:#343434; --cell:rgba(235,232,231,.62);
@@ -38,6 +40,8 @@
     color-scheme:dark;
   }
 }
+:root[data-theme="dark"] .mp{color:color-mix(in srgb,var(--c) 78%,#fff)}
+:root[data-theme="dark"] .emring .emc{fill:color-mix(in srgb,var(--c) 48%,transparent)}
 :root[data-theme="dark"]{
   --bg:#141414; --surface:#1b1b1b; --surface-2:#252525; --ink:#f1eeed; --muted:#9c9a99;
   --rule:#bdbab9; --line:#343434; --cell:rgba(235,232,231,.62);
@@ -51,7 +55,7 @@
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg);touch-action:manipulation;-webkit-text-size-adjust:100%}
 html,body{overflow-x:clip}
-#views{min-height:100vh}
+#views{min-height:calc(100vh - 194px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;padding-bottom:88px;-webkit-tap-highlight-color:transparent}
 body.locked{overflow:hidden}
 button{font-family:inherit;cursor:pointer}
@@ -182,6 +186,8 @@ h2.sect{font:500 21px/1.2 var(--serif);margin:28px 0 12px}
 .cg>.ovc{background:color-mix(in srgb,var(--teal-strong) 75%,transparent)}
 .cg>.ovc.pred{background:color-mix(in srgb,var(--teal-strong) 38%,transparent)}
 .cg>.ovc .lhc.peak,.cg>.ovc .muc.eggwhite{box-shadow:0 0 0 1.5px var(--bg)}
+.nopnote{font-size:13px;color:var(--muted);background:var(--surface-2);border-radius:12px;padding:10px 12px;margin:14px 0 0}
+.errbox{white-space:pre-wrap;font:12px ui-monospace,Menlo,monospace;background:var(--surface-2);border-radius:10px;padding:10px;color:var(--ink);overflow-x:auto}
 .ckeyrow{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted);margin-top:12px}
 .ckeyrow span{display:inline-flex;align-items:center;gap:6px}
 .ckeyrow i{width:14px;height:14px;border-radius:3px;display:inline-block}
@@ -212,7 +218,7 @@ h2.sect{font:500 21px/1.2 var(--serif);margin:28px 0 12px}
 .dotn{width:6px;height:6px;border-radius:50%;background:var(--muted)}
 .ckey{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.6}
 .stack{border-top:1.5px solid var(--rule)}
-.shead2,.srow{display:grid;grid-template-columns:62px 1fr 44px;gap:10px;align-items:center}
+.shead2,.srow{display:grid;grid-template-columns:58px 1fr 40px;gap:10px;align-items:center}
 .shead2{height:22px}.sa0{position:relative;height:100%;flex:1}.sa0 em{position:absolute;transform:translateX(-50%);font:700 11px var(--sans);font-style:normal;color:var(--muted);top:4px}
 .srow{width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:6px 0;color:var(--ink);text-align:left;font:inherit;cursor:pointer}
 .sl{font-size:11.5px;color:var(--muted);line-height:1.25}.sl b{display:block;color:var(--ink);font-size:13px;font-weight:600}
@@ -266,6 +272,49 @@ h2.sect{font:500 21px/1.2 var(--serif);margin:28px 0 12px}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .numrow{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:14px;color:var(--muted)}
 .numrow input{width:84px}
+.mp{--c:#9EA6AB;min-height:38px;display:inline-flex;align-items:center;gap:6px;font:500 14px var(--sans);padding:7px 13px 7px 11px;border-radius:999px;cursor:pointer;
+  color:color-mix(in srgb,var(--c) 58%,#141414);background:color-mix(in srgb,var(--c) 15%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent)}
+.mp .ico{width:16px;height:16px}
+.mp[aria-pressed="true"]{background:color-mix(in srgb,var(--c) 34%,transparent);border-color:var(--c);box-shadow:0 0 0 1px var(--c)}
+.mp.addp{--c:#9EA6AB;border-style:dashed;color:var(--muted)}
+.mp.sm{font-size:12.5px;padding:4px 10px 4px 8px;cursor:default}.mp.sm .ico{width:14px;height:14px}.mp.sm b{font-weight:600;margin-left:2px;opacity:.75}
+.mpills{gap:7px}
+.chip.addc{border-style:dashed;color:var(--muted)}
+.addin{display:inline-flex;gap:6px;align-items:center}.addin .field{width:150px;padding:7px 10px;font-size:16px}
+.sw3{width:30px;height:30px;border-radius:50%;border:0;padding:0}.sw3[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
+.icb2{--c:var(--ink);min-width:36px;height:36px;border-radius:10px;border:1px solid var(--cell);background:none;color:var(--c);display:inline-flex;align-items:center;justify-content:center;font:500 12px var(--sans);padding:0 8px}
+.icb2 .ico{width:18px;height:18px}.icb2[aria-pressed="true"]{background:color-mix(in srgb,var(--c) 22%,transparent);border-color:var(--c)}
+.cview{margin:16px 0 0;display:flex;width:max-content}
+.emring{width:100%;display:block;overflow:visible}
+.emring .emp{fill:none;stroke:var(--line);stroke-width:1}.emring .emp.fut{stroke-dasharray:2 3}
+.emring .emc{fill:color-mix(in srgb,var(--c) 30%,transparent);stroke:var(--c);stroke-width:1.3}
+.emring .dn2{stroke-width:1}.emring .dnil{fill:none;stroke:var(--line)}
+.emring .dper{fill:color-mix(in srgb,var(--f-medium) 70%,transparent);stroke:var(--f-medium)}
+.emring .dfert{fill:color-mix(in srgb,var(--teal) 75%,transparent);stroke:var(--teal-strong)}
+.emring .dfp{fill:color-mix(in srgb,var(--teal) 30%,transparent);stroke:var(--teal-strong);stroke-dasharray:2 2}
+.emring .dovu{fill:var(--teal-strong);stroke:var(--teal-strong)}
+.emring .dpp{fill:none;stroke:var(--berry);stroke-dasharray:2 2}
+.emring .dtd{stroke:var(--ink);stroke-width:2}
+.emring .dnt{font:600 8.5px var(--sans);text-anchor:middle;dominant-baseline:central;fill:var(--muted)}
+.emring .dnt.dper{fill:var(--on-heavy);stroke:none}.emring .dnt.dfert,.emring .dnt.dfp,.emring .dnt.dpp{stroke:none}.emring .dnt.dfert{fill:var(--ink)}.emring .dnt.dpp{fill:var(--berry)}
+.emring .degg{color:#fff}
+.emring .ec1{font:500 13px var(--sans);fill:var(--muted);text-anchor:middle}.emring .ec2{font:700 36px var(--serif);fill:var(--ink);text-anchor:middle}.emring .ec3{font:500 15px var(--sans);fill:var(--ink);text-anchor:middle}
+.emwrap{position:relative;max-width:420px;margin:6px auto 0}
+.emring{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:pointer}
+.emring .emhi{fill:none;stroke:var(--ink);stroke-width:2.2;pointer-events:none}
+.emcenter{position:absolute;left:50%;top:50%;width:33%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;text-align:center;pointer-events:none}
+.emcenter .cdl{font:500 12.5px var(--sans);color:var(--muted)}
+.emcd{font:700 32px/1.05 var(--serif);margin:1px 0 6px}.emcd small{font:600 13px var(--sans);color:var(--muted);margin-right:4px}
+.emcp{display:flex;flex-wrap:wrap;justify-content:center;gap:4px}
+.mp.xs{font-size:11px;padding:2px 8px 2px 6px;gap:4px;min-height:0;cursor:default}.mp.xs .ico{width:12px;height:12px}
+.emmore,.emnone{font-size:11px;color:var(--muted)}
+.emring .emcl{color:var(--cloud)}
+.emc2{width:14px;height:14px;color:var(--cloud);vertical-align:-2px}
+.emday{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:12px 0 0;padding:10px 12px;border:1px solid var(--line);border-radius:12px}
+.emdl{font:600 13px var(--sans);margin-right:4px}.emtap{font-size:10.5px;color:var(--muted);margin-top:5px}
+.kd{width:14px;height:14px;border-radius:3px;display:inline-block}
+.kd.dper{background:color-mix(in srgb,var(--f-medium) 70%,transparent)}.kd.dfert{background:color-mix(in srgb,var(--teal) 75%,transparent);border:1px solid var(--teal-strong)}.kd.dpp{border:1.5px dashed var(--berry)}
+.emleg{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
 .trklist{border-top:1.5px solid var(--rule)}
 .trk{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
 .trkl{flex:1;display:flex;align-items:center;gap:12px}.trkl .ico{width:20px;height:20px}
@@ -274,16 +323,18 @@ h2.sect{font:500 21px/1.2 var(--serif);margin:28px 0 12px}
 .sw2::after{content:"";position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
 .sw2:checked{background:var(--teal-strong);border-color:var(--teal-strong)}.sw2:checked::after{transform:translateX(20px)}
 .datarow{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.infob{margin-left:auto;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--muted);background:none;color:var(--muted);font:italic 700 13px/1 Georgia,serif;padding:0;display:inline-grid;place-items:center;flex:none}
+.infob[aria-expanded="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 .fine{font-size:13px;color:var(--muted);line-height:1.55;margin-top:24px}
 
 /* ---------- inputs & chips ---------- */
 .field{background:var(--surface);border:1px solid var(--cell);border-radius:10px;color:var(--ink);font:500 17px var(--sans);padding:10px 12px;width:100%;-webkit-appearance:none;appearance:none}
 textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--cell);background:transparent;color:var(--ink);border-radius:999px;padding:8px 14px;font:500 14.5px var(--sans);display:inline-flex;align-items:center;gap:7px;min-height:40px}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.chip.b[aria-pressed="true"]{background:var(--berry-soft);color:var(--ink);border-color:var(--berry)}
-.chip.t[aria-pressed="true"]{background:var(--teal-soft);color:var(--ink);border-color:var(--teal-strong)}
+.chip{--c:var(--cloud);border:1px solid color-mix(in srgb,var(--c) 32%,transparent);background:color-mix(in srgb,var(--c) 13%,transparent);color:color-mix(in srgb,var(--c) 45%,var(--ink));border-radius:999px;padding:7px 14px;font:500 14px var(--sans);display:inline-flex;align-items:center;gap:7px;min-height:38px}
+.chip.b{--c:var(--berry)}.chip.t{--c:var(--teal-strong)}
+.chip[aria-pressed="true"]{background:color-mix(in srgb,var(--c) 34%,transparent);border-color:var(--c);box-shadow:0 0 0 1px var(--c);color:color-mix(in srgb,var(--c) 30%,var(--ink))}
+.chip .fi{border-color:currentColor}
 
 /* ---------- log sheet ---------- */
 .sheet{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:var(--bg);transform:translateY(102%);transition:transform .32s cubic-bezier(.2,.8,.2,1);padding-top:calc(env(safe-area-inset-top,0px) + 10px);visibility:hidden}
@@ -367,11 +418,21 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 .lhfull img{display:block;width:100%;height:auto;max-height:120px;object-fit:cover}
 .lhfull .mk{position:absolute;top:0;transform:translateX(-50%);font:700 10px var(--sans);font-style:normal;color:#fff;padding:1px 5px 2px;border-radius:0 0 5px 5px}
 .lhfull .mk.c{background:#e0708f}.lhfull .mk.t{background:#3faea6}
+.sectrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.sectrow .sect{margin-right:auto}
+.seg.tview{margin:0 0 10px}.seg.tview button{padding:6px 11px;font-size:12.5px}.sectrow .seg.tview{margin:28px 0 12px}
+.tdraw{position:relative;display:block;width:100%;padding:0;border:0;background:none;margin:0 0 6px;cursor:pointer;color:inherit}
+.tsvg{display:block;width:100%;height:auto}.tsvg .tlb{font:600 9px var(--sans);fill:var(--muted);text-anchor:middle}
+.tzoom{position:absolute;right:0;bottom:-2px;font:500 10.5px var(--sans);color:var(--muted)}
+.tphoto img{display:block;width:auto;max-width:100%;height:auto;max-height:120px;margin:0 auto;border-radius:8px}
+.srow .tphoto img{max-height:64px;border-radius:4px}
+.srow .tdraw{margin:0}.srow .tzoom{display:none}
+.pkph{flex-direction:column}.pkph .tdraw{max-width:300px}
 .tcard{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px;background:var(--surface)}
 .tcard .lhfull{margin-bottom:8px}
 .trow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .trow .ttime{width:112px;padding:7px 10px;font-size:16px}
-.trow .btn.small{padding:7px 11px;font-size:13px}
+.trow .btn.small{padding:6px 10px;font-size:12.5px}
+.trow .ttime{width:96px!important}
 .addrow2{display:flex;gap:8px;flex-wrap:wrap}
 .addrow2 .ico{width:16px;height:16px;margin-right:2px}
 .lhthumb{width:56px;height:74px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--surface-2)}
@@ -399,7 +460,7 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 .pickrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .pickrow label{position:relative;overflow:hidden}
 #loupe{position:fixed;z-index:90;width:220px;height:120px;border-radius:14px;border:2px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,.45);pointer-events:none}
-#loupe[hidden]{display:none}
+#loupe[hidden],#confirmAlt[hidden]{display:none}
 #cropBtns .rowend{justify-content:center}
 #cropOk{flex-basis:100%;padding:14px;font-size:16px}
 #cropBtns[hidden],#tapBtns[hidden],#scanPick[hidden]{display:none}
@@ -435,6 +496,29 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 <symbol id="i-battery" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="7.5" width="15" height="9" rx="2"/><path d="M21 11v2"/><path d="M6.8 10.5v3M9.8 10.5v3" stroke-width="2.4"/></g></symbol>
 <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.5A7.5 7.5 0 1 1 9.5 4.5a6 6 0 0 0 10 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
 <symbol id="i-dream" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M15.5 15.5A6.5 6.5 0 1 1 8.5 6a5 5 0 0 0 7 9.5z"/><path d="M17.5 4.5v3M16 6h3M20 10v2M19 11h2"/></g></symbol>
+<symbol id="i-plus2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+<symbol id="m-smile" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M8.5 13.5a4 4 0 0 0 7 0M9.5 9.5h0M14.5 9.5h0"/></g></symbol>
+<symbol id="m-sad" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M8.5 16a4 4 0 0 1 7 0M9.5 9.5h0M14.5 9.5h0"/></g></symbol>
+<symbol id="m-flat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M9 15h6M9.5 9.5h0M14.5 9.5h0"/></g></symbol>
+<symbol id="m-nervous" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M8 15c1.3-1.3 2.7 1.3 4 0s2.7 1.3 4 0M9.5 9.5h0M14.5 9.5h0"/></g></symbol>
+<symbol id="m-confused" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M9 15.5l6-1.5M9.5 9.5h0M14.5 9.5h0"/></g></symbol>
+<symbol id="m-surprised" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="15" r="1.6"/><path d="M9.5 9.5h0M14.5 9.5h0"/></g></symbol>
+<symbol id="m-angry" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M8.5 16a4 4 0 0 1 7 0M8 8.5l2.5 1.2M16 8.5l-2.5 1.2"/></g></symbol>
+<symbol id="m-leaf" viewBox="0 0 24 24"><path d="M5 19C5 11 10 6 19 5c0 9-5 14-14 14zM5 19l7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="m-hearto" viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="m-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6zM9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="m-ghost" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20v-9a6 6 0 0 1 12 0v9l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5z"/><path d="M10 10h0M14 10h0"/></g></symbol>
+<symbol id="m-tornado" viewBox="0 0 24 24"><path d="M4 5h16M6 9h12M8 13h9M10 17h5M11.5 21h1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="m-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></g></symbol>
+<symbol id="m-dropo" viewBox="0 0 24 24"><path d="M12 3.5c3 4 5.5 7 5.5 10a5.5 5.5 0 0 1-11 0c0-3 2.5-6 5.5-10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="m-feather" viewBox="0 0 24 24"><path d="M18 4C9 5 6 12 6 19M6 19l3-3M9 12h5M12 8h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="m-fog" viewBox="0 0 24 24"><path d="M4 8h11M7 12h13M4 16h9M10 20h8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+<symbol id="m-dots" viewBox="0 0 24 24"><g fill="currentColor"><circle cx="6" cy="7" r="2"/><circle cx="17" cy="6" r="1.6"/><circle cx="12" cy="13" r="2.2"/><circle cx="5" cy="18" r="1.5"/><circle cx="18" cy="17" r="2"/></g></symbol>
+<symbol id="m-batlow" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="7.5" width="15" height="9" rx="2"/><path d="M21 11v2M6.8 10.5v3" /></g></symbol>
+<symbol id="m-updown" viewBox="0 0 24 24"><path d="M8 4v16M8 4 5 7M8 4l3 3M16 20V4M16 20l-3-3M16 20l3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="m-rocket" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 2 5 6 4 11l-2 3h-4l-2-3c-1-5 1-9 4-11zM10 17l-2 4M14 17l2 4"/><circle cx="12" cy="9.5" r="1.5"/></g></symbol>
+<symbol id="m-refresh" viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2.1-5M19 4v4h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="m-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/></g></symbol>
 <symbol id="i-swirl" viewBox="0 0 24 24"><path d="M12 12a1.5 1.5 0 1 1 1.5-1.5A3.5 3.5 0 1 1 10 7a5.5 5.5 0 1 1-4.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
 <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 4c.6 4.2 1.8 5.4 6 6-4.2.6-5.4 1.8-6 6-.6-4.2-1.8-5.4-6-6 4.2-.6 5.4-1.8 6-6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
 <symbol id="i-cookie" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><path d="M9.5 10h0M14 9h0M13 14.5h0" stroke-width="2.8"/></g></symbol>
@@ -497,6 +581,18 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
   <div id="pkBody"></div>
   <div style="margin-top:18px"><button class="btn big" id="pkEdit" style="width:100%">Edit this day</button></div>
 </div></div>
+<div class="modal" id="moodAdd" role="dialog" aria-modal="true" aria-label="Add your own feeling"><div class="mcard">
+  <div class="mhead"><h4 id="maTitle">Add your own feeling</h4><button class="iconbtn" data-close="moodAdd" aria-label="Close">✕</button></div>
+  <input class="field" id="maName" placeholder="Foggy morning" autocomplete="off" enterkeyhint="done" style="margin-top:10px"><p class="warn" id="maErr" style="margin:6px 0 0;font-size:13px"></p>
+  <div class="sub">Colour</div><div class="chips" id="maSw" style="gap:10px"></div>
+  <div id="maIcBox"><div class="sub">Icon</div><div class="chips" id="maIc" style="gap:8px"></div></div>
+  <div class="rowend" style="align-items:center;justify-content:space-between"><span id="maPrev"></span><button class="btn small" id="maOk">Add</button></div>
+</div></div>
+<div class="modal" id="photoView" role="dialog" aria-modal="true" aria-label="Test photo"><div class="mcard">
+  <div class="mhead"><h4>Photo</h4><button class="iconbtn" data-close="photoView" aria-label="Close">✕</button></div>
+  <img id="pvImg" alt="Full test photo" style="width:100%;border-radius:10px;margin-top:10px;display:block">
+  <button class="btn big" id="pvEdit" style="width:100%;margin-top:14px">Edit photo</button>
+</div></div>
 <div class="modal" id="confirm" role="alertdialog" aria-modal="true"><div class="mcard small">
   <p id="confirmMsg" style="font-size:16px;margin:4px 0 0"></p>
   <div class="rowend"><button class="btn ghost small" id="confirmNo">Cancel</button><button class="btn ghost small" id="confirmAlt" hidden></button><button class="btn small" id="confirmYes">OK</button></div>
@@ -508,6 +604,163 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 <div class="toast" id="toast" role="status"></div>
 
 <script>
+/* ================= Dutch translation (follows the phone's language, or the setting in Insights) ================= */
+const NL={
+'Today':'Vandaag','Calendar':'Kalender','Chart':'Grafiek','Insights':'Inzichten','Sections':'Onderdelen','Cycles':'Cycles',
+'Log today':'Log vandaag','Back to today':'Terug naar vandaag','Drag the bubble to any day, or tap a day on the ring.':'Sleep de bel naar een dag, of tik op een dag in de ring.',
+'Log a period to start your cycle':'Log een menstruatie om je cyclus te starten','Cycle day':'Cyclusdag','Cycle ring':'Cyclusring',
+'Next period':'Volgende menstruatie','Fertile window':'Vruchtbare periode','Nothing logged yet':'Nog niets gelogd','Predicted, not yet confirmed':'Voorspeld, nog niet bevestigd',
+'Confirmed by your LH surge':'Bevestigd door je LH-piek','Period expected today':'Menstruatie vandaag verwacht','Period expected tomorrow':'Menstruatie morgen verwacht',
+'Ovulation confirmed by temperature':'Eisprong bevestigd door temperatuur','Fertile window confirmed by LH surge':'Vruchtbare periode bevestigd door LH-piek',
+'In your fertile window':'In je vruchtbare periode','Likely fertile window':'Waarschijnlijk vruchtbaar','Waiting for a temperature shift':'Wachten op een temperatuurstijging',
+'Predicted ovulation':'Voorspelde eisprong','Estimated ovulation':'Geschatte eisprong','Ovulation day':'Dag van de eisprong','Likely fertile':'Waarschijnlijk vruchtbaar',
+'Estimated fertile window':'Geschatte vruchtbare periode','Predicted period':'Voorspelde menstruatie','Nothing else logged':'Verder niets gelogd','Still to come':'Moet nog komen',
+'No feelings logged':'Geen gevoelens gelogd','Tap again to log':'Tik nogmaals om te loggen','PERIOD':'MENSTRUATIE','FERTILE WINDOW':'VRUCHTBAAR',
+'PMS likely around here':'Rond hier waarschijnlijk PMS','You can also tap the first day of your last period in the calendar, or':'Je kunt ook in de kalender op de eerste dag van je laatste menstruatie tikken, of',
+'import your Clue data':'je Clue-gegevens importeren',
+'MON':'MA','TUE':'DI','WED':'WO','THU':'DO','FRI':'VR','SAT':'ZA','SUN':'ZO',
+'Search notes and symptoms':'Zoek in notities en symptomen','Clear':'Wissen','Show earlier months':'Eerdere maanden tonen','Fertile':'Vruchtbaar','Predicted':'Voorspeld',
+'Ovulation':'Eisprong','No days match.':'Geen dagen gevonden.','Edit this day':'Deze dag bewerken','Log this day':'Deze dag loggen','Nothing logged for this day.':'Niets gelogd op deze dag.',
+'Tap a tag to find every day with it.':'Tik op een label om alle dagen ermee te vinden.','Previous day':'Vorige dag','Next day':'Volgende dag','Day':'Dag',
+'Period':'Menstruatie','Positive LH':'Positieve LH','LH test':'LH-test','Temperature':'Temperatuur','Mucus':'Slijm','Cervix':'Baarmoedermond','Pregnancy test':'Zwangerschapstest',
+'Sex':'Seks','Pain':'Pijn','Mood':'Stemming','PMS':'PMS','Energy':'Energie','Sleep':'Slaap','Dreams':'Dromen','Digestion':'Spijsvertering','Skin':'Huid','Cravings':'Trek',
+'Medication':'Medicatie','Notes':'Notities','Note':'Notitie','Body':'Lichaam','Tests':'Tests',
+'Current cycle':'Huidige cyclus','Earlier cycle':'Eerdere cyclus','Later cycle':'Latere cyclus','Cycle chart':'Cyclusgrafiek','Date':'Datum','Flow':'Bloeding','LH':'LH',
+'Show details':'Details tonen','Show compact chart':'Compacte grafiek tonen','Temperature':'Temperatuur','LH (T/C)':'LH (T/C)','Counted in predictions':'Telt mee in voorspellingen',
+'Left out of predictions':'Weggelaten uit voorspellingen','No ovulation detected yet in this cycle.':'Nog geen eisprong gevonden in deze cyclus.','No ovulation detected.':'Geen eisprong gevonden.',
+'The dashed line is your coverline.':'De stippellijn is je dekkingslijn.','Tap anywhere on the chart to open that day.':'Tik ergens op de grafiek om die dag te openen.',
+'Hollow temperatures are flagged (poor sleep, alcohol…) and left out of detection.':'Holle temperaturen zijn gemarkeerd (slecht geslapen, alcohol…) en tellen niet mee.',
+'The teal line is your LH ratio from scanned strips; hollow diamonds are tests logged without a scan (L faint, H high, P peak).':'De groenblauwe lijn is je LH-ratio van gescande strips; holle ruiten zijn tests zonder scan (L zwak, H hoog, P piek).',
+'Mucus: D dry, S sticky, C creamy, W watery, E egg white.':'Slijm: D droog, S kleverig, C romig, W waterig, E eiwitachtig.','Cervix: ↑ high, ↓ low, S soft, F firm, ○ open, • closed.':'Baarmoedermond: ↑ hoog, ↓ laag, S zacht, F stevig, ○ open, • dicht.',
+'Tap any column to edit that day.':'Tik op een kolom om die dag te bewerken.','Emotions':'Emoties','Photos':'Foto’s','Drawn':'Getekend','LH strips':'LH-strips','Pregnancy tests':'Zwangerschapstests',
+'Mood ring for this cycle':'Stemmingsring voor deze cyclus','Tap or slide around the ring to see each day’s feelings. Tap a day again to log it. The ring shows two feelings per day, brightest on the outside. A cloud marks PMS.':'Tik of schuif over de ring om de gevoelens per dag te zien. Tik nogmaals op een dag om hem te loggen. De ring toont twee gevoelens per dag, de felste aan de buitenkant. Een wolkje betekent PMS.',
+"Tap or slide around the ring to see each day's feelings. Tap a day again to log it. The ring shows two feelings per day, brightest on the outside. A cloud marks PMS.":'Tik of schuif over de ring om de gevoelens per dag te zien. Tik nogmaals op een dag om hem te loggen. De ring toont twee gevoelens per dag, de felste aan de buitenkant. Een wolkje betekent PMS.',
+'No feelings logged in this cycle yet. Log them under Mood.':'Nog geen gevoelens gelogd in deze cyclus. Log ze onder Stemming.',
+'No period logged yet, so this shows your last days. Log the first day of your period to see cycle days and predictions.':'Nog geen menstruatie gelogd, dus dit toont je laatste dagen. Log de eerste dag van je menstruatie om cyclusdagen en voorspellingen te zien.',
+'Something went wrong drawing this chart. Please send this line to Claude:':'Er ging iets mis bij het tekenen van deze grafiek. Stuur deze regel naar Claude:',
+'Your temperature, LH, mucus, cervix and flow will line up here once you\'ve logged the start of a period.':'Je temperatuur, LH, slijm, baarmoedermond en bloeding verschijnen hier zodra je het begin van een menstruatie hebt gelogd.',
+'Median cycle, days':'Mediane cyclus, dagen','Range, days':'Spreiding, dagen','Median period, days':'Mediane menstruatie, dagen','Luteal phase (needs BBT)':'Luteale fase (BBT nodig)',
+'Cycle history':'Cyclusgeschiedenis','Tap Counted to leave an unusual cycle out of your averages and predictions. It stays in your history and calendar.':'Tik op Telt mee om een afwijkende cyclus weg te laten uit je gemiddelden en voorspellingen. Hij blijft in je geschiedenis en kalender staan.',
+'Cycles appear here once you log your periods.':'Cycli verschijnen hier zodra je je menstruaties logt.','Counted':'Telt mee','Left out':'Weggelaten','Leave this cycle out':'Deze cyclus weglaten','Count this cycle':'Deze cyclus meetellen',
+'Tracking':'Bijhouden','Choose what shows up in your log. Turning something off hides it, but keeps anything you logged.':'Kies wat er in je log staat. Iets uitzetten verbergt het, maar wat je al gelogd hebt blijft bewaard.',
+'Basal body temperature and the chart':'Basale lichaamstemperatuur en de grafiek','LH strips and pregnancy tests':'LH-strips en zwangerschapstests','Mucus and cervix':'Slijm en baarmoedermond',
+'Cervical mucus and cervix position':'Baarmoederhalsslijm en positie baarmoedermond','Sex and libido':'Seks en libido','Cramps, headaches and more':'Krampen, hoofdpijn en meer','Moods and PMS':'Stemmingen en PMS',
+'Energy, sleep, dreams, digestion, skin, cravings, medication':'Energie, slaap, dromen, spijsvertering, huid, trek, medicatie','Free-text notes':'Vrije notities',
+'Your own options':'Je eigen opties','Tap one to remove it from your log. Days you already logged keep it.':'Tik op een optie om hem uit je log te halen. Dagen die je al gelogd hebt houden hem.',
+'Predictions':'Voorspellingen','Cycle length':'Cycluslengte','Learn from my cycles':'Leer van mijn cycli','Fixed length':'Vaste lengte','days, used until a full cycle is logged':'dagen, gebruikt tot er een hele cyclus is gelogd','days':'dagen',
+"Learning uses the median of your last six cycles, so one short cycle can't drag predictions down. A late period is shown as late; the app never quietly shortens your cycle.":'Leren gebruikt de mediaan van je laatste zes cycli, zodat één korte cyclus de voorspellingen niet omlaag trekt. Een late menstruatie wordt als te laat getoond; de app maakt je cyclus nooit stilletjes korter.',
+'Luteal phase':'Luteale fase','From my temperatures':'Uit mijn temperaturen','Fixed':'Vast','days, used until a shift is detected':'dagen, gebruikt tot er een stijging is gevonden',
+"Once a temperature shift confirms ovulation, your next period is predicted from it. That's usually far more accurate for long cycles.":'Zodra een temperatuurstijging de eisprong bevestigt, wordt je volgende menstruatie daarop voorspeld. Dat is bij lange cycli meestal veel nauwkeuriger.',
+'Display':'Weergave','Theme':'Thema','Match phone':'Zoals telefoon','Light':'Licht','Dark':'Donker','Language':'Taal','English':'English','Nederlands':'Nederlands',
+'Your data':'Je gegevens','Import from Clue':'Importeren uit Clue','In Clue, export your data, save the file to Files, then choose it here. Imported days merge with what you already have.':'Exporteer je gegevens in Clue, bewaar het bestand in Bestanden en kies het hier. Geïmporteerde dagen worden samengevoegd met wat je al hebt.',
+'Choose Clue file':'Clue-bestand kiezen','Export':'Exporteren','A spreadsheet of every logged day, or a printable PDF with a year overview, monthly pages and your temperature charts.':'Een spreadsheet van elke gelogde dag, of een printbare pdf met een jaaroverzicht, maandpagina’s en je temperatuurgrafieken.',
+'Backup':'Back-up',"Everything lives only on this phone. Save a backup to Files now and then; clearing Safari's website data would erase it.":'Alles staat alleen op deze telefoon. Bewaar af en toe een back-up in Bestanden.',
+'Save backup':'Back-up bewaren','Restore backup':'Back-up terugzetten','Delete all data':'Alle gegevens wissen',
+"Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.":'Voorspellingen zijn schattingen op basis van je eigen logs. Deze app is geen medisch hulpmiddel en geen anticonceptiemethode.',
+'Log day':'Dag loggen','Done':'Klaar','Nearby days':'Dagen in de buurt','Basal body temperature':'Basale lichaamstemperatuur','Anything that could throw it off?':'Iets dat de meting kan beïnvloeden?',
+'Time taken':'Tijdstip','Temperature':'Temperatuur','Ovulation test (LH)':'Ovulatietest (LH)','Scan a strip':'Strip scannen','Scan a test':'Test scannen','Scan another':'Nog een scannen','Add without photo':'Toevoegen zonder foto',
+'Add photo':'Foto toevoegen','New photo':'Nieuwe foto','Edit photo':'Foto bewerken','Delete':'Verwijderen','Photo':'Foto','Test photo':'Testfoto','Show the full photo':'Toon de hele foto',
+'Cervical mucus':'Baarmoederhalsslijm','Consistency':'Consistentie','Amount':'Hoeveelheid','Mucus colour':'Kleur slijm','Cervix position':'Positie baarmoedermond','Cervix firmness':'Stevigheid baarmoedermond','Cervix opening':'Opening baarmoedermond',
+'Libido':'Libido','Medication and supplements':'Medicatie en supplementen','Add one, e.g. Vitamin D':'Voeg toe, bijv. vitamine D','Add':'Toevoegen','Anything else about today':'Nog iets over vandaag',
+'+ Add your own':'+ Zelf toevoegen','Add your own':'Zelf toevoegen','Add your own feeling':'Eigen gevoel toevoegen','Add your own option':'Eigen optie toevoegen','Foggy morning':'Mistige ochtend','Jaw pain':'Kaakpijn',
+'Colour':'Kleur','Icon':'Icoon','None':'Geen','Your feeling':'Je gevoel','Give it a name first.':'Geef het eerst een naam.','Close':'Sluiten','Cancel':'Annuleren','OK':'OK','Save':'Bewaren','Remove':'Verwijderen',
+'Spotting':'Spotting','Medium':'Gemiddeld','Heavy':'Hevig','Ignore this one':'Deze negeren','Poor sleep':'Slecht geslapen','Alcohol':'Alcohol','Sick':'Ziek','Different time':'Ander tijdstip','Travel':'Reizen','Stress':'Stress',
+'Negative':'Negatief','Faint':'Zwak','High':'Hoog','Peak':'Piek','Faint line':'Vaag lijntje','Positive':'Positief',
+'Dry':'Droog','Sticky':'Kleverig','Creamy':'Romig','Watery':'Waterig','Egg white':'Eiwitachtig','Thin':'Dun','Thick':'Dik','Clumpy':'Klonterig','Stretchy':'Rekbaar','Slippery':'Glibberig',
+'A little':'Een beetje','Some':'Wat','A lot':'Veel','Clear':'Wissen','White':'Wit','Yellowish':'Gelig','Pinkish':'Roze','Brownish':'Bruinig',
+'Low':'Laag','Firm':'Stevig','Soft':'Zacht','Closed':'Dicht','Partly open':'Half open','Open':'Open','Protected':'Beschermd','Unprotected':'Onbeschermd',
+'Cramps':'Krampen','Headache':'Hoofdpijn','Migraine':'Migraine','Backache':'Rugpijn','Neck pain':'Nekpijn','Tender breasts':'Gevoelige borsten','Ovulation pain':'Eisprongpijn','Joint pain':'Gewrichtspijn',
+'Mild':'Mild','Moderate':'Matig','Strong':'Sterk','Okay':'Oké','Poor':'Slecht','Good':'Goed','Vivid dreams':'Levendige dromen','Nightmares':'Nachtmerries',
+'Bloated':'Opgeblazen','Constipated':'Verstopt','Diarrhea':'Diarree','Nauseous':'Misselijk','Breakouts':'Puistjes','Oily':'Vet','Sweet':'Zoet','Salty':'Zout','Carbs':'Koolhydraten',
+'Happy':'Blij','Grateful':'Dankbaar','Hopeful':'Hoopvol','Calm':'Kalm','Loved':'Geliefd','Confident':'Zelfverzekerd','Excited':'Enthousiast','Motivated':'Gemotiveerd',
+'Sad':'Verdrietig','Teary':'Huilerig','Sensitive':'Gevoelig','Bored':'Verveeld','Unmotivated':'Ongemotiveerd','Anxious':'Angstig','Scared':'Bang','Insecure':'Onzeker','Overwhelmed':'Overweldigd',
+'Brain fog':'Hersenmist','Absent-minded':'Verstrooid','Angry':'Boos','Irritable':'Prikkelbaar','Frustrated':'Gefrustreerd','Moody':'Wisselend humeur','Restless':'Rusteloos','Surprised':'Verrast','Lonely':'Eenzaam',
+'Scan an LH strip':'LH-strip scannen','Scan a pregnancy test':'Zwangerschapstest scannen','Scan LH strip':'LH-strip scannen','Take photo':'Foto maken','Choose from library':'Kies uit bibliotheek',
+'Lay the strip on something plain and white, in even daylight with no flash, and get close.':'Leg de strip op iets effen wits, in gelijkmatig daglicht zonder flitser, en ga er dichtbij.',
+'Straighten the strip with the slider so the lines stand upright, then drag the corners around it.':'Zet de strip recht met de schuifbalk zodat de lijnen rechtop staan, en sleep dan de hoeken eromheen.',
+'Touch the control line (C) and slide to place it exactly. A magnifier shows where it lands.':'Raak de controlelijn (C) aan en schuif om hem precies te plaatsen. Een vergrootglas laat zien waar hij komt.',
+'Now place the test line (T) the same way, even if it’s faint or blank.':'Plaats nu de testlijn (T) op dezelfde manier, ook als hij zwak of leeg is.',
+'Drag either marker to fine-tune. The reading updates when you let go.':'Sleep een markering om bij te stellen. De meting wordt bijgewerkt als je loslaat.',
+'Straighten':'Rechtzetten','Rotate left a little':'Iets naar links draaien','Rotate right a little':'Iets naar rechts draaien','Find strip':'Strip zoeken','Zoom in':'Inzoomen','Zoom out':'Uitzoomen','Turn 90°':'90° draaien',
+'Skip cropping':'Niet bijsnijden','Crop':'Bijsnijden','Redo crop':'Opnieuw bijsnijden','Swap C/T':'C/T wisselen','Redo taps':'Opnieuw plaatsen','Save to this day':'Bewaren bij deze dag','T/C ratio':'T/C-ratio','Line strength':'Lijnsterkte',
+'Estimated from the photo: under 0.3 negative, up to 0.8 faint, up to 1.0 high, 1.0 or more peak. Lighting affects this, so trust your eyes if they disagree.':'Geschat uit de foto: onder 0,3 negatief, tot 0,8 zwak, tot 1,0 hoog, 1,0 of meer piek. Licht beïnvloedt dit, dus vertrouw op je ogen als ze het oneens zijn.',
+'Estimated from the photo. Any visible test line usually counts, however faint, so check the leaflet and confirm with a new test if unsure.':'Geschat uit de foto. Elke zichtbare testlijn telt meestal mee, hoe zwak ook, dus check de bijsluiter en bevestig met een nieuwe test als je twijfelt.',
+'Lines placed automatically. Drag to adjust, or swap C and T.':'Lijnen automatisch geplaatst. Sleep om aan te passen, of wissel C en T.','Lines found, check the box':'Lijnen gevonden, controleer het kader',
+'No coloured lines found. Crop by hand instead.':'Geen gekleurde lijnen gevonden. Snijd zelf bij.','Edit photo':'Foto bewerken','The photo could not be found.':'De foto kon niet worden gevonden.','The photo could not be opened.':'De foto kon niet worden geopend.',
+'Opening photo…':'Foto openen…','Strip saved':'Strip bewaard','Test saved':'Test bewaard','Test deleted':'Test verwijderd','Photo deleted':'Foto verwijderd','Photo only':'Alleen foto','Whole test':'Hele test',
+'Delete this test?':'Deze test verwijderen?','Delete this test? You can keep its result and remove only the photo.':'Deze test verwijderen? Je kunt de uitslag houden en alleen de foto verwijderen.',
+'That photo couldn’t be opened. In Settings → Camera → Formats, “Most Compatible” saves photos as JPEG, which always works.':'Die foto kon niet worden geopend. Bij Instellingen → Camera → Formaten bewaart “Meest compatibel” foto’s als JPEG, en dat werkt altijd.',
+'Making your PDF…':'Je pdf wordt gemaakt…','The PDF tool couldn’t load. Connect to the internet once and try again.':'De pdf-tool kon niet laden. Maak één keer verbinding met internet en probeer het opnieuw.',
+'Delete every logged day, photo and setting on this phone? This can’t be undone.':'Alle gelogde dagen, foto’s en instellingen op deze telefoon wissen? Dit kan niet ongedaan worden gemaakt.',
+'Delete everything':'Alles wissen','All data deleted':'Alle gegevens gewist','Replace everything on this phone with this backup?':'Alles op deze telefoon vervangen door deze back-up?','Backup restored':'Back-up teruggezet',
+'That file isn’t readable JSON. Choose a Clue export or a backup from this app.':'Dat bestand is geen leesbare JSON. Kies een Clue-export of een back-up van deze app.','No dated entries found in that file.':'Geen gedateerde gegevens in dat bestand gevonden.',
+'Your data was cleared on this phone':'Je gegevens zijn op deze telefoon gewist','Cycle counted in predictions again':'Cyclus telt weer mee in voorspellingen','Cycle left out of predictions':'Cyclus weggelaten uit voorspellingen',
+'Enter a temperature between 34 and 42°C':'Vul een temperatuur tussen 34 en 42°C in','Enter a temperature between 93 and 108°F':'Vul een temperatuur tussen 93 en 108°F in',
+'Mind and more':'Hoofd en meer','No notes this month.':'Geen notities deze maand.','More notes in the CSV export.':'Meer notities in de CSV-export.',
+'FLOW':'BLOEDING','ICONS':'ICONEN','SYMPTOMS':'SYMPTOMEN','NOTES':'NOTITIES','Positive LH':'Positieve LH','Time':'Tijd','Pregnancy':'Zwangerschap','LH test':'LH-test',
+'A temperature rise follows ovulation rather than warning of it.':'Een temperatuurstijging volgt op de eisprong in plaats van hem aan te kondigen.',
+'Pink columns are period days, teal the fertile window, darker teal (with the egg) ovulation.':'Roze kolommen zijn menstruatiedagen, groenblauw de vruchtbare periode, donkerder groenblauw (met het eitje) de eisprong.',
+'The teal line is your LH ratio; hollow marks are estimates or flagged temperatures.':'De groenblauwe lijn is je LH-ratio; holle markeringen zijn schattingen of gemarkeerde temperaturen.',
+'Not medical advice or contraception.':'Geen medisch advies of anticonceptie.','Predictions are estimates; this is not medical advice or contraception.':'Voorspellingen zijn schattingen; dit is geen medisch advies of anticonceptie.',
+'JAN':'JAN','FEB':'FEB','MAR':'MRT','APR':'APR','MAY':'MEI','JUN':'JUN','JUL':'JUL','AUG':'AUG','SEP':'SEP','OCT':'OKT','NOV':'NOV','DEC':'DEC',
+'Date':'Datum','DPO':'DPO','Fertile window':'Vruchtbare periode','Temperature time':'Tijdstip temperatuur','Temperature flags':'Temperatuurmarkeringen','LH test (best)':'LH-test (beste)','LH T/C ratio (highest)':'LH T/C-ratio (hoogste)',
+'All LH tests':'Alle LH-tests','Pregnancy test (best)':'Zwangerschapstest (beste)','All pregnancy tests':'Alle zwangerschapstests','Mucus consistency':'Consistentie slijm','Mucus amount':'Hoeveelheid slijm',
+'Yes':'Ja','Feelings':'Gevoelens','MOST LOGGED':'MEEST GELOGD','Year overview':'Jaaroverzicht','Monthly pages':'Maandpagina’s','Temperature charts':'Temperatuurgrafieken','Feelings rings':'Emotieringen','Test photos':'Testfoto’s',
+'A spreadsheet of every logged day, or a printable PDF. Tick what goes in the PDF:':'Een spreadsheet van elke gelogde dag, of een printbare pdf. Vink aan wat er in de pdf komt:','Tick at least one part for the PDF.':'Vink minstens één onderdeel voor de pdf aan.',
+'LH STRIPS':'LH-STRIPS','PREGNANCY TESTS':'ZWANGERSCHAPSTESTS','No photo':'Geen foto','No feelings logged.':'Geen gevoelens gelogd.','Nothing to show for these choices.':'Niets te tonen voor deze keuzes.','In Clue, go to Settings → Download my data. Clue emails you a zip file and shows a password for it. Unzip it, save the .json file to Files, then choose it here. Imported days merge with what you already have.':'Ga in Clue naar Instellingen en kies het downloaden van je gegevens. Clue mailt je een zip-bestand en toont er een wachtwoord bij. Pak het uit, bewaar het .json-bestand in Bestanden en kies het hier. Geïmporteerde dagen worden samengevoegd met wat je al hebt.','How to get your Clue data ↗':'Zo krijg je je Clue-gegevens ↗','How to read this':'Uitleg','Tired':'Moe','Energetic':'Fit','No backup saved yet':'Nog geen back-up bewaard','Not now':'Niet nu',
+'You haven\u2019t saved a backup yet. Save one to Files now? Everything lives only on this phone.':'Je hebt nog geen back-up bewaard. Nu een back-up in Bestanden bewaren? Alles staat alleen op deze telefoon.','Confirmed by temperature':'Bevestigd door temperatuur','Estimated from LH':'Geschat uit LH','Cycles backup':'Cycles-back-up','Error: ':'Fout: '
+};
+const NL_RULES=[
+ [/^PMS on (\d+) days?$/,m=>`PMS op ${m[1]} ${m[1]==='1'?'dag':'dagen'}`],
+ [/^(\d+) days?$/,m=>`${m[1]} ${m[1]==='1'?'dag':'dagen'}`],[/^day (\d+)$/,m=>`dag ${m[1]}`],
+ [/^Period in (\d+) days?$/,m=>`Menstruatie over ${m[1]} ${m[1]==='1'?'dag':'dagen'}`],[/^Period (\d+) days? late$/,m=>`Menstruatie ${m[1]} ${m[1]==='1'?'dag':'dagen'} te laat`],
+ [/^Cycle day (\d+)$/,m=>`Cyclusdag ${m[1]}`],[/^(\d+) DPO$/,m=>`${m[1]} DPO`],[/^Fertile window from (.+)$/,m=>`Vruchtbare periode vanaf ${m[1]}`],
+ [/^(.+) or later$/,m=>`${m[1]} of later`],[/^From your median cycle of (\d+) days$/,m=>`Op basis van je mediane cyclus van ${m[1]} dagen`],
+ [/^Using your fixed cycle length of (\d+) days$/,m=>`Op basis van je vaste cycluslengte van ${m[1]} dagen`],[/^Using (\d+) days until you've logged a full cycle$/,m=>`Uitgaande van ${m[1]} dagen tot je een hele cyclus hebt gelogd`],
+ [/^(\d+) days after the temperature shift confirmed ovulation$/,m=>`${m[1]} dagen na de temperatuurstijging die de eisprong bevestigde`],[/^(\d+) days after the day following your LH surge$/,m=>`${m[1]} dagen na de dag na je LH-piek`],
+ [/^No temperature shift yet, so it's at least (\d+) days away$/,m=>`Nog geen temperatuurstijging, dus minstens ${m[1]} dagen weg`],[/^Ovulation confirmed on cycle day (\d+)$/,m=>`Eisprong bevestigd op cyclusdag ${m[1]}`],
+ [/^Ovulation confirmed on cycle day (\d+) by the temperature shift\.$/,m=>`Eisprong bevestigd op cyclusdag ${m[1]} door de temperatuurstijging.`],
+ [/^Ovulation estimated on cycle day (\d+), the day after your LH peak\.$/,m=>`Eisprong geschat op cyclusdag ${m[1]}, de dag na je LH-piek.`],
+ [/^No temperature shift or LH surge was logged, so ovulation is estimated around cycle day (\d+) from your cycle length and luteal phase\.$/,m=>`Er is geen temperatuurstijging of LH-piek gelogd, dus de eisprong is geschat rond cyclusdag ${m[1]} op basis van je cycluslengte en luteale fase.`],
+ [/^Temperatures in °([CF])\.$/,m=>`Temperaturen in °${m[1]}.`],[/^Started (.+), day (\d+)(, (\d+) DPO)?$/,m=>`Begonnen ${m[1]}, dag ${m[2]}${m[3]?`, ${m[4]} DPO`:''}`],
+ [/^Since (.+)$/,m=>`Sinds ${m[1]}`],[/^Last (\d+) days$/,m=>`Laatste ${m[1]} dagen`],[/^Cycle of (.+)$/,m=>`Cyclus van ${m[1]}`],[/^(.+), ongoing$/,m=>`${m[1]}, loopt nog`],
+ [/^(\d+) cycles?, median (\d+) days$/,m=>`${m[1]} ${m[1]==='1'?'cyclus':'cycli'}, mediaan ${m[2]} dagen`],[/^(\d+) cycles?$/,m=>`${m[1]} ${m[1]==='1'?'cyclus':'cycli'}`],
+ [/^Median cycle, days \((\d+) left out\)$/,m=>`Mediane cyclus, dagen (${m[1]} weggelaten)`],[/^Luteal phase, from (\d+) cycles?$/,m=>`Luteale fase, uit ${m[1]} ${m[1]==='1'?'cyclus':'cycli'}`],
+ [/^(\d+) days? match, (.+)$/,m=>`${m[1]} ${m[1]==='1'?'dag':'dagen'} gevonden, ${m[2]}`],[/^(\d+) days? with (.+), (.+)$/,m=>`${m[1]} ${m[1]==='1'?'dag':'dagen'} met ${trWord(m[2]).toLowerCase()}, ${m[3]}`],
+ [/^\+(\d+) below$/,m=>`+${m[1]} hieronder`],[/^Log (.+)$/,m=>`Log ${m[1]}`],[/^(.+) is ready\.$/,m=>`${m[1]} is klaar.`],[/^(.+) added$/,m=>`${m[1]} toegevoegd`],
+ [/^Remove (.+) from your mood options\?$/,m=>`${m[1]} uit je stemmingsopties halen?`],[/^Remove (.+) from your options\?$/,m=>`${m[1]} uit je opties halen?`],
+ [/^(.+) flow$/,m=>`Bloeding: ${trWord(m[1]).toLowerCase()}`],[/^(.+) mucus$/,m=>`Slijm: ${trWord(m[1]).toLowerCase()}`],[/^LH (.+?)(, (\d+) tests)?$/,m=>`LH ${trWord(m[1]).toLowerCase()}${m[2]?`, ${m[3]} tests`:''}`],
+ [/^Pregnancy test (.+)$/,m=>`Zwangerschapstest ${trWord(m[1]).toLowerCase()}`],[/^(Cervix|Energy|Sleep|PMS|Libido) (.+)$/,m=>`${trWord(m[1])} ${trWord(m[2]).toLowerCase()}`],
+ [/^Period, (.+)$/,m=>`Menstruatie, ${trWord(m[1]).toLowerCase()}`],[/^T\/C (\d.+)$/,m=>`T/C ${m[1]}`],[/^Line (\d.+)$/,m=>`Lijn ${m[1]}`],
+ [/^Exported (.+)$/,m=>`Geëxporteerd ${m[1]}`],[/^(\d+) days? logged$/,m=>`${m[1]} ${m[1]==='1'?'dag':'dagen'} gelogd`],[/^Cycle starting (.+)$/,m=>`Cyclus vanaf ${m[1]}`],
+ [/^(\d+) days, (.+)$/,m=>`${m[1]} dagen, ${m[2]}`],[/^Day (\d+), ongoing\.(.*)$/,m=>`Dag ${m[1]}, loopt nog.${m[2]}`],
+ [/^Imported (\d+) days? from Clue, (.+) to (.+)\.(.*)$/s,m=>`${m[1]} ${m[1]==='1'?'dag':'dagen'} geïmporteerd uit Clue, ${m[2]} tot ${m[3]}.${m[4]}`],
+ [/^Last backup: (.+)$/,m=>`Laatste back-up: ${m[1]}`],
+ [/^Your last backup was (\d+) days ago\. Save a new one to Files now\? Everything lives only on this phone\.$/,m=>`Je laatste back-up is ${m[1]} dagen oud. Nu een nieuwe in Bestanden bewaren? Alles staat alleen op deze telefoon.`],
+ [/^Cycle day (\d+), (\d+) DPO$/,m=>`Cyclusdag ${m[1]}, ${m[2]} DPO`],[/^Today, (.+)$/,m=>`Vandaag, ${tr(m[1])}`],[/^(.+), Cycle day (\d+)(, (\d+) DPO)?$/,m=>`${m[1]}, cyclusdag ${m[2]}${m[3]?`, ${m[4]} DPO`:''}`],
+ [/^No feelings logged in (\d+)\.$/,m=>`Geen gevoelens gelogd in ${m[1]}.`],[/^No tests logged in (\d+)\.$/,m=>`Geen tests gelogd in ${m[1]}.`],
+ [/^(.+ – .+), (\d+) days$/,m=>`${m[1]}, ${m[2]} dagen`],
+ [/^Cycles version (.+)$/,m=>`Cycles versie ${m[1]}`],[/^Error: (.+)$/,m=>`Fout: ${m[1]}`],[/^Opening (.+)…$/,m=>`${m[1]} openen…`]
+];
+const NL_DONE=new Set(Object.values(NL));
+let LANG='en',LOC=undefined;
+function trWord(w){return NL[w]||NL[w.charAt(0).toUpperCase()+w.slice(1)]||w}
+function tr(str){if(LANG!=='nl'||!str||!/[A-Za-z]/.test(str))return str;const lead=str.match(/^\s*/)[0],trail=str.match(/\s*$/)[0],s=str.trim();if(NL_DONE.has(s))return str;
+  let out=NL[s];if(out==null)for(const[re,f]of NL_RULES){const m=s.match(re);if(m){out=f(m);break}}
+  if(out==null&&/[.!?]\s+[A-Z]/.test(s)){const parts=s.match(/[^.!?]+[.!?]+(\s+|$)|[^.!?]+$/g)||[s];let hit=false;out=parts.map(p=>{const q=tr(p.trim());if(q!==p.trim())hit=true;return q}).join(' ');if(!hit)out=null}
+  if(out==null)return str;if(NL_DONE.size<5000)NL_DONE.add(out);return lead+out+trail}
+const T=s=>tr(s);
+function trNode(root){if(LANG!=='nl'||!root)return;if(root.nodeType===3){const v=tr(root.nodeValue);if(v!==root.nodeValue)root.nodeValue=v;return}if(root.nodeType!==1)return;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;const list=[];while(n=w.nextNode())list.push(n);
+  for(const t of list){const p=t.parentElement;if(p&&(p.tagName==='SCRIPT'||p.tagName==='STYLE'||p.closest('textarea,.pknote,[data-notr]')))continue;const v=tr(t.nodeValue);if(v!==t.nodeValue)t.nodeValue=v}
+  const els=root.querySelectorAll?[root,...root.querySelectorAll('[placeholder],[aria-label],[title]')]:[];
+  for(const e of els)for(const a of['placeholder','aria-label','title']){const v=e.getAttribute&&e.getAttribute(a);if(v){const t=tr(v);if(t!==v)e.setAttribute(a,t)}}}
+let trObs=null;
+function applyLang(){const pref=state.settings.lang||'auto',sys=(navigator.languages&&navigator.languages[0]||navigator.language||'en').toLowerCase();
+  LANG=pref==='auto'?(sys.startsWith('nl')?'nl':'en'):pref;LOC=LANG==='nl'?'nl-NL':undefined;document.documentElement.lang=LANG;
+  if(LANG==='nl'&&!trObs){trObs=new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData')trNode(m.target);else if(m.type==='attributes')trNode(m.target);else m.addedNodes.forEach(trNode)}});
+    trObs.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['placeholder','aria-label','title']});trNode(document.body)}}
+
 'use strict';
 /* ================= utilities ================= */
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -521,7 +774,7 @@ const addDays=(k,n)=>nKey(kNum(k)+n);
 const diffDays=(a,b)=>kNum(b)-kNum(a);
 const todayKey=()=>keyOf(new Date());
 const median=a=>{if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
-const fmt=(k,o)=>fromKey(k).toLocaleDateString(undefined,o);
+const fmt=(k,o)=>fromKey(k).toLocaleDateString(LOC,o);
 const short=k=>fmt(k,{day:'numeric',month:'short'});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const plural=(n,w)=>`${n} ${w}${n===1?'':'s'}`;
@@ -550,17 +803,19 @@ const SECTIONS=[
  {key:'bbt',title:'Temperature',type:'bbt'},
  {key:'lh',title:'Tests',label:'Ovulation test (LH)',type:'lh'},
  {key:'preg',label:'Pregnancy test',type:'preg'},
- {key:'mucus',title:'Mucus and cervix',label:'Cervical mucus',type:'single',cls:'t',opts:[['dry','Dry'],['sticky','Sticky'],['creamy','Creamy'],['watery','Watery'],['eggwhite','Egg white']]},
- {key:'mucusColor',label:'Mucus colour',type:'single',cls:'t',opts:[['clear','Clear'],['white','White'],['yellow','Yellowish'],['pink','Pinkish'],['brown','Brownish']]},
+ {key:'mucus',title:'Mucus and cervix',label:'Cervical mucus',type:'multi',cls:'t',opts:[['dry','Dry'],['sticky','Sticky'],['creamy','Creamy'],['watery','Watery'],['eggwhite','Egg white']]},
+ {key:'mucusFeel',label:'Consistency',type:'multi',cls:'t',opts:[['thin','Thin'],['thick','Thick'],['clumpy','Clumpy'],['stretchy','Stretchy'],['slippery','Slippery']]},
+ {key:'mucusAmt',label:'Amount',type:'single',cls:'t',opts:[['little','A little'],['some','Some'],['lots','A lot']]},
+ {key:'mucusColor',label:'Mucus colour',type:'multi',cls:'t',opts:[['clear','Clear'],['white','White'],['yellow','Yellowish'],['pink','Pinkish'],['brown','Brownish']]},
  {key:'cervixPos',label:'Cervix position',type:'single',cls:'t',opts:[['low','Low'],['mid','Medium'],['high','High']]},
  {key:'cervixFirm',label:'Cervix firmness',type:'single',cls:'t',opts:[['firm','Firm'],['mid','Medium'],['soft','Soft']]},
  {key:'cervixOpen',label:'Cervix opening',type:'single',cls:'t',opts:[['closed','Closed'],['mid','Partly open'],['open','Open']]},
  {key:'sex',title:'Sex',type:'multi',cls:'b',opts:[['protected','Protected'],['unprotected','Unprotected']]},
  {key:'libido',label:'Libido',type:'single',opts:[['low','Low'],['mid','Medium'],['high','High']]},
- {key:'pain',title:'Pain',type:'multi',opts:[['cramps','Cramps'],['headache','Headache'],['migraine','Migraine'],['backache','Backache'],['neck','Neck pain'],['breasts','Tender breasts'],['ovulation','Ovulation pain'],['joints','Joint pain']]},
- {key:'mood',title:'Mood',type:'multi',opts:[['happy','Happy'],['calm','Calm'],['sensitive','Sensitive'],['sad','Sad'],['anxious','Anxious'],['irritable','Irritable']]},
+ {key:'pain',title:'Pain',type:'multi',cls:'b',opts:[['cramps','Cramps'],['headache','Headache'],['migraine','Migraine'],['backache','Backache'],['neck','Neck pain'],['breasts','Tender breasts'],['ovulation','Ovulation pain'],['joints','Joint pain']]},
+ {key:'mood',title:'Mood',type:'mood'},
  {key:'pms',label:'PMS',type:'single',cls:'b',opts:[['mild','Mild'],['moderate','Moderate'],['strong','Strong']]},
- {key:'energy',title:'Body',label:'Energy',type:'single',opts:[['low','Low'],['mid','Okay'],['high','High']]},
+ {key:'energy',title:'Body',label:'Energy',type:'single',opts:[['low','Tired'],['mid','Okay'],['high','Energetic']]},
  {key:'sleep',label:'Sleep',type:'single',opts:[['poor','Poor'],['ok','Okay'],['good','Good']]},
  {key:'dreams',label:'Dreams',type:'multi',opts:[['vivid','Vivid dreams'],['nightmare','Nightmares']]},
  {key:'digestion',label:'Digestion',type:'multi',opts:[['bloated','Bloated'],['constipated','Constipated'],['diarrhea','Diarrhea'],['nauseous','Nauseous']]},
@@ -576,10 +831,10 @@ const LABEL={};SECTIONS.forEach(s=>{if(s.opts)LABEL[s.key]=Object.fromEntries(s.
 LABEL.flow=Object.fromEntries(FLOWS.map(f=>[f[0],f[1]]));LABEL.preg=Object.fromEntries(PREG_OPTS);LABEL.lh=Object.fromEntries(LH_OPTS);
 
 /* ================= state ================= */
-const TRACKS=[['bbt','Temperature','Basal body temperature and the chart',true],['tests','Tests','LH strips and pregnancy tests',false],['mucus','Mucus and cervix','Cervical mucus and cervix position',false],['sex','Sex','Sex and libido',false],['pain','Pain','Cramps, headaches and more',true],['mood','Mood','Moods and PMS',true],['body','Body','Energy, sleep, dreams, digestion, skin, cravings, medication',true],['notes','Notes','Free-text notes',true]];
+const TRACKS=[['bbt','Temperature','Basal body temperature and the chart',false],['tests','Tests','LH strips and pregnancy tests',false],['mucus','Mucus and cervix','Cervical mucus and cervix position',false],['sex','Sex','Sex and libido',false],['pain','Pain','Cramps, headaches and more',true],['mood','Mood','Moods and PMS',true],['body','Body','Energy, sleep, dreams, digestion, skin, cravings, medication',true],['notes','Notes','Free-text notes',true]];
 const TRACK_OF={Temperature:'bbt',Tests:'tests','Mucus and cervix':'mucus',Sex:'sex',Pain:'pain',Mood:'mood',Body:'body',Notes:'notes',lh:'tests',preg:'tests',cervix:'mucus',pms:'mood',energy:'body',sleep:'body',dreams:'body',digestion:'body',skin:'body',cravings:'body',meds:'body',note:'notes'};
 const tracking=k=>{const t=TRACK_OF[k]||k;return!state.settings.tracks||state.settings.tracks[t]!==false};
-const DEFAULTS={openSecs:['Flow','Temperature','Tests','Mucus and cervix'],mode:'auto',cycleLen:32,lutealMode:'auto',lutealLen:13,unit:'C',theme:'auto',meds:[],excluded:[]};
+const DEFAULTS={openSecs:['Flow','Temperature','Tests','Mucus and cervix'],mode:'auto',cycleLen:32,lutealMode:'auto',lutealLen:13,unit:'C',theme:'auto',lang:'auto',meds:[],excluded:[]};
 let state={version:1,days:{},settings:{...DEFAULTS}};
 let model=null, logDate=null, chartIdx=null, chartPin=null, calBack=18, openYears=null;
 const dayData=k=>state.days[k]||{};
@@ -685,7 +940,7 @@ function dayTags(d){const out=[],t=(k,txt,v)=>out.push({k,txt,v});
   if(d.bbt!=null)t('bbt',toUnit(d.bbt).toFixed(2)+'°'+state.settings.unit);
   if(d.lh)t('lh','LH '+LABEL.lh[d.lh].toLowerCase()+((d.lhTests||[]).length>1?`, ${d.lhTests.length} tests`:''),d.lh);
   if(d.preg)t('preg','Pregnancy test '+LABEL.preg[d.preg].toLowerCase(),d.preg);
-  if(d.mucus)t('mucus',LABEL.mucus[d.mucus]+' mucus',d.mucus);
+  arrOf(d.mucus).forEach(v=>t('mucus',(LABEL.mucus[v]||v)+' mucus',v));arrOf(d.mucusFeel).forEach(v=>t('mucus',(LABEL.mucusFeel[v]||v)+' mucus',null));
   if(d.cervixPos)t('cervix','Cervix '+LABEL.cervixPos[d.cervixPos].toLowerCase(),d.cervixPos);
   (d.sex||[]).forEach(v=>t('sex',LABEL.sex[v],v));if(d.libido)t('libido','Libido '+LABEL.libido[d.libido].toLowerCase());
   (d.pain||[]).forEach(v=>t('pain',LABEL.pain[v],v));
@@ -694,7 +949,8 @@ function dayTags(d){const out=[],t=(k,txt,v)=>out.push({k,txt,v});
   ['dreams','digestion','skin','cravings'].forEach(f=>(d[f]||[]).forEach(v=>t(f,LABEL[f][v],v)));
   (d.meds||[]).forEach(v=>t('meds',v,v));if(d.note)t('note','Note');return out}
 function daySummary(d){return dayTags(d).map(x=>x.txt)}
-const tagHTML=x=>`<span class="tag">${ic(x.k)}${esc(x.txt)}</span>`;
+const tagIc=x=>{if(x.k==='mood'){const m=moodInfo(x.v);if(m)return`<svg class="ico" viewBox="0 0 24 24" style="color:${m.c}"><use href="#${m.i||'m-smile'}"/></svg>`}return ic(x.k)};
+const tagHTML=x=>`<span class="tag">${tagIc(x)}${esc(x.txt)}</span>`;
 let ringSel=null;
 function dpoOf(k){const s0=model.pred?projStart():null;if(s0&&k>=s0)return null;const cf=cycleFor(k);if(!cf||!cf.c.ovu)return null;if(cf.c.next&&k>=cf.c.next)return null;const n=diffDays(cf.c.ovu.date,k);return n>0?n:null}
 function ringSVG(sel){
@@ -715,13 +971,13 @@ function ringSVG(sel){
   // period
   const pe=Math.min(n-1,(m.cur.pLen||1)-1);
   segs+=`<path d="${arc(RT,a0,a0+(pe+1)*u-u*.15)}" fill="none" stroke="var(--berry)" stroke-width="${TW}" stroke-linecap="round"/>`;
-  label(0,pe,'PERIOD','var(--on-berry)');
+  label(0,pe,T('PERIOD'),'var(--on-berry)');
   // fertile window, drawn bubbly
   for(const r of runs(i=>(m.marks[K(i)]||{}).fert)){const op=r.v==='pred'?.5:1;
     segs+=`<g opacity="${op}"><path d="${arc(RT,a0+r.i0*u+u*.2,a0+(r.i1+1)*u-u*.2)}" fill="none" stroke="var(--teal-strong)" stroke-width="${TW}" stroke-linecap="round"/>`;
     for(let i=r.i0;i<=r.i1;i++){const[x,y]=P(RT+((i%2)?1.5:-1.5),ang(i));segs+=`<circle cx="${f1(x)}" cy="${f1(y)}" r="${i%2?12.5:13.5}" fill="var(--teal-strong)"/>`}
     segs+='</g>';let a1=r.i0,b1=r.i1;for(let i=r.i0;i<=r.i1;i++)if((m.marks[K(i)]||{}).ovu){if(i-r.i0>=r.i1-i){a1=r.i0;b1=i-1}else{a1=i+1;b1=r.i1}}
-    label(a1,b1,'FERTILE WINDOW',r.v==='pred'?'var(--ink)':'#fff')}
+    label(a1,b1,T('FERTILE WINDOW'),r.v==='pred'?'var(--ink)':'#fff')}
   // ovulation burst
   for(let i=0;i<n;i++){const o=(m.marks[K(i)]||{}).ovu;if(!o)continue;const[x,y]=P(RT,ang(i));
     if(o==='pred')segs+=`<circle cx="${f1(x)}" cy="${f1(y)}" r="15" fill="var(--bg)" stroke="var(--teal-strong)" stroke-width="2" stroke-dasharray="3 3"/>`;
@@ -824,7 +1080,7 @@ function renderCalendar(){
   const endI=tI+5;let h=more?'<div class="center" style="margin-top:18px"><button class="btn ghost small" id="calMore">Show earlier months</button></div>':'';
   for(let i=startI;i<=endI;i++){
     const yy=Math.floor(i/12),mm=i%12,first=new Date(yy,mm,1),dim=new Date(yy,mm+1,0).getDate(),lead=(first.getDay()+6)%7;
-    const mName=first.toLocaleDateString(undefined,{month:'long'});
+    const mName=first.toLocaleDateString(LOC,{month:'long'});
     h+=`<section class="month" id="m-${yy}-${pad(mm+1)}"><h3>${mName} <span>${yy}</span></h3><div class="g7">`;
     for(let b=0;b<lead;b++)h+='<div class="cell blank"></div>';
     for(let dd=1;dd<=dim;dd++){
@@ -845,11 +1101,25 @@ function renderCalendar(){
 }
 
 /* ================= chart ================= */
-function renderChart(){
-  const m=model,el=$('#v-chart');
+let chartViewTapped=false,chartInfo=false;
+const infoBtn=()=>`<button type="button" class="infob" data-info aria-label="How to read this" aria-expanded="${chartInfo}">i</button>`;
+function renderChart(){try{renderChartInner();if(!model.cycles.length){const el=$('#v-chart'),note=`<p class="nopnote">No period logged yet, so this shows your last days. Log the first day of your period to see cycle days and predictions.</p>`,tg=el.querySelector('.cview');if(tg)tg.insertAdjacentHTML('afterend',note);else el.insertAdjacentHTML('afterbegin',note)}}catch(err){const el=$('#v-chart'),tempAvail=tracking('bbt')||tracking('tests')||Object.values(state.days).some(d=>d.bbt!=null||d.lh);
+  el.innerHTML=`${tempAvail?chartToggle(state.settings.chartView==='emo'?'emo':'temp'):''}<p class="warn" style="margin-top:18px">Something went wrong drawing this chart. Please send this line to Claude:</p><pre class="errbox">${esc((err&&err.stack||String(err)).split('\n').slice(0,3).join('\n'))}</pre>`}}
+function renderChartInner(){
+  const el=$('#v-chart');let m=model;
+  // no period logged yet: still chart the last weeks, so temperatures, tests and feelings show up
+  if(!m.cycles.length){const today=todayKey(),keys=Object.keys(state.days).filter(k=>k<=today).sort();
+    {const start=keys.find(k=>k>=addDays(today,-59))||addDays(today,-29);m={...model,cycles:[{start,next:null,len:null,complete:false,days:diffDays(start,today)+1,pLen:0,excluded:false,noPeriod:true}]}}}
   if(!m.cycles.length){el.innerHTML=`<h2 class="sect">Cycle chart</h2><p class="muted">Your temperature, LH, mucus, cervix and flow will line up here once you've logged the start of a period.</p>`;return}
   let idx=chartPin?m.cycles.findIndex(c=>c.start===chartPin):-1;if(idx<0){idx=m.cycles.length-1;chartPin=null}chartIdx=idx;
   const c=m.cycles[idx],isCur=idx===m.cycles.length-1,today=todayKey(),u=state.settings.unit,det=!!state.settings.chartDetail;
+  const tempAvail=tracking('bbt')||tracking('tests')||Object.values(state.days).some(d=>d.bbt!=null||d.lh);
+  // an empty temperature chart opens on the feelings ring instead, until Temperature is tapped
+  const cyHas=(()=>{for(let i=0;i<(c.len||c.days);i++){const d=state.days[addDays(c.start,i)];if(d&&(d.bbt!=null||d.lh||d.preg||d.lhTests?.length||d.pregTests?.length||d.mucus?.length||d.cervixPos))return true}return false})();
+  const view=tempAvail?((cyHas||chartViewTapped)?(state.settings.chartView||'temp'):'emo'):'emo';
+  if(view==='emo'){const N0=Math.min(90,Math.max(1,isCur&&m.pred?Math.max(c.days,diffDays(c.start,m.pred.next)):(c.len||c.days)));
+    const t0=c.noPeriod?`Last ${c.days} days`:isCur?'Current cycle':`Cycle of ${fmt(c.start,{month:'long',year:'numeric'})}`,s0=c.noPeriod?`Since ${short(c.start)}`:isCur?`Started ${short(c.start)}, day ${c.days}`:`${short(c.start)} – ${short(addDays(c.next,-1))}, ${c.len} days`;
+    el.innerHTML=`${tempAvail?chartToggle('emo'):''}<div class="cnav"><button class="iconbtn" data-cnav="-1" ${idx===0?'disabled':''} aria-label="Earlier cycle">‹</button><div class="t"><b>${t0}</b><span>${s0}</span></div><button class="iconbtn" data-cnav="1" ${isCur?'disabled':''} aria-label="Later cycle">›</button></div>${emoRing(c,N0,isCur)}`;return}
   const N=Math.min(150,Math.max(1,isCur&&m.pred?Math.max(c.days,diffDays(c.start,m.pred.next)):(c.len||c.days)));
   const LW=det?78:44,avail=Math.min(560,document.documentElement.clientWidth)-40;
   const CW=det?30:Math.max(6,Math.floor((avail-LW)/N)),W=N*CW,H=det?190:160,pt=12,pb=12;
@@ -897,10 +1167,10 @@ function renderChart(){
   if(det){
     row('Cycle day',i=>i+1);
     if(c.ovu)row('DPO',i=>i+1>c.ovu.cd?i+1-c.ovu.cd:'');
-    row('Date',(i,k)=>{const dt=fromKey(k),dd=dt.getDate();return(dd===1||i===0)?`<span class="mo">${dt.toLocaleDateString(undefined,{month:'short'})}</span>${dd}`:dd},'datec');
+    row('Date',(i,k)=>{const dt=fromKey(k),dd=dt.getDate();return(dd===1||i===0)?`<span class="mo">${dt.toLocaleDateString(LOC,{month:'short'})}</span>${dd}`:dd},'datec');
     bbtRow();
     if(tracking('tests'))row('LH',(i,k,d)=>d.lh?`<span class="lhc ${d.lh}">${{neg:'–',low:'L',high:'H',peak:'P'}[d.lh]}</span>`:'');
-    if(tracking('mucus'))row('Mucus',(i,k,d)=>d.mucus?`<span class="muc ${d.mucus}">${{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[d.mucus]}</span>`:'');
+    if(tracking('mucus'))row('Mucus',(i,k,d)=>{const M=mucTop(d);return M?`<span class="muc ${M}">${{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[M]}</span>`:(arrOf(d.mucus).length?'<span class="muc">•</span>':'')});
     if(tracking('mucus'))row('Cervix',(i,k,d)=>{if(!d.cervixPos&&!d.cervixFirm&&!d.cervixOpen)return'';const pk=d.cervixPos==='high'&&d.cervixFirm==='soft';
       return`<span class="cx ${pk?'peak':''}">${{low:'↓',mid:'–',high:'↑'}[d.cervixPos]||''}<small>${{firm:'F',mid:'M',soft:'S'}[d.cervixFirm]||''}${{closed:'•',mid:'◦',open:'○'}[d.cervixOpen]||''}</small></span>`});
     row('Flow',(i,k,d)=>d.flow?`<i class="fi" style="--fill:${FILL[d.flow]};--fc:var(${FC[d.flow]});width:15px;height:15px"></i>`:'');
@@ -912,35 +1182,33 @@ function renderChart(){
     row('Day',i=>(i===0||(i+1)%5===0)?`<span class="dn">${i+1}</span>`:'','dayc');
     bbtRow();
     if(tracking('tests'))row('LH',(i,k,d)=>d.lh?`<i class="cb lh-${d.lh}"></i>`:'');
-    if(tracking('mucus'))row('Mucus',(i,k,d)=>d.mucus?`<i class="cb mu-${d.mucus}"></i>`:'');
+    if(tracking('mucus'))row('Mucus',(i,k,d)=>{const M=mucTop(d);return M?`<i class="cb mu-${M}"></i>`:(arrOf(d.mucus).length?'<i class="cb mu-creamy"></i>':'')});
     row('Flow',(i,k,d)=>d.flow?`<i class="cb" style="background:var(${FC[d.flow]})"></i>`:'');
     if(tracking('sex'))row('Sex',(i,k,d)=>d.sex?'<i class="cdt"></i>':'');
   }
   h+='</div>';
-  const title=isCur?'Current cycle':`Cycle of ${fmt(c.start,{month:'long',year:'numeric'})}`;
+  const title=c.noPeriod?`Last ${c.days} days`:isCur?'Current cycle':`Cycle of ${fmt(c.start,{month:'long',year:'numeric'})}`;
   const dpoNow=isCur?dpoOf(today):null;
-  const sub=isCur?`Started ${short(c.start)}, day ${c.days}${dpoNow?`, ${dpoNow} DPO`:''}`:`${short(c.start)} – ${short(addDays(c.next,-1))}, ${c.len} days`;
+  const sub=c.noPeriod?`Since ${short(c.start)}`:isCur?`Started ${short(c.start)}, day ${c.days}${dpoNow?`, ${dpoNow} DPO`:''}`:`${short(c.start)} – ${short(addDays(c.next,-1))}, ${c.len} days`;
   const ovTxt=!c.ovu&&c.ovuEst?`No temperature shift or LH surge was logged, so ovulation is estimated around cycle day ${c.ovuEst.cd} from your cycle length and luteal phase.`:c.ovu?(c.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${c.ovu.cd} by the temperature shift. The dashed line is your coverline.`:`Ovulation estimated on cycle day ${c.ovu.cd}, the day after your LH peak.`):'No ovulation detected yet in this cycle.';
-  el.innerHTML=`<div class="cnav"><button class="iconbtn" data-cnav="-1" ${idx===0?'disabled':''} aria-label="Earlier cycle">‹</button><div class="t"><b>${title}</b><span>${sub}</span></div><button class="iconbtn" data-cnav="1" ${isCur?'disabled':''} aria-label="Later cycle">›</button></div>
+  el.innerHTML=`${tempAvail?chartToggle('temp'):''}<div class="cnav"><button class="iconbtn" data-cnav="-1" ${idx===0?'disabled':''} aria-label="Earlier cycle">‹</button><div class="t"><b>${title}</b><span>${sub}</span></div><button class="iconbtn" data-cnav="1" ${isCur?'disabled':''} aria-label="Later cycle">›</button></div>
     <div class="cscroll" id="cscroll">${h}</div>
-    <div class="ckeyrow"><span><i style="background:color-mix(in srgb,var(--f-medium) 45%,transparent)"></i>Period</span><span><i style="background:color-mix(in srgb,var(--teal) 70%,transparent)"></i>Fertile window</span><span><i style="background:var(--teal-strong)"></i>Ovulation</span><span><svg width="22" height="10" style="display:block"><line x1="0" y1="5" x2="22" y2="5" stroke="var(--berry)" stroke-width="2"/><circle cx="11" cy="5" r="3.5" fill="var(--berry)"/></svg>Temperature</span><span><svg width="22" height="10" style="display:block"><line x1="0" y1="5" x2="22" y2="5" stroke="var(--teal-strong)" stroke-width="2"/><rect x="8" y="2" width="6" height="6" transform="rotate(45 11 5)" fill="var(--teal-strong)"/></svg>LH (T/C)</span>${isCur?'<span><i style="background:color-mix(in srgb,var(--teal) 30%,transparent)"></i>Predicted</span>':''}</div>
+    <div class="ckeyrow"><span><i style="background:color-mix(in srgb,var(--f-medium) 45%,transparent)"></i>Period</span><span><i style="background:color-mix(in srgb,var(--teal) 70%,transparent)"></i>Fertile window</span><span><i style="background:var(--teal-strong)"></i>Ovulation</span><span><svg width="22" height="10" style="display:block"><line x1="0" y1="5" x2="22" y2="5" stroke="var(--berry)" stroke-width="2"/><circle cx="11" cy="5" r="3.5" fill="var(--berry)"/></svg>Temperature</span><span><svg width="22" height="10" style="display:block"><line x1="0" y1="5" x2="22" y2="5" stroke="var(--teal-strong)" stroke-width="2"/><rect x="8" y="2" width="6" height="6" transform="rotate(45 11 5)" fill="var(--teal-strong)"/></svg>LH (T/C)</span>${isCur?'<span><i style="background:color-mix(in srgb,var(--teal) 30%,transparent)"></i>Predicted</span>':''}${infoBtn()}</div>
     <div class="ctools"><button class="btn ghost small" data-chartmode>${det?'Show compact chart':'Show details'}</button>
     ${c.complete?`<button class="chip ${c.excluded?'':'t'}" data-excl="${c.start}" aria-pressed="${!c.excluded}">${c.excluded?'Left out of predictions':'Counted in predictions'}</button>`:''}</div>
-    ${det?`<p class="ckey">${ovTxt} Hollow temperatures are flagged (poor sleep, alcohol…) and left out of detection. The teal line is your LH ratio from scanned strips; hollow diamonds are tests logged without a scan (L faint, H high, P peak). Mucus: D dry, S sticky, C creamy, W watery, E egg white. Cervix: ↑ high, ↓ low, S soft, F firm, ○ open, • closed. Tap any column to edit that day.</p>`:`<p class="ckey">${ovTxt} Temperatures in °${u}. Tap anywhere on the chart to open that day.</p>`}
+    <p class="ckey">${ovTxt}</p>${det?`<p class="ckey infop"${chartInfo?'':' hidden'}>Hollow temperatures are flagged (poor sleep, alcohol…) and left out of detection. The teal line is your LH ratio from scanned strips; hollow diamonds are tests logged without a scan (L faint, H high, P peak). Mucus: D dry, S sticky, C creamy, W watery, E egg white. Cervix: ↑ high, ↓ low, S soft, F firm, ○ open, • closed. Tap any column to edit that day.</p>`:`<p class="ckey infop"${chartInfo?'':' hidden'}>Temperatures in °${u}. Tap anywhere on the chart to open that day.</p>`}
     <div id="stripWrap"></div>`;
   if(isCur&&det){const sc=$('#cscroll');const ti=diffDays(c.start,today);sc.scrollLeft=Math.max(0,ti*CW-sc.clientWidth/2)}
   loadStrips(c,N);
 }
 async function loadStrips(c,N){const out={lhTests:{rows:[],figs:[]},pregTests:{rows:[],figs:[]}};
   for(let i=0;i<N;i++){const k=addDays(c.start,i),d=state.days[k];if(!d)continue;
-    for(const key of['lhTests','pregTests'])for(const t of[...(d[key]||[])].sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'))){if(!t.photo)continue;const src=await DB.get(t.photo);if(!src)continue;
+    for(const key of['lhTests','pregTests'])for(const t of[...(d[key]||[])].sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'))){if(!t.photo&&t.ratio==null&&!t.result)continue;const src=t.photo?await DB.get(t.photo):null;
       const lab=key==='pregTests'?LABEL.preg:LABEL.lh,val=t.ratio!=null?t.ratio.toFixed(2):(t.result?lab[t.result]:''),hi=key==='pregTests'?t.result==='pos':(t.result==='high'||t.result==='peak');
-      if(t.crop&&t.c!=null&&t.t!=null){const flip=t.c<t.t;
-        out[key].rows.push(`<button type="button" class="srow" data-date="${k}"><span class="sl"><b>CD ${i+1}</b>${short(k)}${t.time?`<br>${t.time}`:''}</span><span class="sph"><img src="${src}" alt="Test ${short(k)}"${flip?' style="transform:rotate(180deg)"':''}></span><span class="sr${hi?' lh-high':''}">${val}</span></button>`)}
-      else out[key].figs.push(`<figure data-date="${k}"><img src="${src}" alt="Test ${short(k)}"><figcaption><b>Day ${i+1}</b>, ${short(k)}${t.time?' '+t.time:''}<br>${val}</figcaption></figure>`)}}
+      out[key].rows.push(`<div class="srow" data-date="${k}"><span class="sl"><b>CD ${i+1}</b>${short(k)}${t.time?`<br>${t.time}`:''}</span>${testDraw(key==='pregTests'?'preg':'lh',t,src)}<span class="sr${hi?' lh-high':''}">${val}</span></div>`)}}
   const w=$('#stripWrap');if(!w)return;let h='';
   for(const[key,title]of[['lhTests','LH strips'],['pregTests','Pregnancy tests']]){const o=out[key];if(!o.rows.length&&!o.figs.length)continue;
-    h+=`<h2 class="sect">${title}</h2>${o.rows.length?`<div class="stack">${o.rows.join('')}</div>`:''}${o.figs.length?`<div class="strips">${o.figs.join('')}</div>`:''}`}
+    h+=`<div class="sectrow"><h2 class="sect">${title}</h2>${key==='lhTests'||!out.lhTests.rows.length?tviewSeg():''}</div>${o.rows.length?`<div class="stack">${o.rows.join('')}</div>`:''}${o.figs.length?`<div class="strips">${o.figs.join('')}</div>`:''}`}
   w.innerHTML=h}
 
 /* ================= insights & settings ================= */
@@ -964,6 +1232,8 @@ function renderInsights(){
    <h2 class="sect">Cycle history</h2><p class="hint" style="margin:-4px 0 12px">Tap Counted to leave an unusual cycle out of your averages and predictions. It stays in your history and calendar.</p>${hist?`<div class="hist">${hist}</div>`:'<p class="muted">Cycles appear here once you log your periods.</p>'}
    <h2 class="sect">Tracking</h2><p class="hint" style="margin:-4px 0 10px">Choose what shows up in your log. Turning something off hides it, but keeps anything you logged.</p>
    <div class="trklist">${TRACKS.map(([k,l,dsc])=>`<label class="trk"><span class="trkl">${ic({bbt:'bbt',tests:'lh',mucus:'mucus',sex:'sex',pain:'pain',mood:'mood',body:'energy',notes:'note'}[k])}<span>${l}<small>${dsc}</small></span></span><input type="checkbox" class="sw2" data-track="${k}" ${tracking(k)?'checked':''}></label>`).join('')}</div>
+   ${(()=>{const items=[...(state.settings.customMoods||[]).filter(m=>!m.hidden).map(m=>moodPill('',m.l,m.c,m.i,false,`data-delm="${m.k}"`)),...Object.entries(state.settings.custom||{}).flatMap(([k,l])=>l.filter(o=>!o[2]).map(o=>`<button type="button" class="chip" data-delc="${k}|${o[0]}"${o[3]?` style="--c:${o[3]}"`:''}>${esc(o[1])}</button>`))];
+     return items.length?`<h2 class="sect">Your own options</h2><p class="hint" style="margin:-4px 0 10px">Tap one to remove it from your log. Days you already logged keep it.</p><div class="chips">${items.join('')}</div>`:''})()}
    <h2 class="sect">Predictions</h2>
    <div class="setrow"><p class="lbl">Cycle length</p>${segHTML('mode',[['auto','Learn from my cycles'],['fixed','Fixed length']])}
      <div class="numrow"><input class="field" type="number" inputmode="numeric" min="18" max="90" data-num="cycleLen" value="${S.cycleLen}"> ${S.mode==='fixed'?'days':'days, used until a full cycle is logged'}</div>
@@ -973,24 +1243,29 @@ function renderInsights(){
      <p class="hint">Once a temperature shift confirms ovulation, your next period is predicted from it. That's usually far more accurate for long cycles.</p></div>
    <h2 class="sect">Display</h2>
    <div class="setrow"><p class="lbl">Theme</p>${segHTML('theme',[['auto','Match phone'],['light','Light'],['dark','Dark']])}</div>
+   <div class="setrow"><p class="lbl">Language</p>${segHTML('lang',[['auto','Match phone'],['en','English'],['nl','Nederlands']])}</div>
    <div class="setrow"><p class="lbl">Temperature</p>${segHTML('unit',[['C','°C'],['F','°F']])}</div>
    <h2 class="sect" id="dataSec">Your data</h2>
-   <div class="setrow"><p class="lbl">Import from Clue</p><p class="hint" style="margin:0 0 10px">In Clue, export your data, save the file to Files, then choose it here. Imported days merge with what you already have.</p><div class="datarow"><button class="btn ghost small" data-act="import">Choose Clue file</button></div></div>
-   <div class="setrow"><p class="lbl">Export</p><p class="hint" style="margin:0 0 10px">A spreadsheet of every logged day, or a printable PDF with a year overview, monthly pages and your temperature charts.</p>
+   <div class="setrow"><p class="lbl">Import from Clue</p><p class="hint" style="margin:0 0 10px">In Clue, go to Settings → Download my data. Clue emails you a zip file and shows a password for it. Unzip it, save the .json file to Files, then choose it here. Imported days merge with what you already have.</p><p class="hint" style="margin:-4px 0 10px"><a class="linkbtn" style="font-size:13px" href="https://support.helloclue.com/hc/en-us/articles/17320910724125-How-do-I-get-a-copy-of-my-Clue-data" target="_blank" rel="noopener">How to get your Clue data ↗</a></p><div class="datarow"><button class="btn ghost small" data-act="import">Choose Clue file</button></div></div>
+   <div class="setrow"><p class="lbl">Export</p><p class="hint" style="margin:0 0 10px">A spreadsheet of every logged day, or a printable PDF. Tick what goes in the PDF:</p>
+     <div class="chips" style="gap:6px;margin:0 0 12px">${PDF_PARTS.map(([k,l])=>`<button class="chip t" data-pdfpart="${k}" aria-pressed="${pdfParts().includes(k)}">${l}</button>`).join('')}</div>
      <div class="datarow" style="align-items:center"><select class="field" id="exYear" style="width:auto;padding:9px 34px 9px 14px;font-size:15px;border-radius:999px;background:var(--surface) url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%223%22><path d=%22M6 9l6 6 6-6%22/></svg>') no-repeat right 12px center">${dataYears().map(y=>`<option>${y}</option>`).join('')}</select>
      <button class="btn small" data-act="csv">CSV</button><button class="btn small" data-act="pdf">PDF</button></div></div>
-   <div class="setrow"><p class="lbl">Backup</p><p class="hint" style="margin:0 0 10px">Everything lives only on this phone. Save a backup to Files now and then; clearing Safari's website data would erase it.</p><div class="datarow"><button class="btn small" data-act="export">Save backup</button><button class="btn ghost small" data-act="import">Restore backup</button></div></div>
+   <div class="setrow"><p class="lbl">Backup</p><p class="hint" style="margin:0 0 10px">Everything lives only on this phone. Save a backup to Files now and then; clearing Safari's website data would erase it.</p><p class="hint" style="margin:-4px 0 10px">${state.settings.lastBackup?'Last backup: '+fmt(state.settings.lastBackup,{day:'numeric',month:'long',year:'numeric'}):'No backup saved yet'}</p><div class="datarow"><button class="btn small" data-act="export">Save backup</button><button class="btn ghost small" data-act="import">Restore backup</button></div></div>
    <div class="setrow"><div class="datarow"><button class="btn ghost small" data-act="wipe" style="color:#d4574a;border-color:#d4574a">Delete all data</button></div></div>
-   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.</p>`;
+   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.<br>Cycles version 12 Nov 2026 (o)</p>`;
 }
 $('#v-ins').addEventListener('click',async e=>{
-  const s=e.target.closest('[data-set]');if(s){state.settings[s.dataset.set]=s.dataset.v;if(s.dataset.set==='theme')applyTheme();save();renderAll();return}
+  const pp=e.target.closest('[data-pdfpart]');if(pp){const set=new Set(pdfParts()),k=pp.dataset.pdfpart;set.has(k)?set.delete(k):set.add(k);state.settings.pdfParts=PDF_PARTS.map(x=>x[0]).filter(x=>set.has(x));pp.setAttribute('aria-pressed',set.has(k));save();return}
+  const dm=e.target.closest('[data-delm]');if(dm){const m=(state.settings.customMoods||[]).find(x=>x.k===dm.dataset.delm);if(m&&await askConfirm(`Remove ${m.l} from your mood options?`,'Remove')){m.hidden=true;save();renderAll()}return}
+  const dc=e.target.closest('[data-delc]');if(dc){const[k,id]=dc.dataset.delc.split('|'),o=(state.settings.custom?.[k]||[]).find(x=>x[0]===id);if(o&&await askConfirm(`Remove ${o[1]} from your options?`,'Remove')){o[2]=1;save();renderAll()}return}
+  const s=e.target.closest('[data-set]');if(s){state.settings[s.dataset.set]=s.dataset.v;if(s.dataset.set==='theme')applyTheme();if(s.dataset.set==='lang'){save();await persist();location.reload();return}save();renderAll();return}
   const r=e.target.closest('[data-cycle]');if(r){const i=+r.dataset.cycle;chartPin=i===model.cycles.length-1?null:model.cycles[i].start;dirty.chart=1;showView('chart');return}
   const a=e.target.closest('[data-act]');if(!a)return;
   if(a.dataset.act==='import')$('#importFile').click();
   if(a.dataset.act==='export')exportBackup();
   if(a.dataset.act==='csv')exportCSV($('#exYear').value);
-  if(a.dataset.act==='pdf')exportPDF($('#exYear').value);
+  if(a.dataset.act==='pdf')exportPDF($('#exYear').value,pdfParts());
   if(a.dataset.act==='wipe'&&await askConfirm('Delete every logged day, photo and setting on this phone? This can’t be undone.','Delete everything',true)){
     for(const k of await DB.keys())await DB.del(k);state={version:1,days:{},settings:{...DEFAULTS}};applyTheme();save();renderAll();toast('All data deleted')}
 });
@@ -999,14 +1274,20 @@ $('#v-ins').addEventListener('change',e=>{const tk=e.target.closest('[data-track
   const n=e.target.closest('[data-num]');if(!n)return;const f=n.dataset.num,[lo,hi]=f==='cycleLen'?[18,90]:[7,18];
   let v=Math.round(+n.value);if(!isFinite(v))v=DEFAULTS[f];v=Math.min(hi,Math.max(lo,v));state.settings[f]=v;save();renderAll()});
 $('#v-chart').addEventListener('click',e=>{
-  const b=e.target.closest('[data-cnav]');if(b){const ni=chartIdx+ +b.dataset.cnav;chartPin=ni===model.cycles.length-1?null:model.cycles[ni].start;renderChart();return}
+  const ib=e.target.closest('[data-info]');if(ib){chartInfo=!chartInfo;$$('#v-chart .infop').forEach(p=>p.hidden=!chartInfo);ib.setAttribute('aria-expanded',chartInfo);return}
+  const cv=e.target.closest('[data-cview]');if(cv){chartViewTapped=true;state.settings.chartView=cv.dataset.cview;save();renderChart();return}
+  const b=e.target.closest('[data-cnav]');if(b){emoSel=null;const ni=chartIdx+ +b.dataset.cnav;chartPin=ni===model.cycles.length-1?null:model.cycles[ni].start;renderChart();return}
   if(e.target.closest('[data-chartmode]')){state.settings.chartDetail=!state.settings.chartDetail;save();renderChart();return}
   const sv=e.target.closest('.bbtsvg');if(sv){const r=sv.getBoundingClientRect(),i=Math.floor((e.clientX-r.left)/+sv.dataset.cw);openLog(addDays(sv.dataset.start,Math.max(0,i)))}
 });
 
 /* ================= log sheet ================= */
 const isOn=(f,v)=>{const x=dayData(logDate)[f];return Array.isArray(x)?x.includes(v):x===v};
-const chip=(f,v,label,mode,cls='')=>`<button type="button" class="chip ${cls}" data-f="${f}" data-v="${esc(v)}" data-m="${mode}" aria-pressed="${isOn(f,v)}">${label}</button>`;
+const OPT_COLOR={sleep:{poor:'#D65F82',ok:'#F2EA55',good:'#7CC46A'},energy:{low:'#D65F82',mid:'#F2EA55',high:'#7CC46A'},pms:{mild:'#F2EA55',moderate:'#F08A7E',strong:'#D65F82'},
+  dreams:{vivid:'#B07FBA',nightmare:'#D65F82'},
+  sex:{protected:'#4BAEA5',unprotected:'#D65F82'}};
+function optColor(f,v){if(f==='mood'){const m=moodInfo(v);return m&&m.c}const c=OPT_COLOR[f]?.[v];if(c)return c;const o=(state.settings.custom?.[f]||[]).find(x=>x[0]===v);return o&&o[3]}
+const chip=(f,v,label,mode,cls='')=>{const c=optColor(f,v);return`<button type="button" class="chip ${cls}" data-f="${f}" data-v="${esc(v)}" data-m="${mode}" aria-pressed="${isOn(f,v)}"${c?` style="--c:${c}"`:''}>${label}</button>`};
 function openLog(k){logDate=k;renderLog();$('#sheet').classList.add('open');document.body.classList.add('locked');$('#sBody').scrollTop=0}
 function closeLog(){$('#sheet').classList.remove('open');document.body.classList.remove('locked');persist();renderAll()}
 function sheetHead(){const k=logDate,t=todayKey();$('#sDate').textContent=fmt(k,{weekday:'long',day:'numeric',month:'long'});
@@ -1032,24 +1313,49 @@ function renderLog(){
     if(s.title)skip=!tracking(s.title);if(skip)continue;
     if(s.title){if(open)h+='</div></details>';h+=`<details class="sec" data-sec="${s.title}"${openS.has(s.title)?' open':''}><summary><h4>${ic(SEC_ICON[s.title],'secic')}${s.title}</h4><span class="sv">${esc(secSummary(s.title))}</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary><div class="secb">`;open=true}
     if(s.label){const sk={dreams:'dreams',preg:'preg',cervixPos:'cervix',libido:'libido',pms:'pms',sleep:'sleep',digestion:'digestion',skin:'skin',cravings:'cravings',meds:'meds'}[s.key];h+=`<div class="sub">${sk?ic(sk)+' ':''}${s.label}</div>`}
-    if(s.type==='single'||s.type==='multi')h+=`<div class="chips">${s.opts.map(([v,l])=>chip(s.key,v,l,s.type,s.cls)).join('')}</div>`;
+    if(s.type==='mood'){const sel=new Set(d.mood||[]);h+=`<div class="chips mpills">${moodList().map(([k,l,c,i])=>moodPill(k,l,c,i,sel.has(k),`data-f="mood" data-v="${k}" data-m="multi"`)).join('')}<button type="button" class="mp addp" data-addmood="1">${moodIco('i-plus2')}Add your own</button></div>`}
+    else if(s.type==='single'||s.type==='multi'){const os=s.type==='multi'&&CUSTOMIZABLE.has(s.key)?[...s.opts,...customOpts(s.key)]:s.opts;
+      h+=`<div class="chips">${os.map(([v,l])=>chip(s.key,v,esc(l),s.type,s.cls)).join('')}${s.type==='multi'&&CUSTOMIZABLE.has(s.key)?`<button type="button" class="chip addc" data-addc="${s.key}">+ Add your own</button>`:''}</div>`}
     else if(s.type==='flow')h+=`<div class="chips">${FLOWS.map(([v,l,f])=>chip('flow',v,`<i class="fi" style="--fill:${f};--fc:var(${FC[v]})"></i>${l}`,'single','b')).join('')}</div>`;
     else if(s.type==='bbt'){const val=d.bbt!=null?toUnit(d.bbt).toFixed(2):'';
       h+=`<div class="bbtrow"><input class="field" id="bbtIn" inputmode="decimal" autocomplete="off" placeholder="${u==='F'?'97.70':'36.50'}" value="${val}" aria-label="Temperature"><span class="unit">°${u}</span><input class="field" type="time" id="bbtTime" value="${d.bbtTime||''}" aria-label="Time taken"></div>
       <div class="sub">Anything that could throw it off?</div><div class="chips">${BBT_FLAGS.map(([v,l])=>chip('bbtFlags',v,l,'multi')).join('')}</div>`}
-    else if(s.type==='lh'||s.type==='preg')h+=testsHTML(s.type,d);
+    else if(s.type==='lh'||s.type==='preg'){if(s.type==='lh'&&[...(d.lhTests||[]),...(d.pregTests||[])].some(t=>t.photo))h+=tviewSeg();h+=testsHTML(s.type,d)}
     else if(s.type==='meds')h+=`<div class="chips">${state.settings.meds.map(v=>chip('meds',v,esc(v),'multi')).join('')}</div><div class="addrow"><input class="field" id="medIn" placeholder="Add one, e.g. Vitamin D"><button type="button" class="btn ghost small" id="medAdd">Add</button></div>`;
     else if(s.type==='note')h+=`<textarea class="field" id="noteIn" rows="4" placeholder="Anything else about today">${esc(d.note||'')}</textarea>`;
   }
   $('#sBody').innerHTML=h+'</div></details></div>';
-  $$('img[data-photo]',$('#sBody')).forEach(im=>DB.get(im.dataset.photo).then(src=>{if(src)im.src=src}));
+  fillPhotos($('#sBody'));
 }
+/* ---- tests drawn as a clean strip / cassette; the result window is the real photo ---- */
+let tdN=0,pvPhoto=null;
+function findTestByPhoto(id){for(const[k,d]of Object.entries(state.days))for(const[key,kind]of[['lhTests','lh'],['pregTests','preg']])for(const t of d[key]||[])if(t.photo===id)return{k,kind,t};return null}
+function testSVG(kind,t,src){const P=kind==='preg',id='tc'+(++tdN);
+  const L=P?{T:160,C:176,wx:144,wy:16,ww:48,wh:14,lw:3}:{T:150,C:186,wx:118,wy:12,ww:118,wh:22,lw:5};
+  const ok=false;let win;
+  if(ok){let tt=t.t,cc=t.c,flip=false;if(cc<tt){tt=1-tt;cc=1-cc;flip=true}const dw=(L.C-L.T)/(cc-tt),x=L.T-tt*dw;
+    win=`<clipPath id="${id}"><rect x="${L.wx}" y="${L.wy}" width="${L.ww}" height="${L.wh}" rx="${P?2:0}"/></clipPath><g clip-path="url(#${id})"><rect x="${L.wx}" y="${L.wy}" width="${L.ww}" height="${L.wh}" fill="#f4f1ef"/><image data-photo="${t.photo}"${src?` href="${src}"`:''} x="${x.toFixed(2)}" y="${(L.wy-L.wh*(1/.55-1)/2).toFixed(2)}" width="${dw.toFixed(2)}" height="${(L.wh/.55).toFixed(2)}" preserveAspectRatio="none"${flip?` transform="translate(${(2*x+dw).toFixed(2)} 0) scale(-1 1)"`:''}/></g>`}
+  else{// a line's darkness follows the reading; a negative result shows no test line at all
+    const shade=r=>r<.1?0:Math.min(1,Math.max(.14,Math.pow(r,1.6)));
+    const op=t.ratio!=null?shade(t.ratio):P?({faint:.2,pos:1}[t.result]??0):({low:.3,high:.75,peak:1}[t.result]??0);
+    win=`<rect x="${L.wx}" y="${L.wy}" width="${L.ww}" height="${L.wh}" fill="${P?'#fbfbfb':'#eceeee'}"/>${op?`<rect x="${L.T-L.lw/2}" y="${L.wy}" width="${L.lw}" height="${L.wh}" fill="#d24a72" opacity="${op}"/>`:''}<rect x="${L.C-L.lw/2}" y="${L.wy}" width="${L.lw}" height="${L.wh}" fill="#d24a72"/>`}
+  if(P)return`<svg class="tsvg preg" viewBox="0 0 320 46" role="img" aria-label="Pregnancy test"><path d="M18 10h282a13 13 0 0 1 0 26H18a13 13 0 0 1 0-26z" fill="#eceeee"/><path d="M18 10h92v26H18a13 13 0 0 1 0-26z" fill="#e47fa3"/><rect x="24" y="19" width="22" height="8" rx="4" fill="#d26391"/><rect x="136" y="12" width="64" height="22" rx="11" fill="#d6d8d8"/>${win}<rect x="270" y="19" width="22" height="8" rx="4" fill="#d6d8d8"/><text x="${L.T}" y="8" class="tlb">T</text><text x="${L.C}" y="8" class="tlb">C</text></svg>`;
+  return`<svg class="tsvg" viewBox="0 0 320 46" role="img" aria-label="LH strip"><rect x="4" y="12" width="312" height="22" rx="2" fill="#eceeee"/>${win}<rect x="244" y="12" width="72" height="22" fill="#424b7c"/><rect x="72" y="12" width="4" height="22" fill="#424b7c"/><path d="M62 23H44M44 23l4-3M44 23l4 3" stroke="#424b7c" stroke-width="1.6" fill="none"/><text x="${L.T}" y="9" class="tlb">T</text><text x="${L.C}" y="9" class="tlb">C</text></svg>`}
+const tviewSeg=()=>`<div class="seg tview"><button data-tview="photo" aria-pressed="${state.settings.testView!=='drawn'}">Photos</button><button data-tview="drawn" aria-pressed="${state.settings.testView==='drawn'}">Drawn</button></div>`;
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tview]');if(!b)return;state.settings.testView=b.dataset.tview;save();if($('#sheet').classList.contains('open'))rerenderLog();dirty.chart=1;if(curView==='chart')renderChart()});
+const testDraw=(kind,t,src)=>{if(state.settings.testView!=='drawn'&&t.photo){const flip=t.crop&&t.c!=null&&t.t!=null&&t.c<t.t;
+  return`<button type="button" class="tdraw tphoto" data-view="${t.photo}" aria-label="Show the full photo"><img data-photo="${t.photo}"${src?` src="${src}"`:''} alt="Test photo"${flip?' style="transform:rotate(180deg)"':''}></button>`}
+  return t.photo?`<button type="button" class="tdraw" data-view="${t.photo}" aria-label="Show the full photo">${testSVG(kind,t,src)}<span class="tzoom">Photo</span></button>`:`<div class="tdraw">${testSVG(kind,t,src)}</div>`};
+function fillPhotos(root){$$('[data-photo]',root).forEach(el=>DB.get(el.dataset.photo).then(src=>{if(!src)return;if(el.tagName.toLowerCase()==='image')el.setAttribute('href',src);else el.src=src}))}
+document.addEventListener('click',async e=>{const v=e.target.closest('[data-view]');if(!v)return;e.preventDefault();e.stopPropagation();const src=await DB.get(v.dataset.view);if(!src)return;pvPhoto=v.dataset.view;$('#pvEdit').hidden=!findTestByPhoto(pvPhoto);$('#pvImg').src=src;openModal('photoView')},true);
+$('#pvEdit').addEventListener('click',()=>{const f=findTestByPhoto(pvPhoto);if(!f)return;closeModal('photoView');logDate=f.k;openScanEdit(f.kind,f.t)});
+$('#photoView').addEventListener('click',e=>{if(e.target.id==='photoView'||e.target.id==='pvImg')closeModal('photoView')});
 function testsHTML(kind,d){const key=kind==='preg'?'pregTests':'lhTests',opts=kind==='preg'?PREG_OPTS:LH_OPTS,lbl=kind==='preg'?'Line':'T/C';
   const L=[...(d[key]||[])].sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'));let h='';
   for(const t of L){const mk=t.crop&&t.c!=null?`<i class="mk c" style="left:${t.c*100}%">C</i><i class="mk t" style="left:${t.t*100}%">T</i>`:'';
-    h+=`<div class="tcard" data-kind="${kind}" data-tid="${t.id}">${t.photo&&t.crop?`<div class="lhfull"><img data-photo="${t.photo}" alt="Cropped test photo">${mk}</div>`:''}
-      <div class="trow">${t.photo&&!t.crop?`<img class="lhthumb" data-photo="${t.photo}" alt="Test photo">`:''}<input class="field ttime" type="time" value="${t.time||''}" aria-label="Time taken">${t.ratio!=null?`<span class="ratio">${lbl} ${t.ratio.toFixed(2)}</span>`:''}<span style="flex:1"></span>
-      <button type="button" class="btn ghost small" data-tact="scan">${t.photo?'Rescan':'Add photo'}</button><button type="button" class="btn ghost small" data-tact="del">Delete</button></div>
+    h+=`<div class="tcard" data-kind="${kind}" data-tid="${t.id}">${testDraw(kind,t)}
+      <div class="trow"><input class="field ttime" type="time" value="${t.time||''}" aria-label="Time taken">${t.ratio!=null?`<span class="ratio">${lbl} ${t.ratio.toFixed(2)}</span>`:''}<span style="flex:1"></span>
+      ${t.photo?'<button type="button" class="btn ghost small" data-tact="edit">Edit photo</button>':''}<button type="button" class="btn ghost small" data-tact="scan">${t.photo?'New photo':'Add photo'}</button><button type="button" class="btn ghost small" data-tact="del">Delete</button></div>
       <div class="chips">${opts.map(([v,l])=>`<button type="button" class="chip t" data-tres="${v}" aria-pressed="${t.result===v}">${l}</button>`).join('')}</div></div>`}
   return h+`<div class="addrow2"><button type="button" class="btn ghost small" data-add="${kind}-scan">${ic(kind==='preg'?'preg':'lh')}${L.length?'Scan another':kind==='preg'?'Scan a test':'Scan a strip'}</button><button type="button" class="btn ghost small" data-add="${kind}-manual">Add without photo</button></div>`}
 function testList(kind){const key=kind==='preg'?'pregTests':'lhTests';return{key,list:(dayData(logDate)[key]||[]).map(t=>({...t}))}}
@@ -1058,12 +1364,16 @@ async function handleTest(b){
   const card=b.closest('.tcard'),kind=card.dataset.kind,{key,list}=testList(kind),t=list.find(x=>x.id===card.dataset.tid);if(!t)return;
   if(b.dataset.tres){t.result=t.result===b.dataset.tres?null:b.dataset.tres;setField(logDate,key,list);syncTests(logDate);return rerenderLog()}
   if(b.dataset.tact==='scan')return openScanner(kind,t.id);
+  if(b.dataset.tact==='edit')return openScanEdit(kind,t);
   if(b.dataset.tact==='del'){const c=t.photo?await askChoice('Delete this test? You can keep its result and remove only the photo.','Photo only','Whole test'):(await askConfirm('Delete this test?','Delete',true)?'all':null);if(!c)return;
-    if(t.photo)await DB.del(t.photo);if(c==='all')list.splice(list.indexOf(t),1);else Object.assign(t,{photo:null,crop:null,c:null,t:null});
+    if(t.photo)await DB.del(t.photo);if(t.orig)await DB.del(t.orig);if(c==='all')list.splice(list.indexOf(t),1);else Object.assign(t,{photo:null,orig:null,edit:null,crop:null,c:null,t:null});
     setField(logDate,key,list);syncTests(logDate);rerenderLog();toast(c==='all'?'Test deleted':'Photo deleted')}}
 function rerenderLog(){const st=$('#sBody').scrollTop;renderLog();$('#sBody').scrollTop=st}
 $('#sBody').addEventListener('toggle',e=>{const el=e.target;if(!el.matches||!el.matches('details.sec'))return;const set=new Set(state.settings.openSecs||[]);el.open?set.add(el.dataset.sec):set.delete(el.dataset.sec);state.settings.openSecs=[...set];unsaved=true;clearTimeout(saveT);saveT=setTimeout(persist,500)},true);
 $('#sBody').addEventListener('click',e=>{
+  if(e.target.closest('[data-addmood]')){openMoodAdd();return}
+  const ac=e.target.closest('[data-addc]');if(ac){openMoodAdd(ac.dataset.addc);return}if(false){ac.outerHTML=`<span class="addin" data-key="${ac.dataset.addc}"><input class="field" placeholder="Name" enterkeyhint="done"><button type="button" class="btn small" data-addok="1">Add</button></span>`;$('.addin input',$('#sBody')).focus();return}
+  const ao=e.target.closest('[data-addok]');if(ao){const w=ao.closest('.addin'),v=w.querySelector('input').value.trim();if(v)addCustomOpt(w.dataset.key,v);return}
   const tb=e.target.closest('[data-tres],[data-tact],[data-add]');if(tb){handleTest(tb);return}
   const b=e.target.closest('[data-f]');
   if(b){const f=b.dataset.f,v=b.dataset.v,d=dayData(logDate);
@@ -1074,7 +1384,7 @@ $('#sBody').addEventListener('click',e=>{
 });
 function addMed(){const i=$('#medIn'),v=i.value.trim();if(!v)return;if(!state.settings.meds.includes(v))state.settings.meds.push(v);
   const d=dayData(logDate),s=new Set(d.meds||[]);s.add(v);setField(logDate,'meds',[...s]);rerenderLog()}
-$('#sBody').addEventListener('keydown',e=>{if(e.target.id==='medIn'&&e.key==='Enter'){e.preventDefault();addMed()}});
+$('#sBody').addEventListener('keydown',e=>{if(e.target.id==='medIn'&&e.key==='Enter'){e.preventDefault();addMed()}if(e.key==='Enter'&&e.target.closest('.addin')){e.preventDefault();const w=e.target.closest('.addin'),v=e.target.value.trim();if(v)addCustomOpt(w.dataset.key,v)}});
 $('#sBody').addEventListener('change',e=>{
   if(e.target.id==='bbtIn'){const raw=e.target.value.trim().replace(',','.');if(!raw){setField(logDate,'bbt',null);return}
     let v=parseFloat(raw);const F=state.settings.unit==='F';
@@ -1094,7 +1404,7 @@ $('#sStrip').addEventListener('touchend',e=>{if(swX==null)return;const dx=e.chan
 function renderStrip(){const t=todayKey();let h='';for(let o=-3;o<=3;o++){const k=addDays(logDate,o),d=state.days[k]||{},mk=model.marks[k]||{},dt=fromKey(k),cl=['sd'];
   if(d.flow)cl.push('fl','fl-'+d.flow);else if(mk.ovu)cl.push(mk.ovu==='pred'?'ovp':'ov');else if(mk.fert)cl.push(mk.fert==='pred'?'fp':'f');else if(mk.pp)cl.push('pp');
   if(o===0)cl.push('sel');
-  h+=`<button type="button" class="sdw" data-sd="${k}" aria-label="${dt.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'})}"><span class="wd">${dt.toLocaleDateString(undefined,{weekday:'narrow'})}</span><span class="${cl.join(' ')}"${d.flow?` style="--fc:var(${FC[d.flow]})"`:''}>${dt.getDate()}</span><i class="tdot${k===t?' on':''}"></i></button>`}
+  h+=`<button type="button" class="sdw" data-sd="${k}" aria-label="${dt.toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})}"><span class="wd">${dt.toLocaleDateString(LOC,{weekday:'narrow'})}</span><span class="${cl.join(' ')}"${d.flow?` style="--fc:var(${FC[d.flow]})"`:''}>${dt.getDate()}</span><i class="tdot${k===t?' on':''}"></i></button>`}
   $('#sStrip').innerHTML=h}
 
 /* open log from anywhere a date is tapped */
@@ -1121,8 +1431,8 @@ const scan={view:{x:0,y:0,w:1,h:1},fine:0,orig:null,src:null,rot:0,rect:null,mod
 function scanHint(){const n=scan.taps.length,t={pick:'Lay the strip on something plain and white, in even daylight with no flash, and get close.',
   crop:'Straighten the strip with the slider so the lines stand upright, then drag the corners around it.',
   tap:n===0?'Touch the control line (C) and slide to place it exactly. A magnifier shows where it lands.':n===1?'Now place the test line (T) the same way, even if it’s faint or blank.':'Drag either marker to fine-tune. The reading updates when you let go.'}[scan.mode];$('#scanHint').textContent=t}
-function scanUI(){$('#scanner .mcard').classList.toggle('full',scan.mode!=='pick');$('#scanPick').hidden=scan.mode!=='pick'&&scan.mode!=='crop';$('#scanStage').hidden=scan.mode==='pick';$('#cropBtns').hidden=scan.mode!=='crop';$('#tapBtns').hidden=scan.mode!=='tap';scanHint()}
-function openScanner(kind='lh',target=null){$('#scanner h4').textContent=kind==='preg'?'Scan a pregnancy test':'Scan an LH strip';Object.assign(scan,{kind,target,orig:null,src:null,rot:0,rect:null,mode:'pick',data:null,taps:[],ratio:null,result:null,out:null,cropped:false,prof:null});$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();openModal('scanner')}
+function scanUI(){$('#scanner .mcard').classList.toggle('full',scan.mode!=='pick');$('#scanPick').hidden=!!scan.editing||(scan.mode!=='pick'&&scan.mode!=='crop');$('#scanStage').hidden=scan.mode==='pick';$('#cropBtns').hidden=scan.mode!=='crop';$('#tapBtns').hidden=scan.mode!=='tap';scanHint()}
+function openScanner(kind='lh',target=null){$('#scanner h4').textContent=kind==='preg'?'Scan a pregnancy test':'Scan an LH strip';Object.assign(scan,{kind,target,editing:null,origId:null,orig:null,src:null,rot:0,rect:null,mode:'pick',data:null,taps:[],ratio:null,result:null,out:null,cropped:false,prof:null});$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();openModal('scanner')}
 function rotated(c,deg){if(!deg)return c;const a=deg*Math.PI/180,cs=Math.abs(Math.cos(a)),sn=Math.abs(Math.sin(a)),o=document.createElement('canvas');
   o.width=Math.round(c.width*cs+c.height*sn);o.height=Math.round(c.width*sn+c.height*cs);const x=o.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,o.width,o.height);
   x.translate(o.width/2,o.height/2);x.rotate(a);x.drawImage(c,-c.width/2,-c.height/2);return o}
@@ -1147,24 +1457,36 @@ function autoDetect(){const o=scan.orig;if(!o)return null;const k=Math.min(1,520
     const dx=q.x-C.x,dy=q.y-C.y,along=Math.abs(dx*Math.cos(C.th)+dy*Math.sin(C.th)),across=Math.abs(-dx*Math.sin(C.th)+dy*Math.cos(C.th));
     if(along<C.len*.8&&across>C.len*.15&&across<C.len*8){T=q;break}}
   return{th:C.th,c:[C.x/k,C.y/k],t:T?[T.x/k,T.y/k]:null,len:C.len/k}}
-function applyAuto(quiet){const a=autoDetect();if(!a){if(!quiet)toast('No coloured lines found. Crop by hand instead.');return false}
+function applyAuto(quiet){const a=autoDetect();scan.autoBoth=!!(a&&a.t);if(!a){if(!quiet)toast('No coloured lines found. Crop by hand instead.');return false}
   const deg=a.th*180/Math.PI;let phi=((90-deg+90)%180+180)%180-90;const rot=((Math.round(phi/90)*90)%360+360)%360;let fine=phi-Math.round(phi/90)*90;
   scan.rot=rot;scan.fine=Math.round(fine*2)/2;$('#rotFine').value=scan.fine;$('#rotVal').textContent=(scan.fine>0?'+':'')+scan.fine.toFixed(1)+'°';scan.view={x:0,y:0,w:1,h:1};
   const o=scan.orig;scan.src=rotated(o,scan.rot+scan.fine);const R=(scan.rot+scan.fine)*Math.PI/180,cs=Math.cos(R),sn=Math.sin(R),s=scan.src;
   const map=p=>{const dx=p[0]-o.width/2,dy=p[1]-o.height/2;return[cs*dx-sn*dy+s.width/2,sn*dx+cs*dy+s.height/2]};
   const pc=map(a.c),pt=a.t?map(a.t):null,L=a.len,cx=pt?(pc[0]+pt[0])/2:pc[0],cy=pt?(pc[1]+pt[1])/2:pc[1],span=pt?Math.abs(pt[0]-pc[0]):0;
   const W=pt?Math.max(L*4.2,span*4.5):L*6,H=L*1.7,x0=Math.max(0,cx-W/2),y0=Math.max(0,cy-H/2),x1=Math.min(s.width,cx+W/2),y1=Math.min(s.height,cy+H/2);
-  scan.rect={x:x0/s.width,y:y0/s.height,w:(x1-x0)/s.width,h:(y1-y0)/s.height};scan.boxSet=true;drawCrop();if(!quiet)toast('Lines found, check the box');else toast('Strip found automatically. Adjust the box if needed.');return true}
-function autoTaps(){if(!scan.prof)return;const p=scan.prof.p,w=scan.w,pk=[];for(let i=2;i<w-2;i++)if(p[i]>=p[i-1]&&p[i]>=p[i+1]&&p[i]>p[i-2]&&p[i]>p[i+2])pk.push(i);
+  scan.rect={x:x0/s.width,y:y0/s.height,w:(x1-x0)/s.width,h:(y1-y0)/s.height};scan.boxSet=true;drawCrop();if(!quiet)toast('Lines found, check the box');return true}
+function blueCols(){const d=scan.data.data,w2=scan.w,h2=scan.h,out=[];for(let x=0;x<w2;x++){let n=0,m=0;for(let y=Math.floor(h2*.3);y<h2*.7;y+=2){m++;const i=(y*w2+x)*4,r=d[i],g=d[i+1],b=d[i+2];if(b-r>35&&b>g+10&&b>70)n++}out.push(n>m*.5)}return out}
+function autoTaps(){if(!scan.prof)return;const p=scan.prof.p,w=scan.w,pk=[],blue=blueCols(),pad=Math.max(3,Math.round(w*.015));
+  const nearBlue=i=>{for(let j=Math.max(0,i-pad);j<=Math.min(w-1,i+pad);j++)if(blue[j])return true;return false};
+  for(let i=2;i<w-2;i++)if(p[i]>=p[i-1]&&p[i]>=p[i+1]&&p[i]>p[i-2]&&p[i]>p[i+2]&&!nearBlue(i))pk.push(i);
   const loc=i=>{const gap=Math.max(4,Math.round(w*.025)),bw=Math.max(12,Math.round(w*.09)),v=[];for(let j=i-bw;j<=i+bw;j++)if(j>=0&&j<w&&Math.abs(j-i)>=gap)v.push(p[j]);v.sort((a,b)=>a-b);return p[i]-(v[v.length>>1]||0)};
   const sc=pk.map(i=>[i,loc(i)]).filter(q=>q[1]>3).sort((a,b)=>b[1]-a[1]);if(!sc.length)return;const C=sc[0];
   const T=sc.slice(1).find(q=>Math.abs(q[0]-C[0])>w*.04&&Math.abs(q[0]-C[0])<w*.5&&q[1]>Math.max(2.5,C[1]*.05));
-  scan.taps=[{x:C[0],y:scan.h/2}];if(T)scan.taps.push({x:T[0],y:scan.h/2});drawTaps();scanHint();if(scan.taps.length===2){analyse();toast('Lines placed automatically. Drag to adjust, or swap C and T.')}}
+  let c0=C[0],t0=T?T[0]:null;
+  if(T){const w2=w;
+    const near=x=>{let m=1e9;for(let j=0;j<w2;j++)if(blue[j])m=Math.min(m,Math.abs(j-x));return m};const nc=near(c0),nt=near(t0);if(nt<1e9&&nt<nc*.8){[c0,t0]=[t0,c0]}}
+  scan.taps=[{x:c0,y:scan.h/2}];if(t0!=null)scan.taps.push({x:t0,y:scan.h/2});drawTaps();scanHint();if(scan.taps.length===2){analyse();toast('Lines placed automatically. Drag to adjust, or swap C and T.')}}
 async function onPhotoPicked(e){const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;toast('Opening photo…');const im=await loadPhoto(f);
   if(!im||!im.w){toast('That photo couldn’t be opened. In Settings → Camera → Formats, “Most Compatible” saves photos as JPEG, which always works.');return}
   const s=Math.min(1,1600/Math.max(im.w,im.h)),c=document.createElement('canvas');c.width=Math.round(im.w*s);c.height=Math.round(im.h*s);c.getContext('2d').drawImage(im.src,0,0,c.width,c.height);
-  scan.orig=c;scan.rot=0;scan.fine=0;scan.view={x:0,y:0,w:1,h:1};$('#rotFine').value=0;$('#rotVal').textContent='0.0°';scan.src=c;scan.boxSet=false;scan.rect={x:.1,y:.1,w:.8,h:.8};scan.mode='crop';scan.taps=[];$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop();applyAuto(true)}
+  scan.orig=c;scan.rot=0;scan.fine=0;scan.view={x:0,y:0,w:1,h:1};$('#rotFine').value=0;$('#rotVal').textContent='0.0°';scan.src=c;scan.boxSet=false;scan.rect={x:.1,y:.1,w:.8,h:.8};scan.mode='crop';scan.taps=[];$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop();if(applyAuto(true))$('#cropOk').click()}
 $$('.scanIn').forEach(inp=>inp.addEventListener('change',onPhotoPicked));
+async function openScanEdit(kind,t){openScanner(kind,t.id);$('#scanner h4').textContent='Edit photo';const src=await DB.get(t.orig||t.photo);if(!src){toast('The photo could not be found.');closeModal('scanner');return}
+  const im=await new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>res(null);i.src=src});if(!im){toast('The photo could not be opened.');return}
+  const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;c.getContext('2d').drawImage(im,0,0);
+  const E=t.orig&&t.edit?t.edit:null;scan.editing={c:t.c,t:t.t,rect:E?{...E.rect}:null,rot:E?E.rot:0,fine:E?E.fine:0,crop:!!t.crop};scan.origId=t.orig||null;
+  scan.orig=c;scan.rot=E?E.rot:0;scan.fine=E?E.fine:0;$('#rotFine').value=scan.fine;$('#rotVal').textContent=(scan.fine>0?'+':'')+scan.fine.toFixed(1)+'°';scan.view={x:0,y:0,w:1,h:1};
+  scan.src=rotated(c,scan.rot+scan.fine);scan.rect=E?{...E.rect}:{x:.02,y:.02,w:.96,h:.96};scan.boxSet=true;scan.mode='crop';scan.taps=[];$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop()}
 $('#scanCanvas').addEventListener('touchstart',e=>{if(scan.mode==='crop'||scan.mode==='tap')e.preventDefault()},{passive:false});
 $('#scanCanvas').addEventListener('contextmenu',e=>e.preventDefault());
 function cropGeom(){const c=scan.cv,v=scan.view,r=scan.rect;return{rx:c.pad+(r.x-v.x)/v.w*c.iw,ry:c.pad+(r.y-v.y)/v.h*c.ih,rw:r.w/v.w*c.iw,rh:r.h/v.h*c.ih}}
@@ -1212,7 +1534,8 @@ $('#cropSkip').addEventListener('click',()=>startTap(scan.src,false));
 $('#cropOk').addEventListener('click',()=>{const s=scan.src,r=scan.rect,sx=Math.round(r.x*s.width),sy=Math.round(r.y*s.height),sw=Math.max(8,Math.round(r.w*s.width)),sh=Math.max(8,Math.round(r.h*s.height));
   let c=document.createElement('canvas');c.width=sw;c.height=sh;c.getContext('2d').drawImage(s,sx,sy,sw,sh,0,0,sw,sh);if(sh>sw)c=rotated(c,90);
   const k=Math.min(1,900/c.width);if(k<1){const o=document.createElement('canvas');o.width=Math.round(c.width*k);o.height=Math.round(c.height*k);o.getContext('2d').drawImage(c,0,0,o.width,o.height);c=o}
-  startTap(c,true);if(scan.boxSet)autoTaps()});
+  startTap(c,true);const ed=scan.editing,r0=scan.rect,same=ed&&ed.crop&&ed.c!=null&&((ed.rect&&ed.rot===scan.rot&&ed.fine===scan.fine&&['x','y','w','h'].every(k=>Math.abs(ed.rect[k]-r0[k])<.002))||(!scan.origId&&r0.x<=.021&&r0.y<=.021&&r0.w>=.959&&r0.h>=.959&&!scan.rot&&!scan.fine));
+  if(same){scan.taps=[{x:ed.c*scan.w,y:scan.h/2},{x:ed.t*scan.w,y:scan.h/2}];drawTaps();scanHint();analyse()}else if(scan.boxSet)autoTaps()});
 function drawTaps(){const x=$('#scanCanvas').getContext('2d');x.putImageData(scan.data,0,0);const W=scan.w,H=scan.h,bw=Math.max(9,W*.045);
   scan.taps.forEach((t,i)=>{const col=i?'79,214,204':'255,134,168';x.strokeStyle=`rgb(${col})`;x.lineWidth=Math.max(2,W*.006);
     const top=scan.cropped?0:Math.max(0,t.y-H*.08),hh=scan.cropped?H:Math.min(H,H*.16);x.strokeRect(t.x-bw/2,top+x.lineWidth/2,bw,hh-x.lineWidth);
@@ -1259,9 +1582,10 @@ $('#scanOut').addEventListener('click',e=>{const b=e.target.closest('[data-scanr
 $('#scanSave').addEventListener('click',async()=>{const id=`photo:${logDate}:${Date.now()}`;let c=scan.out;
   if(!scan.cropped){const k=Math.min(1,720/Math.max(c.width,c.height));if(k<1){const o=document.createElement('canvas');o.width=Math.round(c.width*k);o.height=Math.round(c.height*k);o.getContext('2d').drawImage(c,0,0,o.width,o.height);c=o}}
   await DB.set(id,c.toDataURL('image/jpeg',scan.cropped?.86:.74));
+  let origId=scan.origId;if(!origId&&scan.orig&&!(scan.editing&&!scan.origId)){origId=id+':orig';await DB.set(origId,scan.orig.toDataURL('image/jpeg',.82))}
   const{key,list}=testList(scan.kind);let t=list.find(x=>x.id===scan.target);if(!t){t={id:newId(),time:logDate===todayKey()?nowHM():null};list.push(t)}
-  if(t.photo)DB.del(t.photo);Object.assign(t,{photo:id,crop:scan.cropped||null,c:scan.cropped?Math.round(scan.taps[0].x/scan.w*1000)/1000:null,t:scan.cropped?Math.round(scan.taps[1].x/scan.w*1000)/1000:null,ratio:scan.ratio,result:scan.result});
-  setField(logDate,key,list);syncTests(logDate);closeModal('scanner');rerenderLog();toast(scan.kind==='preg'?'Test saved':'Strip saved')});
+  if(t.photo)DB.del(t.photo);if(t.orig&&t.orig!==origId)DB.del(t.orig);Object.assign(t,{photo:id,orig:origId||null,edit:origId?{rot:scan.rot,fine:scan.fine,rect:{...scan.rect}}:null,crop:scan.cropped||null,c:scan.cropped?Math.round(scan.taps[0].x/scan.w*1000)/1000:null,t:scan.cropped?Math.round(scan.taps[1].x/scan.w*1000)/1000:null,ratio:scan.ratio,result:scan.result});
+  setField(logDate,key,list);syncTests(logDate);closeModal('scanner');rerenderLog();dirty.chart=1;if(curView==='chart')renderChart();toast(scan.kind==='preg'?'Test saved':'Strip saved')});
 function askChoice(msg,altLabel,yesLabel){return new Promise(res=>{$('#confirmMsg').textContent=msg;const y=$('#confirmYes'),a=$('#confirmAlt'),n=$('#confirmNo');
   y.textContent=yesLabel;y.classList.add('danger');a.textContent=altLabel;a.hidden=false;openModal('confirm');
   const done=v=>{closeModal('confirm');a.hidden=true;y.onclick=a.onclick=n.onclick=null;res(v)};y.onclick=()=>done('all');a.onclick=()=>done('photo');n.onclick=()=>done(null)})}
@@ -1269,12 +1593,21 @@ function askChoice(msg,altLabel,yesLabel){return new Promise(res=>{$('#confirmMs
 /* ================= backup & import ================= */
 async function exportBackup(){await persist();const photos={};for(const k of await DB.keys())if(k.startsWith('photo:'))photos[k]=await DB.get(k);
   const name=`cycles-backup-${todayKey()}.json`,blob=new Blob([JSON.stringify({app:'my-period-tracker',version:1,exported:new Date().toISOString(),state,photos})],{type:'application/json'});
-  if(!await shareFile(blob,name,'Cycles backup'))await offerFile(blob,name,'Cycles backup')}
+  if(!await shareFile(blob,name,'Cycles backup'))await offerFile(blob,name,'Cycles backup');
+  state.settings.lastBackup=todayKey();state.settings.backupAsked=todayKey();save();dirty.ins=1;if(curView==='ins')renderView?.('ins')}
+/* ask for a backup once a month (and at most once a week after a "Not now") */
+let backupAsking=false;
+async function backupReminder(){const S=state.settings,t=todayKey();if(backupAsking||!Object.keys(state.days).length)return;
+  if(!S.installedAt){S.installedAt=t;save();return}
+  const since=S.lastBackup||S.installedAt;if(diffDays(since,t)<30)return;if(S.backupAsked&&diffDays(S.backupAsked,t)<7)return;
+  backupAsking=true;S.backupAsked=t;save();
+  const pr=askConfirm(S.lastBackup?`Your last backup was ${diffDays(S.lastBackup,t)} days ago. Save a new one to Files now? Everything lives only on this phone.`:'You haven\u2019t saved a backup yet. Save one to Files now? Everything lives only on this phone.','Save backup');$('#confirmNo').textContent='Not now';const ok=await pr;$('#confirmNo').textContent='Cancel';
+  backupAsking=false;if(ok)await exportBackup()}
 $('#importFile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;let json;
   try{json=JSON.parse(await f.text())}catch(err){toast('That file isn’t readable JSON. Choose a Clue export or a backup from this app.');return}
   if(json&&json.app==='my-period-tracker'&&json.state){if(!await askConfirm('Replace everything on this phone with this backup?','Restore backup'))return;
     state={version:1,days:json.state.days||{},settings:{...DEFAULTS,...(json.state.settings||{})}};for(const[k,v]of Object.entries(json.photos||{}))await DB.set(k,v);
-    migrate();applyTheme();save();await persist();renderAll();toast('Backup restored');return}
+    migrate();refreshLabels();applyTheme();state.settings.lastBackup=state.settings.backupAsked=todayKey();save();await persist();renderAll();toast('Backup restored');return}
   const r=importClue(json);migrate();if(!r.days){toast('No dated entries found in that file.');return}
   save();await persist();renderAll();
   await showInfo(`Imported ${plural(r.days,'day')} from Clue, ${fmt(r.first,{month:'short',year:'numeric'})} to ${fmt(r.last,{month:'short',year:'numeric'})}.`+
@@ -1290,8 +1623,17 @@ function syncDay(d){for(const[key,sum,rank,rk]of[['lhTests','lh',LHRANK,'lhRatio
     let best=null;for(const t of L)if(t.result&&(best==null||rank[t.result]>rank[best]))best=t.result;if(best)d[sum]=best;else delete d[sum];
     if(rk){const rs=L.map(t=>t.ratio).filter(r=>r!=null);if(rs.length)d[rk]=Math.max(...rs);else delete d[rk]}}}
 function syncTests(k){const d=state.days[k];if(!d)return;syncDay(d);if(!Object.keys(d).length)delete state.days[k];save()}
-function migrate(){if(!state.settings.tracks){const has=f=>Object.values(state.days).some(f);state.settings.tracks=Object.fromEntries(TRACKS.map(([k,,,on])=>[k,on]));
-    if(has(d=>d.lhTests||d.pregTests||d.lh||d.preg))state.settings.tracks.tests=true;if(has(d=>d.mucus||d.cervixPos||d.cervixFirm||d.cervixOpen))state.settings.tracks.mucus=true;if(has(d=>d.sex||d.libido))state.settings.tracks.sex=true}for(const d of Object.values(state.days)){
+function clueNotesToMoods(){let n=0;for(const d of Object.values(state.days)){if(!d.note||!/Clue /.test(d.note))continue;const keep=[];
+    for(const line of d.note.split('\n')){const m=line.match(/^Clue ([^:]+): (.*)$/);if(!m||!/mind|emotion|mood|feel|mental|motivat/i.test(m[1])){keep.push(line);continue}
+      const vals=m[2].split(/,\s*/).filter(Boolean),got=vals.map(clueMood).filter(Boolean),left=vals.filter(v=>!clueMood(v)&&!/pms/i.test(v));
+      if(vals.some(v=>/pms/i.test(v))&&!d.pms)d.pms='moderate';if(got.length){d.mood=[...new Set([...(d.mood||[]),...got])];n++}if(left.length)keep.push(`Clue ${m[1]}: ${left.join(', ')}`)}
+    const nt=keep.join('\n').trim();if(nt)d.note=nt;else delete d.note}return n}
+const MUC_RANK=['dry','sticky','creamy','watery','eggwhite'];
+const arrOf=v=>v==null?[]:Array.isArray(v)?v:[v];
+function mucTop(d){let b=null;for(const v of arrOf(d.mucus)){const r=MUC_RANK.indexOf(v);if(r>=0&&(b==null||r>MUC_RANK.indexOf(b)))b=v}return b}
+function migrate(){for(const d of Object.values(state.days)){for(const f of['mucus','mucusColor'])if(typeof d[f]==='string')d[f]=[d[f]]}if(!state.settings.clueMoods2){state.settings.clueMoods2=1;clueNotesToMoods()}if(!state.settings.tracks){const has=f=>Object.values(state.days).some(f);state.settings.tracks=Object.fromEntries(TRACKS.map(([k,,,on])=>[k,on]));
+    if(has(d=>d.lhTests||d.pregTests||d.lh||d.preg))state.settings.tracks.tests=true;if(has(d=>d.mucus||d.cervixPos||d.cervixFirm||d.cervixOpen))state.settings.tracks.mucus=true;if(has(d=>d.sex||d.libido))state.settings.tracks.sex=true;if(has(d=>d.bbt!=null))state.settings.tracks.bbt=true}
+  for(const d of Object.values(state.days))if(d.mood){const map={};d.mood=[...new Set(d.mood.map(x=>map[x]||x))];if(!d.mood.length)delete d.mood}for(const d of Object.values(state.days)){
     if(!d.lhTests&&(d.lh||d.lhPhoto||d.lhRatio!=null)){d.lhTests=[{id:newId(),time:null,result:d.lh||null,ratio:d.lhRatio??null,photo:d.lhPhoto||null,crop:d.lhCrop||null,c:d.lhC??null,t:d.lhT??null}]}
     if(!d.pregTests&&d.preg)d.pregTests=[{id:newId(),time:null,result:d.preg}];
     delete d.lhPhoto;delete d.lhCrop;delete d.lhC;delete d.lhT;if(d.lhTests||d.pregTests)syncDay(d)}{const titles=new Set(SECTIONS.filter(x=>x.title).map(x=>x.title)),o=state.settings.openSecs;if(!o||o.some(t=>!titles.has(t)))state.settings.openSecs=[...DEFAULTS.openSecs]}for(const d of Object.values(state.days)){if(d.mood&&d.mood.includes('pms')){d.mood=d.mood.filter(x=>x!=='pms');if(!d.mood.length)delete d.mood;if(!d.pms)d.pms='moderate'}}}
@@ -1310,13 +1652,13 @@ function importClue(json){
       if(/period|bleed|menstru/.test(kl)){set('flow',has('heavy')?'heavy':has('medium')?'medium':has('light')?'light':has('spot')?'spotting':null);return}
       if(/spot/.test(kl)){set('flow','spotting');return}
       if(/pain/.test(kl)){add('pain',pick([['cramp','cramps'],['head','headache'],['migraine','migraine'],['back','backache'],['neck','neck'],['breast','breasts'],['tender','breasts'],['ovulat','ovulation'],['joint','joints']]));return}
-      if(/mind|emotion|mood|feel/.test(kl)){add('mood',pick([['happy','happy'],['calm','calm'],['sensitive','sensitive'],['sad','sad'],['pms','pms'],['anx','anxious'],['stress','anxious'],['irrit','irritable'],['angry','irritable']]));if(has('pms'))set('pms','moderate');return}
+      if(/mind|emotion|mood|feel|mental|motivat/.test(kl)){add('mood',[...new Set(S.map(clueMood).filter(Boolean))]);if(has('pms'))set('pms','moderate');const left=S.filter(v=>!clueMood(v)&&!/pms/.test(v));if(left.length){const ln=`Clue ${key}: ${left.join(', ')}`;if(!(d.note||'').includes(ln))d.note=(d.note?d.note+'\n':'')+ln}return}
       if(/energy/.test(kl)){set('energy',has('exhaust','tired','low')?'low':has('energ','high')?'high':has('ok','normal','fine')?'mid':null);return}
       if(/sleep/.test(kl)){const n=parseFloat(S[0]),range=/[-+]/.test(S[0]);set('sleep',has('poor','bad')?'poor':has('good','great')?'good':!isFinite(n)?null:range?(n<3?'poor':n<6?'ok':'good'):(n<5?'poor':n<7?'ok':'good'));return}
       if(/libido|drive/.test(kl)){set('libido',has('high')?'high':has('low')?'low':'mid');return}
       if(/sex|intim/.test(kl)){const v=[];if(has('unprotected','withdrawal'))v.push('unprotected');if(S.some(s=>/(^|[^n])protected/.test(s)&&!/unprotected/.test(s)))v.push('protected');add('sex',v);
         if(has('high_sex_drive','high drive'))set('libido','high');if(has('low_sex_drive'))set('libido','low');return}
-      if(/fluid|discharge|mucus|cervical/.test(kl)){set('mucus',has('egg','stretch')?'eggwhite':has('water')?'watery':has('cream')?'creamy':has('sticky')?'sticky':has('none','dry')?'dry':null);
+      if(/fluid|discharge|mucus|cervical/.test(kl)){{const mv=has('egg','stretch')?'eggwhite':has('water')?'watery':has('cream')?'creamy':has('sticky')?'sticky':has('none','dry')?'dry':null;if(mv)add('mucus',[mv])}
         if(has('atypical'))d.note=(d.note?d.note+'\n':'')+'Clue: atypical discharge';return}
       if(/bbt|temp/.test(kl)){let n;if(val&&typeof val==='object'&&!Array.isArray(val)){if(isFinite(val.celsius))n=+val.celsius;else if(isFinite(val.fahrenheit))n=(+val.fahrenheit-32)*5/9}
         if(n==null)n=S.map(parseFloat).find(isFinite);if(n==null)return;if(n>45)n=(n-32)*5/9;
@@ -1328,7 +1670,7 @@ function importClue(json){
       if(/crav/.test(kl)){add('cravings',pick([['sweet','sweet'],['chocolate','sweet'],['sugar','sweet'],['salt','salty'],['carb','carbs']]));return}
       if(/med|pill|drug|supplement/.test(kl)){const vs=toStrings(val).map(s=>String(s).replace(/_/g,' ').replace(/^\w/,c=>c.toUpperCase()));vs.forEach(v=>{if(!state.settings.meds.includes(v))state.settings.meds.push(v)});add('meds',vs);return}
       if(/note|tag|comment/.test(kl)){const t=toStrings(val).join(', ');if(t)d.note=(d.note?d.note+'\n':'')+t;return}
-      unmapped.add(key);d.note=(d.note?d.note+'\n':'')+`Clue ${key}: ${toStrings(val).join(', ')}`;
+      unmapped.add(key);{const ln=`Clue ${key}: ${toStrings(val).join(', ')}`;if(!(d.note||'').includes(ln))d.note=(d.note?d.note+'\n':'')+ln}
     };
     if(typeof e.type==='string'&&('value' in e||'values' in e||'option' in e))handle(e.type,e.value??e.values??e.option);
     for(const[kk,vv]of Object.entries(e)){if(SKIP.test(kk))continue;
@@ -1349,11 +1691,11 @@ function renderPeek(){const k=peekDate,d=dayData(k),mk=model.marks[k]||{},cd=cdO
   if(mk.ovu)st.push(['t',`${ic('ovu')}${mk.ovu==='pred'?(mk.est?'Estimated ovulation':'Predicted ovulation'):'Ovulation day'}`,mk.ovu==='pred'?'':'ovu']);else if(mk.fert)st.push(['t'+(mk.fert==='pred'?' o':''),mk.fert==='pred'?(mk.est?'Estimated fertile window':'Likely fertile'):'Fertile window']);
   const tags=dayTags(d).filter(x=>x.k!=='flow'&&x.k!=='note');
   let h=st.length?`<div class="tags pk">${st.map(([c,t,f])=>f?`<button type="button" class="tag tagbtn ${c}" data-pf="${f}">${t}</button>`:`<span class="tag ${c}">${t}</span>`).join('')}</div>`:'';
-  h+=tags.length?`<div class="tags pk">${tags.map(x=>{const f=FBY[x.k]?x.k:null;return`<button type="button" class="tag tagbtn" ${f?`data-pf="${f}"${x.v!=null&&x.k!=='bbt'?` data-po="${esc(x.v)}"`:''}`:`data-pq="${esc(x.txt.toLowerCase())}" data-pl="${esc(x.txt)}"`}>${ic(x.k)}${esc(x.txt)}</button>`}).join('')}</div><p class="hint" style="margin-top:10px">Tap a tag to find every day with it.</p>`:'<p class="muted" style="margin:14px 0 4px">Nothing logged for this day.</p>';
+  h+=tags.length?`<div class="tags pk">${tags.map(x=>{const f=FBY[x.k]?x.k:null;return`<button type="button" class="tag tagbtn" ${f?`data-pf="${f}"${x.v!=null&&x.k!=='bbt'?` data-po="${esc(x.v)}"`:''}`:`data-pq="${esc(x.txt.toLowerCase())}" data-pl="${esc(x.txt)}"`}>${tagIc(x)}${esc(x.txt)}</button>`}).join('')}</div><p class="hint" style="margin-top:10px">Tap a tag to find every day with it.</p>`:'<p class="muted" style="margin:14px 0 4px">Nothing logged for this day.</p>';
   if(d.note)h+=`<p class="pknote">${esc(d.note)}</p>`;
-  const phs=[...(d.lhTests||[]),...(d.pregTests||[])].filter(t=>t.photo);if(phs.length)h+=`<div class="pkph">${phs.map(t=>`<img data-photo="${t.photo}" class="${t.crop?'wide':''}" alt="Test photo">`).join('')}</div>`;
+  const phs=[...(d.lhTests||[]).map(t=>['lh',t]),...(d.pregTests||[]).map(t=>['preg',t])].filter(([,t])=>t.photo||t.ratio!=null||t.result);if(phs.length)h+=`<div class="pkph">${phs.map(([k,t])=>testDraw(k,t)).join('')}</div>`;
   $('#pkBody').innerHTML=h;$('#pkEdit').textContent=Object.keys(d).length?'Edit this day':'Log this day';
-  $$('img[data-photo]',$('#pkBody')).forEach(im=>DB.get(im.dataset.photo).then(src=>{if(src)im.src=src}));
+  fillPhotos($('#pkBody'));
 }
 $('#pkPrev').addEventListener('click',()=>{peekDate=addDays(peekDate,-1);renderPeek()});
 $('#pkNext').addEventListener('click',()=>{peekDate=addDays(peekDate,1);renderPeek()});
@@ -1368,32 +1710,32 @@ const FILTERS=[
   {k:'ovu',l:'Ovulation',test:(d,k)=>{const o=(model.marks[k]||{}).ovu;return!!o&&o!=='pred'}},
   {k:'lh',l:'LH test',f:'lh',opts:()=>LH_OPTS},
   {k:'bbt',l:'Temperature',test:d=>d.bbt!=null},
-  {k:'mucus',l:'Mucus',f:'mucus',opts:()=>optsOf('mucus')},
+  {k:'mucus',l:'Mucus',f:'mucus',opts:()=>[...optsOf('mucus'),...customOpts('mucus')]},
   {k:'cervix',l:'Cervix',f:'cervixPos',opts:()=>optsOf('cervixPos')},
   {k:'preg',l:'Pregnancy test',f:'preg',opts:()=>PREG_OPTS},
-  {k:'sex',l:'Sex',f:'sex',opts:()=>optsOf('sex')},
-  {k:'pain',l:'Pain',f:'pain',opts:()=>optsOf('pain')},
-  {k:'mood',l:'Mood',f:'mood',opts:()=>optsOf('mood')},
+  {k:'sex',l:'Sex',f:'sex',opts:()=>[...optsOf('sex'),...customOpts('sex')]},
+  {k:'pain',l:'Pain',f:'pain',opts:()=>[...optsOf('pain'),...customOpts('pain')]},
+  {k:'mood',l:'Mood',f:'mood',opts:()=>moodList().map(m=>[m[0],m[1]])},
   {k:'pms',l:'PMS',f:'pms',opts:()=>optsOf('pms')},
   {k:'energy',l:'Energy',f:'energy',opts:()=>optsOf('energy')},
   {k:'sleep',l:'Sleep',f:'sleep',opts:()=>optsOf('sleep')},
-  {k:'dreams',l:'Dreams',f:'dreams',opts:()=>optsOf('dreams')},
-  {k:'digestion',l:'Digestion',f:'digestion',opts:()=>optsOf('digestion')},
-  {k:'skin',l:'Skin',f:'skin',opts:()=>optsOf('skin')},
-  {k:'cravings',l:'Cravings',f:'cravings',opts:()=>optsOf('cravings')},
+  {k:'dreams',l:'Dreams',f:'dreams',opts:()=>[...optsOf('dreams'),...customOpts('dreams')]},
+  {k:'digestion',l:'Digestion',f:'digestion',opts:()=>[...optsOf('digestion'),...customOpts('digestion')]},
+  {k:'skin',l:'Skin',f:'skin',opts:()=>[...optsOf('skin'),...customOpts('skin')]},
+  {k:'cravings',l:'Cravings',f:'cravings',opts:()=>[...optsOf('cravings'),...customOpts('cravings')]},
   {k:'meds',l:'Medication',f:'meds',opts:()=>state.settings.meds.map(m=>[m,m])},
   {k:'note',l:'Notes',test:d=>!!d.note}];
 const FBY=Object.fromEntries(FILTERS.map(x=>[x.k,x]));
 function passFilter(d,k){const F=FBY[calF.tag];if(!F)return true;if(F.test)return F.test(d,k);const v=d[F.f];if(v==null||(Array.isArray(v)&&!v.length))return false;
   return calF.opt?(Array.isArray(v)?v.includes(calF.opt):v===calF.opt):true}
-function matchIcons(k,d){if(calF.tag)return[calF.tag];const seen=[];for(const x of dayTags(d))if(x.txt.toLowerCase().includes(calF.q)&&!seen.includes(x.k))seen.push(x.k);
+function matchIcons(k,d){if(calF.tag)return[calF.tag];const seen=[];for(const x of dayTags(d))if((x.txt+' '+tr(x.txt)).toLowerCase().includes(calF.q)&&!seen.includes(x.k))seen.push(x.k);
   if(d.note&&d.note.toLowerCase().includes(calF.q)&&!seen.includes('note'))seen.push('note');return seen.slice(0,3)}
 const calActive=()=>!!(calF.q||calF.tag);
 function dayMatches(d,k){if(!d)return false;if(calF.tag&&!passFilter(d,k))return false;
-  if(calF.q){const hay=(daySummary(d).join(' ')+' '+(d.note||'')).toLowerCase();if(!hay.includes(calF.q))return false}return true}
+  if(calF.q){const hay=(daySummary(d).map(x=>x+' '+tr(x)).join(' ')+' '+(d.note||'')).toLowerCase();if(!hay.includes(calF.q))return false}return true}
 function renderCalFilter(){$('#calChips').innerHTML=FILTERS.filter(f=>tracking(f.k)).map(({k,l})=>`<button type="button" class="chip t" data-cf="${k}" aria-pressed="${calF.tag===k}">${ic(k)}${l}</button>`).join('');
   const F=FBY[calF.tag],opts=F&&F.opts?F.opts():[];const oe=$('#calOpts');
-  oe.innerHTML=opts.length?opts.map(([v,l])=>`<button type="button" class="chip t optchip" data-co="${esc(v)}" aria-pressed="${calF.opt===v}">${esc(l)}</button>`).join(''):'';oe.hidden=!opts.length;
+  oe.innerHTML=opts.length?opts.map(([v,l])=>{const c=optColor(F.f,v);return`<button type="button" class="chip t optchip" data-co="${esc(v)}" aria-pressed="${calF.opt===v}"${c?` style="--c:${c}"`:''}>${esc(l)}</button>`}).join(''):'';oe.hidden=!opts.length;
   if(!calActive()){$('#calCount').textContent='';$('#calClear').hidden=true;return}
   const hits=Object.keys(state.days).filter(k=>dayMatches(state.days[k],k)).sort();$('#calClear').hidden=false;
   const what=calF.opt&&F?(F.opts().find(o=>o[0]===calF.opt)||[])[1]:'';
@@ -1404,7 +1746,7 @@ $('#calQ').addEventListener('input',e=>{clearTimeout(cfT);cfT=setTimeout(()=>{ca
 $('#calChips').addEventListener('click',e=>{const b=e.target.closest('[data-cf]');if(!b)return;calF.tag=calF.tag===b.dataset.cf?null:b.dataset.cf;calF.opt=null;calRefresh()});
 $('#calOpts').addEventListener('click',e=>{const b=e.target.closest('[data-co]');if(!b)return;calF.opt=calF.opt===b.dataset.co?null:b.dataset.co;calRefresh()});
 $('#calClear').addEventListener('click',()=>{calF.q='';calF.tag=null;calF.opt=null;$('#calQ').value='';calRefresh()});
-function applyCalSearch(f,q,label,opt){calF.tag=f||null;calF.opt=opt||null;calF.q=q||'';$('#calQ').value=q?label:'';closeModal('peek');calRefresh();
+function applyCalSearch(f,q,label,opt){calF.tag=f||null;calF.opt=opt||null;calF.q=q||'';$('#calQ').value=q?tr(label):'';closeModal('peek');calRefresh();
   for(const sel of['#calChips','#calOpts']){const c=$(sel+' [aria-pressed="true"]');c&&c.scrollIntoView({inline:'center',block:'nearest'})}}
 $('#pkBody').addEventListener('click',e=>{const b=e.target.closest('[data-pf],[data-pq]');if(!b)return;if(b.dataset.pf)applyCalSearch(b.dataset.pf,'','',b.dataset.po);else applyCalSearch(null,b.dataset.pq,b.dataset.pl)});
 
@@ -1419,11 +1761,18 @@ function offerFile(blob,name,title){return new Promise(res=>{$('#confirmMsg').te
 function dataYears(){const ys=new Set(Object.keys(state.days).map(k=>k.slice(0,4)));ys.add(todayKey().slice(0,4));return[...ys].sort().reverse()}
 let jsPDFp=null;
 function loadJsPDF(){return jsPDFp||(jsPDFp=new Promise((res,rej)=>{if(window.jspdf)return res(window.jspdf.jsPDF);const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';s.onload=()=>res(window.jspdf.jsPDF);s.onerror=()=>{jsPDFp=null;rej(new Error('load'))};document.head.appendChild(s)}))}
-async function exportPDF(year){toast('Making your PDF…');let J;try{J=await loadJsPDF()}catch(e){toast('The PDF tool couldn’t load. Connect to the internet once and try again.');return}
-  const doc=buildPDF(J,year);await offerFile(doc.output('blob'),`cycles-${year}.pdf`,`Cycles ${year}`)}
+const PDF_PARTS=[['year','Year overview'],['months','Monthly pages'],['temp','Temperature charts'],['moods','Feelings rings'],['tests','Test photos']];
+const pdfParts=()=>state.settings.pdfParts||PDF_PARTS.map(x=>x[0]);
+async function exportPDF(year,parts=pdfParts()){if(!parts.length){toast('Tick at least one part for the PDF.');return}
+  toast('Making your PDF…');let J;try{J=await loadJsPDF()}catch(e){toast('The PDF tool couldn’t load. Connect to the internet once and try again.');return}
+  const doc=await buildPDF(J,year,parts);await offerFile(doc.output('blob'),`cycles-${year}.pdf`,`Cycles ${year}`)}
 
-function buildPDF(J,year){
-  const doc=new J({unit:'pt',format:'a4'}),W=595.28,H=841.89,M=40,u=state.settings.unit,today=todayKey();
+function hexRGB(h){const n=parseInt(h.slice(1),16);return[n>>16&255,n>>8&255,n&255]}
+function pdfImg(src,flip){return new Promise(res=>{if(!src)return res(null);const im=new Image();im.onload=()=>{const sc=Math.min(1,1000/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*sc)),h=Math.max(1,Math.round(im.height*sc)),cv=document.createElement('canvas');cv.width=w;cv.height=h;
+  const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);if(flip){x.translate(w,h);x.rotate(Math.PI)}x.drawImage(im,0,0,w,h);res({url:cv.toDataURL('image/jpeg',.85),w,h})};im.onerror=()=>res(null);im.src=src})}
+async function buildPDF(J,year,parts=PDF_PARTS.map(x=>x[0])){
+  const want=k=>parts.includes(k);let used=false;
+  const doc=new J({unit:'pt',format:'a4'});if(LANG==='nl'){const _t=doc.text.bind(doc),_s=doc.splitTextToSize.bind(doc),_w=doc.getTextWidth.bind(doc);doc.text=(x,...a)=>_t(Array.isArray(x)?x.map(v=>tr(String(v))):tr(String(x)),...a);doc.splitTextToSize=(x,...a)=>_s(tr(String(x)),...a);doc.getTextWidth=x=>_w(tr(String(x)))}const W=595.28,H=841.89,M=40,newPage=()=>{if(used)doc.addPage();used=true},u=state.settings.unit,today=todayKey();
   const C={ink:[28,28,28],muted:[110,116,116],line:[196,203,203],faint:[232,237,237],white:[255,255,255],berry:[169,70,95],spot:[236,198,208],light:[220,157,175],medium:[194,106,130],heavy:[169,70,95],
     tealSoft:[214,239,237],tealPale:[234,246,245],teal:[168,220,217],tealStrong:[68,163,156],pink:[215,127,156],grey:[150,158,163]};
   const FCOL={spotting:C.spot,light:C.light,medium:C.medium,heavy:C.heavy};
@@ -1464,6 +1813,7 @@ function buildPDF(J,year){
   const iconRow=(d,x,y,s,gap,dark,max)=>{let n=0;for(const[,fn,c,,t]of ICONS){if(!t(d)||n>=max)continue;fn(x+n*gap,y,s,dark&&fn!==I.cloud?C.white:c);n++}};
   const cyclesIn=model.cycles.filter(c=>c.start.startsWith(year));const lens=cyclesIn.filter(c=>c.complete&&!c.excluded).map(c=>c.len);
   /* ---- page 1: year overview ---- */
+  if(want('year')){newPage();
   header(`Cycles ${year}`,`Exported ${fmt(today,{day:'numeric',month:'short',year:'numeric'})}`);legend(100);
   const gx=M+22,gy=140,cw=(W-M-gx)/12,rh=(766-gy-14)/31;
   font('helvetica',7.5,'bold');tcol(C.muted);['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'].forEach((mn,i)=>doc.text(mn,gx+i*cw+cw/2,gy,{align:'center'}));
@@ -1475,21 +1825,22 @@ function buildPDF(J,year){
   ICONS.forEach(([,fn,c,l])=>{fn(lx+4,fy,8,c);tcol(C.ink);doc.text(l,lx+11,fy+3);lx+=doc.getTextWidth(l)+24});
   font('helvetica',8);tcol(C.muted);
   doc.text(`${plural(cyclesIn.length,'cycle')} started in ${year}${lens.length?`, median length ${Math.round(median(lens))} days (range ${Math.min(...lens)}-${Math.max(...lens)})`:''}. Predictions are estimates; this is not medical advice or contraception.`,M,fy+16,{maxWidth:W-2*M});
+  }
   /* ---- month pages ---- */
   const DOWS=['MON','TUE','WED','THU','FRI','SAT','SUN'];
   const SR=[
     ['Pain',I.zap,C.berry,d=>d.pain?['dot',C.berry]:''],
-    ['Mood',I.face,C.grey,d=>d.mood?LABEL.mood[d.mood[0]][0]:''],
+    ['Mood',I.face,C.grey,d=>{const x=d.mood&&d.mood.length&&moodInfo(d.mood[0]);return x&&x.c?['dot',hexRGB(x.c)]:''}],
     ['PMS',I.cloud,C.grey,d=>d.pms?['cloud']:''],
     ['Energy',I.battery,C.grey,d=>d.energy?{low:'L',mid:'M',high:'H'}[d.energy]:''],
     ['Sleep',I.moon,C.grey,d=>d.sleep?{poor:'P',ok:'O',good:'G'}[d.sleep]:''],
     ['LH test',I.eggo,C.tealStrong,d=>d.lh?[{neg:'-',low:'L',high:'H',peak:'P'}[d.lh],C.tealStrong]:''],
     ['Pregnancy',I.stick,C.tealStrong,d=>d.preg?[{neg:'-',faint:'F',pos:'+'}[d.preg],C.tealStrong]:''],
-    ['Mucus',I.wave,C.tealStrong,d=>d.mucus?[{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[d.mucus],C.tealStrong]:''],
+    ['Mucus',I.wave,C.tealStrong,d=>mucTop(d)?[{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[mucTop(d)],C.tealStrong]:''],
     ['Cervix',I.cervix,C.tealStrong,d=>d.cervixPos?[{low:'L',mid:'M',high:'H'}[d.cervixPos],C.tealStrong]:''],
     ['Sex',I.heart,C.pink,d=>d.sex?['heart',d.sex.includes('unprotected')?C.pink:C.light]:'']];
-  for(let mo=0;mo<12;mo++){const dim=new Date(+year,mo+1,0).getDate(),keys=[];for(let dd=1;dd<=dim;dd++){const k=`${year}-${pad(mo+1)}-${pad(dd)}`;if(state.days[k])keys.push(k)}
-    if(!keys.length)continue;doc.addPage();const first=new Date(+year,mo,1),mName=first.toLocaleDateString(undefined,{month:'long'});
+  if(want('months'))for(let mo=0;mo<12;mo++){const dim=new Date(+year,mo+1,0).getDate(),keys=[];for(let dd=1;dd<=dim;dd++){const k=`${year}-${pad(mo+1)}-${pad(dd)}`;if(state.days[k])keys.push(k)}
+    if(!keys.length)continue;newPage();const first=new Date(+year,mo,1),mName=first.toLocaleDateString(LOC,{month:'long'});
     header(`Cycles ${mName} ${year}`,`${plural(keys.length,'day')} logged`);legend(100);
     const cx0=M,cy0=138,ccw=(W-2*M)/7,lead=(first.getDay()+6)%7,rows=Math.ceil((lead+dim)/7),crh=Math.min(58,290/rows);
     font('helvetica',7.5,'bold');tcol(C.muted);DOWS.forEach((d,i)=>doc.text(d,cx0+i*ccw+ccw/2,cy0,{align:'center'}));
@@ -1500,7 +1851,7 @@ function buildPDF(J,year){
       const cdn=cdOf(k);if(cdn){font('helvetica',6.3);tcol(dark?C.white:C.muted);doc.text('CD '+cdn,x+w-(mk.ovu?14:4),y+10,{align:'right'})}
       font('helvetica',6.3);let ly=y+19.5;const tc=dark?C.white:C.ink;
       if(d.bbt!=null){I.thermo(x+6,ly-2.2,6,dark?C.white:C.tealStrong);tcol(tc);doc.text(toUnit(d.bbt).toFixed(2)+'°',x+10.5,ly);ly+=8}
-      if(d.mucus&&ly<y+h-10){I.wave(x+6,ly-2.2,6,dark?C.white:C.tealStrong);tcol(tc);doc.text(LABEL.mucus[d.mucus],x+10.5,ly);ly+=8}
+      if(d.mucus&&ly<y+h-10){I.wave(x+6,ly-2.2,6,dark?C.white:C.tealStrong);tcol(tc);doc.text(arrOf(d.mucus).map(v=>LABEL.mucus[v]||v).join(', '),x+10.5,ly);ly+=8}
       iconRow(d,x+6,y+h-5.5,6.5,8.5,darkLow,5)}
     let sy=cy0+14+rows*crh;font('helvetica',7.5,'bold');tcol(C.muted);doc.text('SYMPTOMS',M,sy);
     const sx=M+66,scw=(W-M-sx)/dim,srh=13;sy+=8;font('helvetica',6);
@@ -1515,10 +1866,10 @@ function buildPDF(J,year){
     for(const k of notes){const lines=doc.splitTextToSize(`${fromKey(k).getDate()} ${mName.slice(0,3)}: ${state.days[k].note.replace(/\s+/g,' ')}`,W-2*M);
       if(ny+lines.length*11>H-30){tcol(C.muted);doc.text('More notes in the CSV export.',M,ny);break}doc.text(lines,M,ny);ny+=lines.length*11+3}}
   /* ---- temperature charts, one per cycle ---- */
-  for(const c of cyclesIn){const len=c.len||c.days,temps=[],lhp=[];for(let i=0;i<len;i++){const d=state.days[addDays(c.start,i)];if(!d)continue;
+  if(want('temp'))for(const c of cyclesIn){const len=c.len||c.days,temps=[],lhp=[];for(let i=0;i<len;i++){const d=state.days[addDays(c.start,i)];if(!d)continue;
       if(d.bbt!=null)temps.push({i,v:toUnit(d.bbt),fl:!!(d.bbtFlags&&d.bbtFlags.length)});
       if(d.lhRatio!=null)lhp.push({i,v:d.lhRatio,est:false});else if(d.lh)lhp.push({i,v:{neg:.1,low:.5,high:.9,peak:1.2}[d.lh],est:true,r:d.lh})}
-    if(temps.length<3)continue;doc.addPage();
+    if(temps.length<3)continue;newPage();
     header('Basal body temperature',`Cycle starting ${fmt(c.start,{day:'numeric',month:'short',year:'numeric'})}`);
     font('helvetica',9);tcol(C.muted);
     doc.text(`${c.complete?`${c.len} days`:`Day ${c.days}, ongoing`}. ${c.ovu?(c.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${c.ovu.cd} by the temperature shift; dashed line is the coverline.`:`Ovulation estimated on cycle day ${c.ovu.cd} from the LH peak.`):'No ovulation detected.'}`,M,100,{maxWidth:W-2*M});
@@ -1541,33 +1892,161 @@ function buildPDF(J,year){
     temps.forEach(t=>{if(t.fl){fill(C.white);draw(C.berry);doc.setLineWidth(1);doc.circle(xOf(t.i),yOf(t.v),2.4,'FD')}else{fill(C.berry);doc.circle(xOf(t.i),yOf(t.v),2.4,'F')}});
     let ry=gy0+gh+6;const RR=[['Cycle day',null,null,i=>String(i+1)],['Date',null,null,i=>{const dt=fromKey(addDays(c.start,i));return`${dt.getDate()}/${dt.getMonth()+1}`}],
       ['Time',I.thermo,C.tealStrong,(i,d)=>d.bbtTime||''],['LH',I.eggo,C.tealStrong,(i,d)=>d.lh?{neg:'-',low:'L',high:'H',peak:'P'}[d.lh]:''],
-      ['Mucus',I.wave,C.tealStrong,(i,d)=>d.mucus?{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[d.mucus]:''],['Sex',I.heart,C.pink,(i,d)=>d.sex?'heart':''],['PMS',I.cloud,C.grey,(i,d)=>d.pms?'cloud':'']];
+      ['Mucus',I.wave,C.tealStrong,(i,d)=>mucTop(d)?{dry:'D',sticky:'S',creamy:'C',watery:'W',eggwhite:'E'}[mucTop(d)]:''],['Sex',I.heart,C.pink,(i,d)=>d.sex?'heart':''],['PMS',I.cloud,C.grey,(i,d)=>d.pms?'cloud':'']];
     RR.forEach(([lab,icon,icol,fn])=>{font('helvetica',6.8,'bold');tcol(C.muted);doc.text(lab,gx0-4,ry+8.5,{align:'right'});if(icon)icon(M+4,ry+6,7,icol);
       for(let i=0;i<N;i++){const x=gx0+i*cwid,d=state.days[addDays(c.start,i)]||{};draw(C.faint);doc.setLineWidth(.4);doc.rect(x,ry,cwid,12,'S');if(i>=len)continue;const v=fn(i,d);if(!v)continue;
         if(v==='heart')I.heart(x+cwid/2,ry+6.2,6.5,C.pink);else if(v==='cloud')I.cloud(x+cwid/2,ry+6,7);else{font('helvetica',v.length>3?4.6:5.8);tcol(C.ink);doc.text(v,x+cwid/2,ry+8.2,{align:'center'})}}ry+=12});
     font('helvetica',7.5);tcol(C.muted);doc.text('A temperature rise follows ovulation rather than warning of it. Pink columns are period days, teal the fertile window, darker teal (with the egg) ovulation. The teal line is your LH ratio; hollow marks are estimates or flagged temperatures. Not medical advice or contraception.',M,ry+20,{maxWidth:W-2*M})}
+
+  const mixW=(rgb,a)=>rgb.map(v=>Math.round(v*a+255*(1-a)));
+  /* ---- feelings rings, two cycles per page ---- */
+  if(want('moods')){const withMood=cyclesIn.filter(c=>{for(let i=0;i<(c.len||c.days);i++){const d=state.days[addDays(c.start,i)];if(d&&((d.mood&&d.mood.length)||d.pms))return true}return false});let slot=0;
+    for(const c of withMood){if(slot%2===0){newPage();header('Feelings',`${year}`)}const top=slot%2===0?100:465;slot++;
+      const N=Math.min(90,Math.max(1,c.complete?c.len:(model.pred?Math.max(c.days,diffDays(c.start,model.pred.next)):c.days))),R=150,cx=M+R+6,cy=top+R+28,k=R/170,{r0,r3,rd1,rd2}=EMG,gap=Math.min(.012,Math.PI/N*.12),counts={};let pms=0;
+      font('times',15,'bold');tcol(C.ink);doc.text(c.complete?`Cycle of ${fmt(c.start,{month:'long',year:'numeric'})}`:'Current cycle',M,top+12);
+      font('helvetica',9);tcol(C.muted);doc.text(c.complete?`${short(c.start)} – ${short(addDays(c.next,-1))}, ${c.len} days`:`Started ${short(c.start)}, day ${c.days}`,M,top+25);
+      const pt=(r,a)=>[cx+r*k*Math.cos(a),cy+r*k*Math.sin(a)];
+      const sector=(r1,r2,a1,a2,fc,sc,dsh)=>{const n=Math.max(2,Math.ceil((a2-a1)/.05)),P=[];for(let j=0;j<=n;j++)P.push(pt(r2,a1+(a2-a1)*j/n));for(let j=n;j>=0;j--)P.push(pt(r1,a1+(a2-a1)*j/n));
+        const L=[];for(let j=1;j<P.length;j++)L.push([P[j][0]-P[j-1][0],P[j][1]-P[j-1][1]]);if(fc)fill(fc);draw(sc||C.line);doc.setLineWidth(.6);dash(!!dsh);doc.lines(L,P[0][0],P[0][1],[1,1],fc?'FD':'S',true);dash(false)};
+      for(let i=0;i<N;i++){const key=addDays(c.start,i),d=state.days[key]||{},mk=model.marks[key]||{},a1=-Math.PI/2+i*2*Math.PI/N+gap,a2=-Math.PI/2+(i+1)*2*Math.PI/N-gap,am=(a1+a2)/2;
+        const ms=(d.mood||[]).map(x=>({k:x,...(moodInfo(x)||{})})).filter(x=>x.c);ms.forEach(x=>counts[x.k]=(counts[x.k]||0)+1);if(d.pms)pms++;
+        const show=ms.slice(0,2).sort((p,q)=>hexLum(q.c)-hexLum(p.c));
+        if(!show.length)sector(r0,r3,a1,a2,null,C.line,key>today);
+        else{const h=(r3-r0)/show.length;show.forEach((x,j)=>{const r2=r3-j*h,r1=r2-h+(j<show.length-1?1.6:0),rgb=hexRGB(x.c);sector(r1,r2,a1,a2,mixW(rgb,.32),rgb)})}
+        if(d.pms){const[px,py]=pt(rd2+10,am);I.cloud(px,py,9)}
+        const cls=d.flow?'per':mk.pp&&key>=today?'pp':mk.ovu&&mk.ovu!=='pred'?'ovu':mk.fert?(mk.fert==='pred'?'fp':'fert'):'nil';
+        const sty={per:[mixW(C.medium,.7),C.medium],fert:[mixW(C.teal,.75),C.tealStrong],fp:[mixW(C.teal,.3),C.tealStrong,1],ovu:[C.tealStrong,C.tealStrong],pp:[null,C.berry,1],nil:[null,C.line]}[cls];
+        sector(rd1,rd2,a1,a2,sty[0],sty[1],sty[2]);const[tx,ty]=pt((rd1+rd2)/2,am);
+        if(cls==='ovu')I.egg(tx,ty,6,C.white);else if(N<=45||i%2===0){font('helvetica',N>40?4.6:5.4,'bold');tcol(cls==='per'?C.white:cls==='pp'?C.berry:C.muted);doc.text(String(i+1),tx,ty+1.8,{align:'center'})}}
+      font('helvetica',9);tcol(C.muted);doc.text('Feelings',cx,cy-6,{align:'center'});font('times',22,'bold');tcol(C.ink);doc.text(String(Object.values(counts).reduce((a,b)=>a+b,0)),cx,cy+16,{align:'center'});
+      let ly=top+52;const lx=cx+R+26;font('helvetica',7.5,'bold');tcol(C.muted);doc.text('MOST LOGGED',lx,ly);ly+=10;
+      const list=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,14);
+      for(const[mk2,n]of list){const x=moodInfo(mk2)||{l:mk2,c:'#9EA6AB'},rgb=hexRGB(x.c);font('helvetica',9);const lab=tr(x.l),w=doc.getTextWidth(lab)+30;
+        fill(mixW(rgb,.22));draw(mixW(rgb,.6));doc.setLineWidth(.6);doc.roundedRect(lx,ly,w,15,7.5,7.5,'FD');fill(rgb);doc.circle(lx+8,ly+7.5,3,'F');tcol(C.ink);doc.text(lab,lx+15,ly+10.6);font('helvetica',8,'bold');tcol(C.muted);doc.text(String(n),lx+w-8,ly+10.6,{align:'right'});ly+=19}
+      if(!list.length){font('helvetica',9);tcol(C.muted);doc.text('No feelings logged.',lx,ly+8);ly+=18}
+      if(pms){I.cloud(lx+8,ly+8,10);font('helvetica',9);tcol(C.ink);doc.text(`PMS on ${plural(pms,'day')}`,lx+18,ly+11)}}
+    if(!withMood.length&&parts.length===1){newPage();header('Feelings',`${year}`);font('helvetica',11);tcol(C.muted);doc.text(`No feelings logged in ${year}.`,M,110)}}
+  /* ---- test photos, per cycle ---- */
+  if(want('tests')){let any=false;
+    for(const c of cyclesIn){const rows=[];for(let i=0;i<(c.len||c.days);i++){const key=addDays(c.start,i),d=state.days[key];if(!d)continue;
+        for(const[f,kind]of[['lhTests','lh'],['pregTests','preg']])for(const t of[...(d[f]||[])].sort((a,b)=>(a.time||'99').localeCompare(b.time||'99')))if(t.photo||t.result||t.ratio!=null)rows.push({key,i,kind,t})}
+      if(!rows.length)continue;any=true;newPage();header('Tests',`Cycle starting ${fmt(c.start,{day:'numeric',month:'short',year:'numeric'})}`);let y=104,lastKind=null;
+      for(const r of rows){const t=r.t,img=t.photo?await pdfImg(await DB.get(t.photo),t.crop&&t.c!=null&&t.t!=null&&t.c<t.t):null;
+        const pw=W-2*M-150;let iw=0,ih=0;if(img){iw=pw;ih=iw*img.h/img.w;if(ih>70){ih=70;iw=ih*img.w/img.h}}const rh=Math.max(img?ih:14,24)+10;
+        if(r.kind!==lastKind){if(y+40>H-40){newPage();header('Tests','');y=104}font('helvetica',7.5,'bold');tcol(C.muted);doc.text(r.kind==='lh'?'LH STRIPS':'PREGNANCY TESTS',M,y+8);y+=16;lastKind=r.kind}
+        if(y+rh>H-40){newPage();header('Tests',`Cycle starting ${fmt(c.start,{day:'numeric',month:'short',year:'numeric'})}`);y=104}
+        draw(C.line);doc.setLineWidth(.5);doc.line(M,y,W-M,y);
+        font('helvetica',9.5,'bold');tcol(C.ink);doc.text(`CD ${r.i+1}`,M,y+14);font('helvetica',8);tcol(C.muted);doc.text(short(r.key)+(t.time?`, ${t.time}`:''),M,y+25);
+        if(img)doc.addImage(img.url,'JPEG',M+80,y+5,iw,ih);else{font('helvetica',8);tcol(C.muted);doc.text('No photo',M+80,y+16)}
+        const lab=r.kind==='preg'?LABEL.preg:LABEL.lh,val=t.ratio!=null?t.ratio.toFixed(2):'',res=t.result?lab[t.result]:'',hi=r.kind==='preg'?t.result==='pos':(t.result==='high'||t.result==='peak');
+        font('helvetica',11,'bold');tcol(hi?C.tealStrong:C.ink);doc.text(val||res||'',W-M,y+15,{align:'right'});if(val&&res){font('helvetica',8);tcol(C.muted);doc.text(res,W-M,y+26,{align:'right'})}
+        y+=rh}}
+    if(!any&&parts.length===1){newPage();header('Tests',`${year}`);font('helvetica',11);tcol(C.muted);doc.text(`No tests logged in ${year}.`,M,110)}}
+  if(!used){header(`Cycles ${year}`,'');font('helvetica',11);tcol(C.muted);doc.text('Nothing to show for these choices.',M,110)}
   return doc;
 }
 function exportCSV(year){const allT=(L,f)=>(L||[]).map(t=>[t.time,t.result?LABEL[f][t.result]:'',t.ratio!=null?t.ratio.toFixed(2):''].filter(Boolean).join(' ')).join('; '),u=state.settings.unit,lab=(f,v)=>v==null?'':(LABEL[f]?.[v]??v),arr=(f,v)=>(v||[]).map(x=>LABEL[f]?.[x]??x).join('; ');
-  const head=['Date','Cycle day','DPO','Flow','Fertile window','Ovulation',`Temperature (°${u})`,'Temperature time','Temperature flags','LH test (best)','LH T/C ratio (highest)','All LH tests','Pregnancy test (best)','All pregnancy tests','Cervical mucus','Mucus colour','Cervix position','Cervix firmness','Cervix opening','Sex','Libido','Pain','Mood','PMS','Energy','Sleep','Dreams','Digestion','Skin','Cravings','Medication','Notes'];
+  const head=['Date','Cycle day','DPO','Flow','Fertile window','Ovulation',`Temperature (°${u})`,'Temperature time','Temperature flags','LH test (best)','LH T/C ratio (highest)','All LH tests','Pregnancy test (best)','All pregnancy tests','Cervical mucus','Mucus consistency','Mucus amount','Mucus colour','Cervix position','Cervix firmness','Cervix opening','Sex','Libido','Pain','Mood','PMS','Energy','Sleep','Dreams','Digestion','Skin','Cravings','Medication','Notes'];
   const rows=Object.keys(state.days).filter(k=>k.startsWith(year)).sort().map(k=>{const d=state.days[k],mk=model.marks[k]||{};
     return[k,cdOf(k)??'',dpoOf(k)??'',lab('flow',d.flow),mk.fert?(mk.fert==='pred'?'Predicted':'Yes'):'',mk.ovu?{bbt:'Confirmed by temperature',lh:'Estimated from LH',pred:'Predicted'}[mk.ovu]:'',
       d.bbt!=null?toUnit(d.bbt).toFixed(2):'',d.bbtTime||'',arr('bbtFlags',d.bbtFlags),lab('lh',d.lh),d.lhRatio??'',allT(d.lhTests,'lh'),lab('preg',d.preg),allT(d.pregTests,'preg'),
-      lab('mucus',d.mucus),lab('mucusColor',d.mucusColor),lab('cervixPos',d.cervixPos),lab('cervixFirm',d.cervixFirm),lab('cervixOpen',d.cervixOpen),
+      arr('mucus',arrOf(d.mucus)),arr('mucusFeel',d.mucusFeel),lab('mucusAmt',d.mucusAmt),arr('mucusColor',arrOf(d.mucusColor)),lab('cervixPos',d.cervixPos),lab('cervixFirm',d.cervixFirm),lab('cervixOpen',d.cervixOpen),
       arr('sex',d.sex),lab('libido',d.libido),arr('pain',d.pain),arr('mood',d.mood),lab('pms',d.pms),lab('energy',d.energy),lab('sleep',d.sleep),arr('dreams',d.dreams),arr('digestion',d.digestion),arr('skin',d.skin),arr('cravings',d.cravings),(d.meds||[]).join('; '),d.note||'']});
+  if(LANG==='nl'){head.forEach((h,i)=>head[i]=h.startsWith('Temperature (')?h.replace('Temperature','Temperatuur'):tr(h));for(const r of rows)for(let i=3;i<r.length-2;i++)if(typeof r[i]==='string'&&r[i])r[i]=r[i].split('; ').map(x=>tr(x)).join('; ')}
   const q=v=>{v=String(v);return/[",\n\r;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
   const csv='\ufeff'+[head,...rows].map(r=>r.map(q).join(',')).join('\r\n');
   offerFile(new Blob([csv],{type:'text/csv'}),`cycles-${year}.csv`,`Cycles ${year}`)}
 
+/* ================= moods: everyday feelings in the flower's colours ================= */
+const MOOD_COLORS=['#F2EA55','#7CC46A','#4BAEA5','#66BAE6','#B07FBA','#D65F82','#F08A7E','#9EA6AB'];
+const MOODS_BUILTIN=[
+ ['happy','Happy','#F2EA55','m-smile'],['grateful','Grateful','#F2EA55','m-hearto'],['hopeful','Hopeful','#F2EA55','m-sun'],
+ ['calm','Calm','#7CC46A','m-leaf'],['loved','Loved','#7CC46A','i-heart'],['confident','Confident','#7CC46A','m-shield'],
+ ['excited','Excited','#4BAEA5','i-sparkle'],['motivated','Motivated','#4BAEA5','m-rocket'],
+ ['sad','Sad','#66BAE6','m-sad'],['teary','Teary','#66BAE6','m-dropo'],['sensitive','Sensitive','#66BAE6','m-feather'],['bored','Bored','#66BAE6','m-flat'],['unmotivated','Unmotivated','#66BAE6','m-batlow'],
+ ['anxious','Anxious','#B07FBA','m-nervous'],['scared','Scared','#B07FBA','m-ghost'],['insecure','Insecure','#B07FBA','m-confused'],['overwhelmed','Overwhelmed','#B07FBA','m-tornado'],['fog','Brain fog','#B07FBA','m-fog'],['scatter','Absent-minded','#B07FBA','m-dots'],
+ ['angry','Angry','#D65F82','i-flame'],['irritable','Irritable','#D65F82','i-zap'],['frustrated','Frustrated','#D65F82','m-angry'],['moody','Moody','#D65F82','m-updown'],['restless','Restless','#D65F82','m-refresh']];
+const CLUE_MOOD=[[/mood.?swing/,'moody'],[/unmotivat|unproductive|lazy/,'unmotivated'],[/distract|unfocus|forget|absent|scatter/,'scatter'],[/brain.?fog|foggy/,'fog'],[/happy|joy/,'happy'],[/calm|relax|peace/,'calm'],[/grateful/,'grateful'],[/confiden/,'confident'],[/insecur/,'insecure'],[/sensitive|emotional/,'sensitive'],[/lonely/,'lonely'],[/sad|depress|down|low mood/,'sad'],[/tear|cry/,'teary'],[/anx|nervous|worr|stress/,'anxious'],[/overwhelm/,'overwhelmed'],[/irrit/,'irritable'],[/angry|anger/,'angry'],[/frustrat/,'frustrated'],[/bored/,'bored'],[/motivat|productive|focus/,'motivated'],[/excit|energetic|hyper/,'excited'],[/hope/,'hopeful'],[/restless/,'restless'],[/scared|fear|afraid/,'scared']];
+function clueMood(v){const t=String(v).toLowerCase().replace(/[_-]/g,' ');for(const[re,k]of CLUE_MOOD)if(re.test(t))return k;return null}
+const MOODS_RETIRED=[['surprised','Surprised','#78BB8A','m-surprised'],['lonely','Lonely','#66BAE6','m-user']];
+const MOOD_ICONS=['m-smile','m-leaf','m-hearto','i-heart','m-shield','m-nervous','m-ghost','m-surprised','m-tornado','m-sad','m-user','m-dropo','m-feather','m-flat','m-fog','m-dots','m-batlow','i-flame','i-zap','m-angry','m-updown','i-sparkle','m-rocket','m-refresh','m-sun','i-moon','i-cookie','i-pill'];
+function moodList(){const own=(state.settings.customMoods||[]).filter(m=>!m.hidden).map(m=>[m.k,m.l,m.c,m.i||'']);return[...MOODS_BUILTIN,...own]}
+function moodInfo(k){const b=MOODS_BUILTIN.find(m=>m[0]===k)||MOODS_RETIRED.find(m=>m[0]===k);if(b)return{l:b[1],c:b[2],i:b[3]};const m=(state.settings.customMoods||[]).find(m=>m.k===k);return m?{l:m.l,c:m.c,i:m.i||''}:null}
+const moodIco=i=>i?`<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#${i}"/></svg>`:'';
+const moodPill=(k,l,c,i,on,extra='')=>`<button type="button" class="mp" ${extra} style="--c:${c}" aria-pressed="${on}">${moodIco(i)}${esc(l)}</button>`;
+function hexLum(h){const n=parseInt(h.slice(1),16),r=(n>>16)/255,g=(n>>8&255)/255,b=(n&255)/255;return .2126*r+.7152*g+.0722*b}
+/* ---- your own options: name for any section; name, colour and icon for moods ---- */
+const CUSTOMIZABLE=new Set(['mucus','mucusFeel','mucusColor','sex','pain','dreams','digestion','skin','cravings']);
+function customOpts(key){return(state.settings.custom?.[key]||[]).filter(o=>!o[2]).map(o=>[o[0],o[1]])}
+function refreshLabels(){LABEL.mood=Object.fromEntries([...MOODS_BUILTIN.map(m=>[m[0],m[1]]),...MOODS_RETIRED.map(m=>[m[0],m[1]]),...(state.settings.customMoods||[]).map(m=>[m.k,m.l])]);
+  for(const[key,list]of Object.entries(state.settings.custom||{})){LABEL[key]=LABEL[key]||{};for(const o of list)LABEL[key][o[0]]=o[1]}}
+let moodDraft={c:MOOD_COLORS[4],i:''};
+let addKey='mood';
+function openMoodAdd(key='mood'){addKey=key;$('#maTitle').textContent=key==='mood'?'Add your own feeling':'Add your own option';$('#maIcBox').hidden=key!=='mood';$('#maName').placeholder=key==='mood'?'Foggy morning':'Jaw pain';moodDraft={c:MOOD_COLORS[4],i:''};$('#maName').value='';renderMoodAdd();openModal('moodAdd');setTimeout(()=>$('#maName').focus(),50)}
+function renderMoodAdd(){$('#maSw').innerHTML=MOOD_COLORS.map(c=>`<button type="button" class="sw3" data-mc="${c}" style="background:${c}" aria-pressed="${moodDraft.c===c}" aria-label="Colour"></button>`).join('');
+  $('#maIc').innerHTML=`<button type="button" class="icb2" data-mi="" aria-pressed="${!moodDraft.i}">None</button>`+MOOD_ICONS.map(i=>`<button type="button" class="icb2" data-mi="${i}" aria-pressed="${moodDraft.i===i}" style="--c:${moodDraft.c}">${moodIco(i)}</button>`).join('');
+  $('#maPrev').innerHTML=moodPill('',$('#maName').value.trim()||'Your feeling',moodDraft.c,moodDraft.i,true)}
+$('#moodAdd').addEventListener('click',e=>{const c=e.target.closest('[data-mc]');if(c){moodDraft.c=c.dataset.mc;renderMoodAdd();return}
+  const i=e.target.closest('[data-mi]');if(i){moodDraft.i=i.dataset.mi;renderMoodAdd();return}if(e.target.id==='moodAdd')closeModal('moodAdd')});
+$('#maName').addEventListener('input',()=>{$('#maPrev').innerHTML=moodPill('',$('#maName').value.trim()||'Your feeling',moodDraft.c,moodDraft.i,true)});
+$('#maName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#maOk').click()}});
+$('#maOk').addEventListener('click',()=>{const l=$('#maName').value.trim();if(!l){$('#maErr').textContent='Give it a name first.';return}$('#maErr').textContent='';
+  if(addKey!=='mood'){addCustomOpt(addKey,l,moodDraft.c);closeModal('moodAdd');toast(`${l} added`);return}
+  const k='cm'+Date.now().toString(36);(state.settings.customMoods=state.settings.customMoods||[]).push({k,l,c:moodDraft.c,i:moodDraft.i});refreshLabels();
+  const d=dayData(logDate),s=new Set(d.mood||[]);s.add(k);setField(logDate,'mood',[...s]);closeModal('moodAdd');rerenderLog();toast(`${l} added`)});
+function addCustomOpt(key,label,color){const id='c'+Date.now().toString(36);const c=state.settings.custom=state.settings.custom||{};(c[key]=c[key]||[]).push([id,label,0,color||null]);refreshLabels();
+  const d=dayData(logDate),s=new Set(d[key]||[]);s.add(id);setField(logDate,key,[...s]);rerenderLog()}
+/* ---- mood ring chart, one wedge per day, up to three feelings ---- */
+function chartToggle(view){return`<div class="seg cview"><button data-cview="temp" aria-pressed="${view==='temp'}">Temperature</button><button data-cview="emo" aria-pressed="${view==='emo'}">Emotions</button></div>`}
+const EMG={C:170,r0:70,r3:146,rd1:149,rd2:167};let emoSel=null,emDrag=null,emoCtx=null;
+const emP=(r,a)=>[EMG.C+r*Math.cos(a),EMG.C+r*Math.sin(a)],emF=v=>v.toFixed(2);
+function emSec(r1,r2,a1,a2){const[x1,y1]=emP(r2,a1),[x2,y2]=emP(r2,a2),[x3,y3]=emP(r1,a2),[x4,y4]=emP(r1,a1),l=a2-a1>Math.PI?1:0;return`M${emF(x1)} ${emF(y1)}A${r2} ${r2} 0 ${l} 1 ${emF(x2)} ${emF(y2)}L${emF(x3)} ${emF(y3)}A${r1} ${r1} 0 ${l} 0 ${emF(x4)} ${emF(y4)}Z`}
+function emHiPath(i,N){if(i==null||i<0||i>=N)return'';const a1=-Math.PI/2+i*2*Math.PI/N,a2=a1+2*Math.PI/N;return emSec(EMG.r0-3,EMG.rd2+3,a1,a2)}
+function emoCenter(k){const c=emoCtx.c;if(!k)return`<div class="cdl">${fmt(c.start,{month:'long'})}</div><div class="emcd">${c.len||c.days} days</div>`;
+  const d=state.days[k]||{},cd=diffDays(c.start,k)+1,ms=(d.mood||[]).map(x=>({k:x,...(moodInfo(x)||{})})).filter(x=>x.l);
+  return`<div class="cdl">${k===todayKey()?'Today':fmt(k,{weekday:'short',day:'numeric',month:'short'})}${d.pms?' <svg class="ico emc2" viewBox="0 0 24 24"><use href="#cloud"/></svg>':''}</div><div class="emcd">${c.noPeriod?`${fmt(k,{day:'numeric'})}<small style="margin:0 0 0 5px">${fmt(k,{month:'short'})}</small>`:`<small>CD</small>${cd}`}</div>
+    <div class="emcp">${ms.length?ms.slice(0,2).map(x=>`<span class="mp xs" style="--c:${x.c}">${moodIco(x.i)}${esc(x.l)}</span>`).join('')+(ms.length>2?`<span class="emmore">+${ms.length-2} below</span>`:''):`<span class="emnone">${k>todayKey()?'Still to come':'No feelings logged'}</span>`}</div>
+`}
+function emoMore(k){if(!k)return'';const d=state.days[k]||{},ms=(d.mood||[]).map(x=>({k:x,...(moodInfo(x)||{})})).filter(x=>x.l);if(ms.length<3)return'';
+  return`<div class="emday"><span class="emdl">${k===todayKey()?'Today':fmt(k,{weekday:'short',day:'numeric',month:'short'})}</span>${ms.map(x=>`<span class="mp sm" style="--c:${x.c}">${moodIco(x.i)}${esc(x.l)}</span>`).join('')}</div>`}
+function emoSelect(k){if(!emoCtx||k===emoSel)return;emoSel=k;const i=k?diffDays(emoCtx.c.start,k):null;const hp=$('#emHi');if(hp)hp.setAttribute('d',emHiPath(i,emoCtx.N));const ce=$('#emCenter');if(ce)ce.innerHTML=emoCenter(k);const mo=$('#emMore');if(mo)mo.innerHTML=emoMore(k);tick()}
+function emoAt(e){const sv=$('#v-chart .emring');if(!sv||!emoCtx)return undefined;const r=sv.getBoundingClientRect(),k=372/r.width,x=(e.clientX-r.left)*k-186,y=(e.clientY-r.top)*k-186,dist=Math.hypot(x,y);
+  if(dist<EMG.r0-8||dist>EMG.rd2+14)return undefined;let a=Math.atan2(y,x)+Math.PI/2;a=((a%(2*Math.PI))+2*Math.PI)%(2*Math.PI);return addDays(emoCtx.c.start,Math.min(emoCtx.N-1,Math.floor(a/(2*Math.PI/emoCtx.N))))}
+function emoRing(c,N,isCur){const m=model,today=todayKey(),{r0,r3,rd1,rd2}=EMG;let s='';emoCtx={c,N};
+  if(emoSel&&(emoSel<c.start||diffDays(c.start,emoSel)>=N))emoSel=null;const ti=diffDays(c.start,today);if(!emoSel&&isCur&&ti>=0&&ti<N)emoSel=today;
+  const gap=Math.min(.012,Math.PI/N*.12),counts={};
+  for(let i=0;i<N;i++){const k=addDays(c.start,i),d=state.days[k]||{},mk=m.marks[k]||{},a1=-Math.PI/2+i*2*Math.PI/N+gap,a2=-Math.PI/2+(i+1)*2*Math.PI/N-gap,am=(a1+a2)/2;
+    const ms=(d.mood||[]).map(x=>({k:x,...(moodInfo(x)||{})})).filter(x=>x.c);ms.forEach(x=>counts[x.k]=(counts[x.k]||0)+1);
+    const show=ms.slice(0,2).sort((p,q)=>hexLum(q.c)-hexLum(p.c));
+    if(!show.length)s+=`<path d="${emSec(r0,r3,a1,a2)}" class="emp${k>today?' fut':''}"/>`;
+    else{const h=(r3-r0)/show.length;show.forEach((x,j)=>{const r2=r3-j*h,r1=r2-h+(j<show.length-1?1.6:0);s+=`<path d="${emSec(r1,r2,a1,a2)}" class="emc" style="--c:${x.c}"/>`})}
+    if(d.pms){const[cx,cy]=emP(rd2+9,am);s+=`<use href="#cloud" x="${emF(cx-6)}" y="${emF(cy-6.5)}" width="12" height="12" class="emcl"><title>PMS</title></use>`}
+    const cls=d.flow?'dper':mk.pp&&k>=today?'dpp':mk.ovu&&mk.ovu!=='pred'?'dovu':mk.fert?(mk.fert==='pred'?'dfp':'dfert'):'dnil';
+    s+=`<path d="${emSec(rd1,rd2,a1,a2)}" class="dn2 ${cls}${k===today?' dtd':''}"/>`;
+    const[tx,ty]=emP((rd1+rd2)/2,am);if(N<=45||i%2===0||mk.ovu)s+=mk.ovu&&mk.ovu!=='pred'?`<use href="#i-egg" x="${emF(tx-5)}" y="${emF(ty-5.5)}" width="10" height="10" class="degg"/>`:`<text x="${emF(tx)}" y="${emF(ty)}" class="dnt ${cls}">${c.noPeriod?+addDays(c.start,i).slice(8):i+1}</text>`}
+  const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const legend=top.length?`<div class="emleg">${top.map(([k,n])=>{const x=moodInfo(k)||{l:k,c:'#9EA6AB'};return`<span class="mp sm" style="--c:${x.c}">${moodIco(x.i)}${esc(x.l)}<b>${n}</b></span>`}).join('')}</div>`:`<p class="hint center">No feelings logged in this cycle yet. Log them under Mood.</p>`;
+  return`<div class="emwrap"><svg class="emring" viewBox="-16 -16 372 372" role="img" aria-label="Mood ring for this cycle">${s}<path id="emHi" class="emhi" d="${emoSel?emHiPath(diffDays(c.start,emoSel),N):''}"/></svg><div class="emcenter" id="emCenter">${emoCenter(emoSel)}</div></div><div id="emMore">${emoMore(emoSel)}</div>
+   <div class="ckeyrow"><span><i class="kd dper"></i>Period</span><span><i class="kd dfert"></i>Fertile window</span><span><svg class="ico" viewBox="0 0 24 24" style="color:var(--teal-strong)"><use href="#i-egg"/></svg>Ovulation</span><span><svg class="ico" viewBox="0 0 24 24" style="color:var(--cloud)"><use href="#cloud"/></svg>PMS</span>${isCur?'<span><i class="kd dpp"></i>Predicted</span>':''}${infoBtn()}</div>
+   ${legend}<p class="ckey infop"${chartInfo?'':' hidden'}>Tap or slide around the ring to see each day's feelings. Tap a day again to log it. The ring shows two feelings per day, brightest on the outside. A cloud marks PMS.</p>`}
+$('#v-chart').addEventListener('pointerdown',e=>{if(!e.target.closest('.emring'))return;const k=emoAt(e);if(k===undefined)return;e.preventDefault();
+  emDrag={x:e.clientX,y:e.clientY,moved:false,was:emoSel};e.target.closest('.emring').setPointerCapture(e.pointerId);emoSelect(k)});
+$('#v-chart').addEventListener('pointermove',e=>{if(!emDrag)return;if(Math.hypot(e.clientX-emDrag.x,e.clientY-emDrag.y)>6)emDrag.moved=true;const k=emoAt(e);if(k)emoSelect(k)});
+$('#v-chart').addEventListener('pointerup',e=>{if(!emDrag)return;const d=emDrag;emDrag=null;if(!d.moved&&d.was===emoSel&&emoSel&&emoSel<=todayKey())openLog(emoSel)});
+$('#v-chart').addEventListener('pointercancel',()=>{emDrag=null});
+/* show unexpected errors on screen, so they can be reported */
+window.addEventListener('error',e=>{if(e&&e.message&&!/Script error|ResizeObserver/.test(e.message))toast('Error: '+e.message.slice(0,140))});
+window.addEventListener('unhandledrejection',e=>{const m=e&&e.reason&&(e.reason.message||String(e.reason));if(m)toast('Error: '+m.slice(0,140))});
 /* ================= home-screen icon & boot ================= */
 function makeIcon(){try{const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');x.fillStyle='#141414';x.fillRect(0,0,180,180);
   x.strokeStyle='#ece8e6';x.lineWidth=7;x.beginPath();x.arc(90,90,58,0,7);x.stroke();x.fillStyle='#eb9fb4';x.beginPath();x.arc(74,100,15,0,7);x.fill();
   x.fillStyle='#ece8e6';x.beginPath();x.arc(108,76,10,0,7);x.fill();x.beginPath();x.arc(104,110,7,0,7);x.fill();$('#touchIcon').href=c.toDataURL('image/png')}catch(e){}}
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){persist();return}
-  if(!unsaved&&Object.keys(state.days).length&&await storageEmpty()){state={version:1,days:{},settings:{...DEFAULTS}};applyTheme();model=computeModel();renderAll();toast('Your data was cleared on this phone')}});
+  if(!unsaved&&Object.keys(state.days).length&&await storageEmpty()){state={version:1,days:{},settings:{...DEFAULTS}};applyTheme();model=computeModel();renderAll();toast('Your data was cleared on this phone');return}
+  setTimeout(backupReminder,1200)});
 (async()=>{await DB.open();let s=await DB.get('state');if(!s){try{const ls=localStorage.getItem('mpt-state');if(ls)s=JSON.parse(ls)}catch(e){}}
   if(s&&s.days)state={version:1,days:s.days,settings:{...DEFAULTS,...(s.settings||{})}};
-  migrate();applyTheme();model=computeModel();renderAll();try{navigator.storage?.persist?.()}catch(e){}})();
+  migrate();refreshLabels();applyTheme();applyLang();model=computeModel();renderAll();try{navigator.storage?.persist?.()}catch(e){}setTimeout(backupReminder,1500)})();
 /* offline support: only where the app is self-hosted next to sw.js */
 if('serviceWorker' in navigator&&location.protocol==='https:'&&!/claude/.test(location.hostname)){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
