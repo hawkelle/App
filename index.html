@@ -589,6 +589,7 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 <div class="modal" id="photoView" role="dialog" aria-modal="true" aria-label="Test photo"><div class="mcard">
   <div class="mhead"><h4>Photo</h4><button class="iconbtn" data-close="photoView" aria-label="Close">✕</button></div>
   <img id="pvImg" alt="Full test photo" style="width:100%;border-radius:10px;margin-top:10px;display:block">
+  <button class="btn big" id="pvEdit" style="width:100%;margin-top:14px">Edit photo</button>
 </div></div>
 <div class="modal" id="confirm" role="alertdialog" aria-modal="true"><div class="mcard small">
   <p id="confirmMsg" style="font-size:16px;margin:4px 0 0"></p>
@@ -1087,7 +1088,7 @@ function renderInsights(){
      <button class="btn small" data-act="csv">CSV</button><button class="btn small" data-act="pdf">PDF</button></div></div>
    <div class="setrow"><p class="lbl">Backup</p><p class="hint" style="margin:0 0 10px">Everything lives only on this phone. Save a backup to Files now and then; clearing Safari's website data would erase it.</p><div class="datarow"><button class="btn small" data-act="export">Save backup</button><button class="btn ghost small" data-act="import">Restore backup</button></div></div>
    <div class="setrow"><div class="datarow"><button class="btn ghost small" data-act="wipe" style="color:#d4574a;border-color:#d4574a">Delete all data</button></div></div>
-   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.<br>Cycles version 12 Nov 2026 (i)</p>`;
+   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.<br>Cycles version 12 Nov 2026 (k)</p>`;
 }
 $('#v-ins').addEventListener('click',async e=>{
   const dm=e.target.closest('[data-delm]');if(dm){const m=(state.settings.customMoods||[]).find(x=>x.k===dm.dataset.delm);if(m&&await askConfirm(`Remove ${m.l} from your mood options?`,'Remove')){m.hidden=true;save();renderAll()}return}
@@ -1160,15 +1161,16 @@ function renderLog(){
   fillPhotos($('#sBody'));
 }
 /* ---- tests drawn as a clean strip / cassette; the result window is the real photo ---- */
-let tdN=0;
+let tdN=0,pvPhoto=null;
+function findTestByPhoto(id){for(const[k,d]of Object.entries(state.days))for(const[key,kind]of[['lhTests','lh'],['pregTests','preg']])for(const t of d[key]||[])if(t.photo===id)return{k,kind,t};return null}
 function testSVG(kind,t,src){const P=kind==='preg',id='tc'+(++tdN);
   const L=P?{T:160,C:176,wx:144,wy:16,ww:48,wh:14,lw:3}:{T:150,C:186,wx:118,wy:12,ww:118,wh:22,lw:5};
   const ok=false;let win;
   if(ok){let tt=t.t,cc=t.c,flip=false;if(cc<tt){tt=1-tt;cc=1-cc;flip=true}const dw=(L.C-L.T)/(cc-tt),x=L.T-tt*dw;
     win=`<clipPath id="${id}"><rect x="${L.wx}" y="${L.wy}" width="${L.ww}" height="${L.wh}" rx="${P?2:0}"/></clipPath><g clip-path="url(#${id})"><rect x="${L.wx}" y="${L.wy}" width="${L.ww}" height="${L.wh}" fill="#f4f1ef"/><image data-photo="${t.photo}"${src?` href="${src}"`:''} x="${x.toFixed(2)}" y="${(L.wy-L.wh*(1/.55-1)/2).toFixed(2)}" width="${dw.toFixed(2)}" height="${(L.wh/.55).toFixed(2)}" preserveAspectRatio="none"${flip?` transform="translate(${(2*x+dw).toFixed(2)} 0) scale(-1 1)"`:''}/></g>`}
   else{// a line's darkness follows the reading; a negative result shows no test line at all
-    const shade=r=>r<.1?0:Math.min(1,Math.pow(r,1.6));
-    const op=t.result==='neg'?0:P?(t.ratio!=null?shade(t.ratio):({faint:.2,pos:1}[t.result]??0)):(t.ratio!=null?shade(t.ratio):({low:.3,high:.75,peak:1}[t.result]??0));
+    const shade=r=>r<.1?0:Math.min(1,Math.max(.14,Math.pow(r,1.6)));
+    const op=t.ratio!=null?shade(t.ratio):P?({faint:.2,pos:1}[t.result]??0):({low:.3,high:.75,peak:1}[t.result]??0);
     win=`<rect x="${L.wx}" y="${L.wy}" width="${L.ww}" height="${L.wh}" fill="${P?'#fbfbfb':'#eceeee'}"/>${op?`<rect x="${L.T-L.lw/2}" y="${L.wy}" width="${L.lw}" height="${L.wh}" fill="#d24a72" opacity="${op}"/>`:''}<rect x="${L.C-L.lw/2}" y="${L.wy}" width="${L.lw}" height="${L.wh}" fill="#d24a72"/>`}
   if(P)return`<svg class="tsvg preg" viewBox="0 0 320 46" role="img" aria-label="Pregnancy test"><path d="M18 10h282a13 13 0 0 1 0 26H18a13 13 0 0 1 0-26z" fill="#eceeee"/><path d="M18 10h92v26H18a13 13 0 0 1 0-26z" fill="#e47fa3"/><rect x="24" y="19" width="22" height="8" rx="4" fill="#d26391"/><rect x="136" y="12" width="64" height="22" rx="11" fill="#d6d8d8"/>${win}<rect x="270" y="19" width="22" height="8" rx="4" fill="#d6d8d8"/><text x="${L.T}" y="8" class="tlb">T</text><text x="${L.C}" y="8" class="tlb">C</text></svg>`;
   return`<svg class="tsvg" viewBox="0 0 320 46" role="img" aria-label="LH strip"><rect x="4" y="12" width="312" height="22" rx="2" fill="#eceeee"/>${win}<rect x="244" y="12" width="72" height="22" fill="#424b7c"/><rect x="72" y="12" width="4" height="22" fill="#424b7c"/><path d="M62 23H44M44 23l4-3M44 23l4 3" stroke="#424b7c" stroke-width="1.6" fill="none"/><text x="${L.T}" y="9" class="tlb">T</text><text x="${L.C}" y="9" class="tlb">C</text></svg>`}
@@ -1178,14 +1180,15 @@ const testDraw=(kind,t,src)=>{if(state.settings.testView!=='drawn'&&t.photo){con
   return`<button type="button" class="tdraw tphoto" data-view="${t.photo}" aria-label="Show the full photo"><img data-photo="${t.photo}"${src?` src="${src}"`:''} alt="Test photo"${flip?' style="transform:rotate(180deg)"':''}></button>`}
   return t.photo?`<button type="button" class="tdraw" data-view="${t.photo}" aria-label="Show the full photo">${testSVG(kind,t,src)}<span class="tzoom">Photo</span></button>`:`<div class="tdraw">${testSVG(kind,t,src)}</div>`};
 function fillPhotos(root){$$('[data-photo]',root).forEach(el=>DB.get(el.dataset.photo).then(src=>{if(!src)return;if(el.tagName.toLowerCase()==='image')el.setAttribute('href',src);else el.src=src}))}
-document.addEventListener('click',async e=>{const v=e.target.closest('[data-view]');if(!v)return;e.preventDefault();e.stopPropagation();const src=await DB.get(v.dataset.view);if(!src)return;$('#pvImg').src=src;openModal('photoView')},true);
+document.addEventListener('click',async e=>{const v=e.target.closest('[data-view]');if(!v)return;e.preventDefault();e.stopPropagation();const src=await DB.get(v.dataset.view);if(!src)return;pvPhoto=v.dataset.view;$('#pvEdit').hidden=!findTestByPhoto(pvPhoto);$('#pvImg').src=src;openModal('photoView')},true);
+$('#pvEdit').addEventListener('click',()=>{const f=findTestByPhoto(pvPhoto);if(!f)return;closeModal('photoView');logDate=f.k;openScanEdit(f.kind,f.t)});
 $('#photoView').addEventListener('click',e=>{if(e.target.id==='photoView'||e.target.id==='pvImg')closeModal('photoView')});
 function testsHTML(kind,d){const key=kind==='preg'?'pregTests':'lhTests',opts=kind==='preg'?PREG_OPTS:LH_OPTS,lbl=kind==='preg'?'Line':'T/C';
   const L=[...(d[key]||[])].sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'));let h='';
   for(const t of L){const mk=t.crop&&t.c!=null?`<i class="mk c" style="left:${t.c*100}%">C</i><i class="mk t" style="left:${t.t*100}%">T</i>`:'';
     h+=`<div class="tcard" data-kind="${kind}" data-tid="${t.id}">${testDraw(kind,t)}
       <div class="trow"><input class="field ttime" type="time" value="${t.time||''}" aria-label="Time taken">${t.ratio!=null?`<span class="ratio">${lbl} ${t.ratio.toFixed(2)}</span>`:''}<span style="flex:1"></span>
-      <button type="button" class="btn ghost small" data-tact="scan">${t.photo?'Rescan':'Add photo'}</button><button type="button" class="btn ghost small" data-tact="del">Delete</button></div>
+      ${t.photo?'<button type="button" class="btn ghost small" data-tact="edit">Edit photo</button>':''}<button type="button" class="btn ghost small" data-tact="scan">${t.photo?'New photo':'Add photo'}</button><button type="button" class="btn ghost small" data-tact="del">Delete</button></div>
       <div class="chips">${opts.map(([v,l])=>`<button type="button" class="chip t" data-tres="${v}" aria-pressed="${t.result===v}">${l}</button>`).join('')}</div></div>`}
   return h+`<div class="addrow2"><button type="button" class="btn ghost small" data-add="${kind}-scan">${ic(kind==='preg'?'preg':'lh')}${L.length?'Scan another':kind==='preg'?'Scan a test':'Scan a strip'}</button><button type="button" class="btn ghost small" data-add="${kind}-manual">Add without photo</button></div>`}
 function testList(kind){const key=kind==='preg'?'pregTests':'lhTests';return{key,list:(dayData(logDate)[key]||[]).map(t=>({...t}))}}
@@ -1194,8 +1197,9 @@ async function handleTest(b){
   const card=b.closest('.tcard'),kind=card.dataset.kind,{key,list}=testList(kind),t=list.find(x=>x.id===card.dataset.tid);if(!t)return;
   if(b.dataset.tres){t.result=t.result===b.dataset.tres?null:b.dataset.tres;setField(logDate,key,list);syncTests(logDate);return rerenderLog()}
   if(b.dataset.tact==='scan')return openScanner(kind,t.id);
+  if(b.dataset.tact==='edit')return openScanEdit(kind,t);
   if(b.dataset.tact==='del'){const c=t.photo?await askChoice('Delete this test? You can keep its result and remove only the photo.','Photo only','Whole test'):(await askConfirm('Delete this test?','Delete',true)?'all':null);if(!c)return;
-    if(t.photo)await DB.del(t.photo);if(c==='all')list.splice(list.indexOf(t),1);else Object.assign(t,{photo:null,crop:null,c:null,t:null});
+    if(t.photo)await DB.del(t.photo);if(t.orig)await DB.del(t.orig);if(c==='all')list.splice(list.indexOf(t),1);else Object.assign(t,{photo:null,orig:null,edit:null,crop:null,c:null,t:null});
     setField(logDate,key,list);syncTests(logDate);rerenderLog();toast(c==='all'?'Test deleted':'Photo deleted')}}
 function rerenderLog(){const st=$('#sBody').scrollTop;renderLog();$('#sBody').scrollTop=st}
 $('#sBody').addEventListener('toggle',e=>{const el=e.target;if(!el.matches||!el.matches('details.sec'))return;const set=new Set(state.settings.openSecs||[]);el.open?set.add(el.dataset.sec):set.delete(el.dataset.sec);state.settings.openSecs=[...set];unsaved=true;clearTimeout(saveT);saveT=setTimeout(persist,500)},true);
@@ -1260,8 +1264,8 @@ const scan={view:{x:0,y:0,w:1,h:1},fine:0,orig:null,src:null,rot:0,rect:null,mod
 function scanHint(){const n=scan.taps.length,t={pick:'Lay the strip on something plain and white, in even daylight with no flash, and get close.',
   crop:'Straighten the strip with the slider so the lines stand upright, then drag the corners around it.',
   tap:n===0?'Touch the control line (C) and slide to place it exactly. A magnifier shows where it lands.':n===1?'Now place the test line (T) the same way, even if it’s faint or blank.':'Drag either marker to fine-tune. The reading updates when you let go.'}[scan.mode];$('#scanHint').textContent=t}
-function scanUI(){$('#scanner .mcard').classList.toggle('full',scan.mode!=='pick');$('#scanPick').hidden=scan.mode!=='pick'&&scan.mode!=='crop';$('#scanStage').hidden=scan.mode==='pick';$('#cropBtns').hidden=scan.mode!=='crop';$('#tapBtns').hidden=scan.mode!=='tap';scanHint()}
-function openScanner(kind='lh',target=null){$('#scanner h4').textContent=kind==='preg'?'Scan a pregnancy test':'Scan an LH strip';Object.assign(scan,{kind,target,orig:null,src:null,rot:0,rect:null,mode:'pick',data:null,taps:[],ratio:null,result:null,out:null,cropped:false,prof:null});$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();openModal('scanner')}
+function scanUI(){$('#scanner .mcard').classList.toggle('full',scan.mode!=='pick');$('#scanPick').hidden=!!scan.editing||(scan.mode!=='pick'&&scan.mode!=='crop');$('#scanStage').hidden=scan.mode==='pick';$('#cropBtns').hidden=scan.mode!=='crop';$('#tapBtns').hidden=scan.mode!=='tap';scanHint()}
+function openScanner(kind='lh',target=null){$('#scanner h4').textContent=kind==='preg'?'Scan a pregnancy test':'Scan an LH strip';Object.assign(scan,{kind,target,editing:null,origId:null,orig:null,src:null,rot:0,rect:null,mode:'pick',data:null,taps:[],ratio:null,result:null,out:null,cropped:false,prof:null});$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();openModal('scanner')}
 function rotated(c,deg){if(!deg)return c;const a=deg*Math.PI/180,cs=Math.abs(Math.cos(a)),sn=Math.abs(Math.sin(a)),o=document.createElement('canvas');
   o.width=Math.round(c.width*cs+c.height*sn);o.height=Math.round(c.width*sn+c.height*cs);const x=o.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,o.width,o.height);
   x.translate(o.width/2,o.height/2);x.rotate(a);x.drawImage(c,-c.width/2,-c.height/2);return o}
@@ -1310,6 +1314,12 @@ async function onPhotoPicked(e){const f=e.target.files&&e.target.files[0];e.targ
   const s=Math.min(1,1600/Math.max(im.w,im.h)),c=document.createElement('canvas');c.width=Math.round(im.w*s);c.height=Math.round(im.h*s);c.getContext('2d').drawImage(im.src,0,0,c.width,c.height);
   scan.orig=c;scan.rot=0;scan.fine=0;scan.view={x:0,y:0,w:1,h:1};$('#rotFine').value=0;$('#rotVal').textContent='0.0°';scan.src=c;scan.boxSet=false;scan.rect={x:.1,y:.1,w:.8,h:.8};scan.mode='crop';scan.taps=[];$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop();if(applyAuto(true))$('#cropOk').click()}
 $$('.scanIn').forEach(inp=>inp.addEventListener('change',onPhotoPicked));
+async function openScanEdit(kind,t){openScanner(kind,t.id);$('#scanner h4').textContent='Edit photo';const src=await DB.get(t.orig||t.photo);if(!src){toast('The photo could not be found.');closeModal('scanner');return}
+  const im=await new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>res(null);i.src=src});if(!im){toast('The photo could not be opened.');return}
+  const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;c.getContext('2d').drawImage(im,0,0);
+  const E=t.orig&&t.edit?t.edit:null;scan.editing={c:t.c,t:t.t,rect:E?{...E.rect}:null,rot:E?E.rot:0,fine:E?E.fine:0,crop:!!t.crop};scan.origId=t.orig||null;
+  scan.orig=c;scan.rot=E?E.rot:0;scan.fine=E?E.fine:0;$('#rotFine').value=scan.fine;$('#rotVal').textContent=(scan.fine>0?'+':'')+scan.fine.toFixed(1)+'°';scan.view={x:0,y:0,w:1,h:1};
+  scan.src=rotated(c,scan.rot+scan.fine);scan.rect=E?{...E.rect}:{x:.02,y:.02,w:.96,h:.96};scan.boxSet=true;scan.mode='crop';scan.taps=[];$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop()}
 $('#scanCanvas').addEventListener('touchstart',e=>{if(scan.mode==='crop'||scan.mode==='tap')e.preventDefault()},{passive:false});
 $('#scanCanvas').addEventListener('contextmenu',e=>e.preventDefault());
 function cropGeom(){const c=scan.cv,v=scan.view,r=scan.rect;return{rx:c.pad+(r.x-v.x)/v.w*c.iw,ry:c.pad+(r.y-v.y)/v.h*c.ih,rw:r.w/v.w*c.iw,rh:r.h/v.h*c.ih}}
@@ -1357,7 +1367,8 @@ $('#cropSkip').addEventListener('click',()=>startTap(scan.src,false));
 $('#cropOk').addEventListener('click',()=>{const s=scan.src,r=scan.rect,sx=Math.round(r.x*s.width),sy=Math.round(r.y*s.height),sw=Math.max(8,Math.round(r.w*s.width)),sh=Math.max(8,Math.round(r.h*s.height));
   let c=document.createElement('canvas');c.width=sw;c.height=sh;c.getContext('2d').drawImage(s,sx,sy,sw,sh,0,0,sw,sh);if(sh>sw)c=rotated(c,90);
   const k=Math.min(1,900/c.width);if(k<1){const o=document.createElement('canvas');o.width=Math.round(c.width*k);o.height=Math.round(c.height*k);o.getContext('2d').drawImage(c,0,0,o.width,o.height);c=o}
-  startTap(c,true);if(scan.boxSet)autoTaps()});
+  startTap(c,true);const ed=scan.editing,r0=scan.rect,same=ed&&ed.crop&&ed.c!=null&&((ed.rect&&ed.rot===scan.rot&&ed.fine===scan.fine&&['x','y','w','h'].every(k=>Math.abs(ed.rect[k]-r0[k])<.002))||(!scan.origId&&r0.x<=.021&&r0.y<=.021&&r0.w>=.959&&r0.h>=.959&&!scan.rot&&!scan.fine));
+  if(same){scan.taps=[{x:ed.c*scan.w,y:scan.h/2},{x:ed.t*scan.w,y:scan.h/2}];drawTaps();scanHint();analyse()}else if(scan.boxSet)autoTaps()});
 function drawTaps(){const x=$('#scanCanvas').getContext('2d');x.putImageData(scan.data,0,0);const W=scan.w,H=scan.h,bw=Math.max(9,W*.045);
   scan.taps.forEach((t,i)=>{const col=i?'79,214,204':'255,134,168';x.strokeStyle=`rgb(${col})`;x.lineWidth=Math.max(2,W*.006);
     const top=scan.cropped?0:Math.max(0,t.y-H*.08),hh=scan.cropped?H:Math.min(H,H*.16);x.strokeRect(t.x-bw/2,top+x.lineWidth/2,bw,hh-x.lineWidth);
@@ -1404,9 +1415,10 @@ $('#scanOut').addEventListener('click',e=>{const b=e.target.closest('[data-scanr
 $('#scanSave').addEventListener('click',async()=>{const id=`photo:${logDate}:${Date.now()}`;let c=scan.out;
   if(!scan.cropped){const k=Math.min(1,720/Math.max(c.width,c.height));if(k<1){const o=document.createElement('canvas');o.width=Math.round(c.width*k);o.height=Math.round(c.height*k);o.getContext('2d').drawImage(c,0,0,o.width,o.height);c=o}}
   await DB.set(id,c.toDataURL('image/jpeg',scan.cropped?.86:.74));
+  let origId=scan.origId;if(!origId&&scan.orig&&!(scan.editing&&!scan.origId)){origId=id+':orig';await DB.set(origId,scan.orig.toDataURL('image/jpeg',.82))}
   const{key,list}=testList(scan.kind);let t=list.find(x=>x.id===scan.target);if(!t){t={id:newId(),time:logDate===todayKey()?nowHM():null};list.push(t)}
-  if(t.photo)DB.del(t.photo);Object.assign(t,{photo:id,crop:scan.cropped||null,c:scan.cropped?Math.round(scan.taps[0].x/scan.w*1000)/1000:null,t:scan.cropped?Math.round(scan.taps[1].x/scan.w*1000)/1000:null,ratio:scan.ratio,result:scan.result});
-  setField(logDate,key,list);syncTests(logDate);closeModal('scanner');rerenderLog();toast(scan.kind==='preg'?'Test saved':'Strip saved')});
+  if(t.photo)DB.del(t.photo);if(t.orig&&t.orig!==origId)DB.del(t.orig);Object.assign(t,{photo:id,orig:origId||null,edit:origId?{rot:scan.rot,fine:scan.fine,rect:{...scan.rect}}:null,crop:scan.cropped||null,c:scan.cropped?Math.round(scan.taps[0].x/scan.w*1000)/1000:null,t:scan.cropped?Math.round(scan.taps[1].x/scan.w*1000)/1000:null,ratio:scan.ratio,result:scan.result});
+  setField(logDate,key,list);syncTests(logDate);closeModal('scanner');rerenderLog();dirty.chart=1;if(curView==='chart')renderChart();toast(scan.kind==='preg'?'Test saved':'Strip saved')});
 function askChoice(msg,altLabel,yesLabel){return new Promise(res=>{$('#confirmMsg').textContent=msg;const y=$('#confirmYes'),a=$('#confirmAlt'),n=$('#confirmNo');
   y.textContent=yesLabel;y.classList.add('danger');a.textContent=altLabel;a.hidden=false;openModal('confirm');
   const done=v=>{closeModal('confirm');a.hidden=true;y.onclick=a.onclick=n.onclick=null;res(v)};y.onclick=()=>done('all');a.onclick=()=>done('photo');n.onclick=()=>done(null)})}
