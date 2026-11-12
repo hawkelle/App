@@ -186,6 +186,8 @@ h2.sect{font:500 21px/1.2 var(--serif);margin:28px 0 12px}
 .cg>.ovc{background:color-mix(in srgb,var(--teal-strong) 75%,transparent)}
 .cg>.ovc.pred{background:color-mix(in srgb,var(--teal-strong) 38%,transparent)}
 .cg>.ovc .lhc.peak,.cg>.ovc .muc.eggwhite{box-shadow:0 0 0 1.5px var(--bg)}
+.nopnote{font-size:13px;color:var(--muted);background:var(--surface-2);border-radius:12px;padding:10px 12px;margin:14px 0 0}
+.errbox{white-space:pre-wrap;font:12px ui-monospace,Menlo,monospace;background:var(--surface-2);border-radius:10px;padding:10px;color:var(--ink);overflow-x:auto}
 .ckeyrow{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted);margin-top:12px}
 .ckeyrow span{display:inline-flex;align-items:center;gap:6px}
 .ckeyrow i{width:14px;height:14px;border-radius:3px;display:inline-block}
@@ -216,7 +218,7 @@ h2.sect{font:500 21px/1.2 var(--serif);margin:28px 0 12px}
 .dotn{width:6px;height:6px;border-radius:50%;background:var(--muted)}
 .ckey{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.6}
 .stack{border-top:1.5px solid var(--rule)}
-.shead2,.srow{display:grid;grid-template-columns:62px 1fr 44px;gap:10px;align-items:center}
+.shead2,.srow{display:grid;grid-template-columns:58px 1fr 40px;gap:10px;align-items:center}
 .shead2{height:22px}.sa0{position:relative;height:100%;flex:1}.sa0 em{position:absolute;transform:translateX(-50%);font:700 11px var(--sans);font-style:normal;color:var(--muted);top:4px}
 .srow{width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:6px 0;color:var(--ink);text-align:left;font:inherit;cursor:pointer}
 .sl{font-size:11.5px;color:var(--muted);line-height:1.25}.sl b{display:block;color:var(--ink);font-size:13px;font-weight:600}
@@ -414,11 +416,21 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
 .lhfull img{display:block;width:100%;height:auto;max-height:120px;object-fit:cover}
 .lhfull .mk{position:absolute;top:0;transform:translateX(-50%);font:700 10px var(--sans);font-style:normal;color:#fff;padding:1px 5px 2px;border-radius:0 0 5px 5px}
 .lhfull .mk.c{background:#e0708f}.lhfull .mk.t{background:#3faea6}
+.sectrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.sectrow .sect{margin-right:auto}
+.seg.tview{margin:0 0 10px}.seg.tview button{padding:6px 11px;font-size:12.5px}.sectrow .seg.tview{margin:28px 0 12px}
+.tdraw{position:relative;display:block;width:100%;padding:0;border:0;background:none;margin:0 0 6px;cursor:pointer;color:inherit}
+.tsvg{display:block;width:100%;height:auto}.tsvg .tlb{font:600 9px var(--sans);fill:var(--muted);text-anchor:middle}
+.tzoom{position:absolute;right:0;bottom:-2px;font:500 10.5px var(--sans);color:var(--muted)}
+.tphoto img{display:block;width:auto;max-width:100%;height:auto;max-height:120px;margin:0 auto;border-radius:8px}
+.srow .tphoto img{max-height:64px;border-radius:4px}
+.srow .tdraw{margin:0}.srow .tzoom{display:none}
+.pkph{flex-direction:column}.pkph .tdraw{max-width:300px}
 .tcard{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px;background:var(--surface)}
 .tcard .lhfull{margin-bottom:8px}
 .trow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .trow .ttime{width:112px;padding:7px 10px;font-size:16px}
-.trow .btn.small{padding:7px 11px;font-size:13px}
+.trow .btn.small{padding:6px 10px;font-size:12.5px}
+.trow .ttime{width:96px!important}
 .addrow2{display:flex;gap:8px;flex-wrap:wrap}
 .addrow2 .ico{width:16px;height:16px;margin-right:2px}
 .lhthumb{width:56px;height:74px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--surface-2)}
@@ -573,6 +585,10 @@ textarea.field{resize:vertical;font-size:16px;line-height:1.45}
   <div class="sub">Colour</div><div class="chips" id="maSw" style="gap:10px"></div>
   <div id="maIcBox"><div class="sub">Icon</div><div class="chips" id="maIc" style="gap:8px"></div></div>
   <div class="rowend" style="align-items:center;justify-content:space-between"><span id="maPrev"></span><button class="btn small" id="maOk">Add</button></div>
+</div></div>
+<div class="modal" id="photoView" role="dialog" aria-modal="true" aria-label="Test photo"><div class="mcard">
+  <div class="mhead"><h4>Photo</h4><button class="iconbtn" data-close="photoView" aria-label="Close">✕</button></div>
+  <img id="pvImg" alt="Full test photo" style="width:100%;border-radius:10px;margin-top:10px;display:block">
 </div></div>
 <div class="modal" id="confirm" role="alertdialog" aria-modal="true"><div class="mcard small">
   <p id="confirmMsg" style="font-size:16px;margin:4px 0 0"></p>
@@ -925,15 +941,20 @@ function renderCalendar(){
 }
 
 /* ================= chart ================= */
-function renderChart(){
-  const m=model,el=$('#v-chart');
+function renderChart(){try{renderChartInner();if(!model.cycles.length&&Object.keys(state.days).length){const el=$('#v-chart'),note=`<p class="nopnote">No period logged yet, so this shows your last days. Log the first day of your period to see cycle days and predictions.</p>`,tg=el.querySelector('.cview');if(tg)tg.insertAdjacentHTML('afterend',note);else el.insertAdjacentHTML('afterbegin',note)}}catch(err){const el=$('#v-chart'),tempAvail=tracking('bbt')||tracking('tests')||Object.values(state.days).some(d=>d.bbt!=null||d.lh);
+  el.innerHTML=`${tempAvail?chartToggle(state.settings.chartView==='emo'?'emo':'temp'):''}<p class="warn" style="margin-top:18px">Something went wrong drawing this chart. Please send this line to Claude:</p><pre class="errbox">${esc((err&&err.stack||String(err)).split('\n').slice(0,3).join('\n'))}</pre>`}}
+function renderChartInner(){
+  const el=$('#v-chart');let m=model;
+  // no period logged yet: still chart the last weeks, so temperatures, tests and feelings show up
+  if(!m.cycles.length){const today=todayKey(),keys=Object.keys(state.days).filter(k=>k<=today).sort();
+    if(keys.length){const start=keys.find(k=>k>=addDays(today,-59))||addDays(today,-29);m={...model,cycles:[{start,next:null,len:null,complete:false,days:diffDays(start,today)+1,pLen:0,excluded:false,noPeriod:true}]}}}
   if(!m.cycles.length){el.innerHTML=`<h2 class="sect">Cycle chart</h2><p class="muted">Your temperature, LH, mucus, cervix and flow will line up here once you've logged the start of a period.</p>`;return}
   let idx=chartPin?m.cycles.findIndex(c=>c.start===chartPin):-1;if(idx<0){idx=m.cycles.length-1;chartPin=null}chartIdx=idx;
   const c=m.cycles[idx],isCur=idx===m.cycles.length-1,today=todayKey(),u=state.settings.unit,det=!!state.settings.chartDetail;
   const tempAvail=tracking('bbt')||tracking('tests')||Object.values(state.days).some(d=>d.bbt!=null||d.lh);
   const view=tempAvail?(state.settings.chartView||'temp'):'emo';
   if(view==='emo'){const N0=Math.min(90,Math.max(1,isCur&&m.pred?Math.max(c.days,diffDays(c.start,m.pred.next)):(c.len||c.days)));
-    const t0=isCur?'Current cycle':`Cycle of ${fmt(c.start,{month:'long',year:'numeric'})}`,s0=isCur?`Started ${short(c.start)}, day ${c.days}`:`${short(c.start)} – ${short(addDays(c.next,-1))}, ${c.len} days`;
+    const t0=c.noPeriod?`Last ${c.days} days`:isCur?'Current cycle':`Cycle of ${fmt(c.start,{month:'long',year:'numeric'})}`,s0=c.noPeriod?`Since ${short(c.start)}`:isCur?`Started ${short(c.start)}, day ${c.days}`:`${short(c.start)} – ${short(addDays(c.next,-1))}, ${c.len} days`;
     el.innerHTML=`${tempAvail?chartToggle('emo'):''}<div class="cnav"><button class="iconbtn" data-cnav="-1" ${idx===0?'disabled':''} aria-label="Earlier cycle">‹</button><div class="t"><b>${t0}</b><span>${s0}</span></div><button class="iconbtn" data-cnav="1" ${isCur?'disabled':''} aria-label="Later cycle">›</button></div>${emoRing(c,N0,isCur)}`;return}
   const N=Math.min(150,Math.max(1,isCur&&m.pred?Math.max(c.days,diffDays(c.start,m.pred.next)):(c.len||c.days)));
   const LW=det?78:44,avail=Math.min(560,document.documentElement.clientWidth)-40;
@@ -1002,9 +1023,9 @@ function renderChart(){
     if(tracking('sex'))row('Sex',(i,k,d)=>d.sex?'<i class="cdt"></i>':'');
   }
   h+='</div>';
-  const title=isCur?'Current cycle':`Cycle of ${fmt(c.start,{month:'long',year:'numeric'})}`;
+  const title=c.noPeriod?`Last ${c.days} days`:isCur?'Current cycle':`Cycle of ${fmt(c.start,{month:'long',year:'numeric'})}`;
   const dpoNow=isCur?dpoOf(today):null;
-  const sub=isCur?`Started ${short(c.start)}, day ${c.days}${dpoNow?`, ${dpoNow} DPO`:''}`:`${short(c.start)} – ${short(addDays(c.next,-1))}, ${c.len} days`;
+  const sub=c.noPeriod?`Since ${short(c.start)}`:isCur?`Started ${short(c.start)}, day ${c.days}${dpoNow?`, ${dpoNow} DPO`:''}`:`${short(c.start)} – ${short(addDays(c.next,-1))}, ${c.len} days`;
   const ovTxt=!c.ovu&&c.ovuEst?`No temperature shift or LH surge was logged, so ovulation is estimated around cycle day ${c.ovuEst.cd} from your cycle length and luteal phase.`:c.ovu?(c.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${c.ovu.cd} by the temperature shift. The dashed line is your coverline.`:`Ovulation estimated on cycle day ${c.ovu.cd}, the day after your LH peak.`):'No ovulation detected yet in this cycle.';
   el.innerHTML=`${tempAvail?chartToggle('temp'):''}<div class="cnav"><button class="iconbtn" data-cnav="-1" ${idx===0?'disabled':''} aria-label="Earlier cycle">‹</button><div class="t"><b>${title}</b><span>${sub}</span></div><button class="iconbtn" data-cnav="1" ${isCur?'disabled':''} aria-label="Later cycle">›</button></div>
     <div class="cscroll" id="cscroll">${h}</div>
@@ -1018,14 +1039,12 @@ function renderChart(){
 }
 async function loadStrips(c,N){const out={lhTests:{rows:[],figs:[]},pregTests:{rows:[],figs:[]}};
   for(let i=0;i<N;i++){const k=addDays(c.start,i),d=state.days[k];if(!d)continue;
-    for(const key of['lhTests','pregTests'])for(const t of[...(d[key]||[])].sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'))){if(!t.photo)continue;const src=await DB.get(t.photo);if(!src)continue;
+    for(const key of['lhTests','pregTests'])for(const t of[...(d[key]||[])].sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'))){if(!t.photo&&t.ratio==null&&!t.result)continue;const src=t.photo?await DB.get(t.photo):null;
       const lab=key==='pregTests'?LABEL.preg:LABEL.lh,val=t.ratio!=null?t.ratio.toFixed(2):(t.result?lab[t.result]:''),hi=key==='pregTests'?t.result==='pos':(t.result==='high'||t.result==='peak');
-      if(t.crop&&t.c!=null&&t.t!=null){const flip=t.c<t.t;
-        out[key].rows.push(`<button type="button" class="srow" data-date="${k}"><span class="sl"><b>CD ${i+1}</b>${short(k)}${t.time?`<br>${t.time}`:''}</span><span class="sph"><img src="${src}" alt="Test ${short(k)}"${flip?' style="transform:rotate(180deg)"':''}></span><span class="sr${hi?' lh-high':''}">${val}</span></button>`)}
-      else out[key].figs.push(`<figure data-date="${k}"><img src="${src}" alt="Test ${short(k)}"><figcaption><b>Day ${i+1}</b>, ${short(k)}${t.time?' '+t.time:''}<br>${val}</figcaption></figure>`)}}
+      out[key].rows.push(`<div class="srow" data-date="${k}"><span class="sl"><b>CD ${i+1}</b>${short(k)}${t.time?`<br>${t.time}`:''}</span>${testDraw(key==='pregTests'?'preg':'lh',t,src)}<span class="sr${hi?' lh-high':''}">${val}</span></div>`)}}
   const w=$('#stripWrap');if(!w)return;let h='';
   for(const[key,title]of[['lhTests','LH strips'],['pregTests','Pregnancy tests']]){const o=out[key];if(!o.rows.length&&!o.figs.length)continue;
-    h+=`<h2 class="sect">${title}</h2>${o.rows.length?`<div class="stack">${o.rows.join('')}</div>`:''}${o.figs.length?`<div class="strips">${o.figs.join('')}</div>`:''}`}
+    h+=`<div class="sectrow"><h2 class="sect">${title}</h2>${key==='lhTests'||!out.lhTests.rows.length?tviewSeg():''}</div>${o.rows.length?`<div class="stack">${o.rows.join('')}</div>`:''}${o.figs.length?`<div class="strips">${o.figs.join('')}</div>`:''}`}
   w.innerHTML=h}
 
 /* ================= insights & settings ================= */
@@ -1068,7 +1087,7 @@ function renderInsights(){
      <button class="btn small" data-act="csv">CSV</button><button class="btn small" data-act="pdf">PDF</button></div></div>
    <div class="setrow"><p class="lbl">Backup</p><p class="hint" style="margin:0 0 10px">Everything lives only on this phone. Save a backup to Files now and then; clearing Safari's website data would erase it.</p><div class="datarow"><button class="btn small" data-act="export">Save backup</button><button class="btn ghost small" data-act="import">Restore backup</button></div></div>
    <div class="setrow"><div class="datarow"><button class="btn ghost small" data-act="wipe" style="color:#d4574a;border-color:#d4574a">Delete all data</button></div></div>
-   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.</p>`;
+   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.<br>Cycles version 12 Nov 2026 (h)</p>`;
 }
 $('#v-ins').addEventListener('click',async e=>{
   const dm=e.target.closest('[data-delm]');if(dm){const m=(state.settings.customMoods||[]).find(x=>x.k===dm.dataset.delm);if(m&&await askConfirm(`Remove ${m.l} from your mood options?`,'Remove')){m.hidden=true;save();renderAll()}return}
@@ -1133,18 +1152,37 @@ function renderLog(){
     else if(s.type==='bbt'){const val=d.bbt!=null?toUnit(d.bbt).toFixed(2):'';
       h+=`<div class="bbtrow"><input class="field" id="bbtIn" inputmode="decimal" autocomplete="off" placeholder="${u==='F'?'97.70':'36.50'}" value="${val}" aria-label="Temperature"><span class="unit">°${u}</span><input class="field" type="time" id="bbtTime" value="${d.bbtTime||''}" aria-label="Time taken"></div>
       <div class="sub">Anything that could throw it off?</div><div class="chips">${BBT_FLAGS.map(([v,l])=>chip('bbtFlags',v,l,'multi')).join('')}</div>`}
-    else if(s.type==='lh'||s.type==='preg')h+=testsHTML(s.type,d);
+    else if(s.type==='lh'||s.type==='preg'){if(s.type==='lh'&&[...(d.lhTests||[]),...(d.pregTests||[])].some(t=>t.photo))h+=tviewSeg();h+=testsHTML(s.type,d)}
     else if(s.type==='meds')h+=`<div class="chips">${state.settings.meds.map(v=>chip('meds',v,esc(v),'multi')).join('')}</div><div class="addrow"><input class="field" id="medIn" placeholder="Add one, e.g. Vitamin D"><button type="button" class="btn ghost small" id="medAdd">Add</button></div>`;
     else if(s.type==='note')h+=`<textarea class="field" id="noteIn" rows="4" placeholder="Anything else about today">${esc(d.note||'')}</textarea>`;
   }
   $('#sBody').innerHTML=h+'</div></details></div>';
-  $$('img[data-photo]',$('#sBody')).forEach(im=>DB.get(im.dataset.photo).then(src=>{if(src)im.src=src}));
+  fillPhotos($('#sBody'));
 }
+/* ---- tests drawn as a clean strip / cassette; the result window is the real photo ---- */
+let tdN=0;
+function testSVG(kind,t,src){const P=kind==='preg',id='tc'+(++tdN);
+  const L=P?{T:160,C:176,wx:144,wy:16,ww:48,wh:14,lw:3}:{T:150,C:186,wx:118,wy:12,ww:118,wh:22,lw:5};
+  const ok=false;let win;
+  if(ok){let tt=t.t,cc=t.c,flip=false;if(cc<tt){tt=1-tt;cc=1-cc;flip=true}const dw=(L.C-L.T)/(cc-tt),x=L.T-tt*dw;
+    win=`<clipPath id="${id}"><rect x="${L.wx}" y="${L.wy}" width="${L.ww}" height="${L.wh}" rx="${P?2:0}"/></clipPath><g clip-path="url(#${id})"><rect x="${L.wx}" y="${L.wy}" width="${L.ww}" height="${L.wh}" fill="#f4f1ef"/><image data-photo="${t.photo}"${src?` href="${src}"`:''} x="${x.toFixed(2)}" y="${(L.wy-L.wh*(1/.55-1)/2).toFixed(2)}" width="${dw.toFixed(2)}" height="${(L.wh/.55).toFixed(2)}" preserveAspectRatio="none"${flip?` transform="translate(${(2*x+dw).toFixed(2)} 0) scale(-1 1)"`:''}/></g>`}
+  else{const op=P?(t.ratio!=null?Math.min(1,Math.max(.06,t.ratio)):({neg:0,faint:.25,pos:1}[t.result]??0)):(t.ratio!=null?Math.min(1,Math.max(.06,t.ratio)):({neg:.08,low:.45,high:.85,peak:1}[t.result]??0));
+    win=`<rect x="${L.wx}" y="${L.wy}" width="${L.ww}" height="${L.wh}" fill="${P?'#fbfbfb':'#eceeee'}"/>${op?`<rect x="${L.T-L.lw/2}" y="${L.wy}" width="${L.lw}" height="${L.wh}" fill="#d24a72" opacity="${op}"/>`:''}<rect x="${L.C-L.lw/2}" y="${L.wy}" width="${L.lw}" height="${L.wh}" fill="#d24a72"/>`}
+  if(P)return`<svg class="tsvg preg" viewBox="0 0 320 46" role="img" aria-label="Pregnancy test"><path d="M18 10h282a13 13 0 0 1 0 26H18a13 13 0 0 1 0-26z" fill="#eceeee"/><path d="M18 10h92v26H18a13 13 0 0 1 0-26z" fill="#e47fa3"/><rect x="24" y="19" width="22" height="8" rx="4" fill="#d26391"/><rect x="136" y="12" width="64" height="22" rx="11" fill="#d6d8d8"/>${win}<rect x="270" y="19" width="22" height="8" rx="4" fill="#d6d8d8"/><text x="${L.T}" y="8" class="tlb">T</text><text x="${L.C}" y="8" class="tlb">C</text></svg>`;
+  return`<svg class="tsvg" viewBox="0 0 320 46" role="img" aria-label="LH strip"><rect x="4" y="12" width="312" height="22" rx="2" fill="#eceeee"/>${win}<rect x="244" y="12" width="72" height="22" fill="#424b7c"/><rect x="72" y="12" width="4" height="22" fill="#424b7c"/><path d="M62 23H44M44 23l4-3M44 23l4 3" stroke="#424b7c" stroke-width="1.6" fill="none"/><text x="${L.T}" y="9" class="tlb">T</text><text x="${L.C}" y="9" class="tlb">C</text></svg>`}
+const tviewSeg=()=>`<div class="seg tview"><button data-tview="photo" aria-pressed="${state.settings.testView!=='drawn'}">Photos</button><button data-tview="drawn" aria-pressed="${state.settings.testView==='drawn'}">Drawn</button></div>`;
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tview]');if(!b)return;state.settings.testView=b.dataset.tview;save();if($('#sheet').classList.contains('open'))rerenderLog();dirty.chart=1;if(curView==='chart')renderChart()});
+const testDraw=(kind,t,src)=>{if(state.settings.testView!=='drawn'&&t.photo){const flip=t.crop&&t.c!=null&&t.t!=null&&t.c<t.t;
+  return`<button type="button" class="tdraw tphoto" data-view="${t.photo}" aria-label="Show the full photo"><img data-photo="${t.photo}"${src?` src="${src}"`:''} alt="Test photo"${flip?' style="transform:rotate(180deg)"':''}></button>`}
+  return t.photo?`<button type="button" class="tdraw" data-view="${t.photo}" aria-label="Show the full photo">${testSVG(kind,t,src)}<span class="tzoom">Photo</span></button>`:`<div class="tdraw">${testSVG(kind,t,src)}</div>`};
+function fillPhotos(root){$$('[data-photo]',root).forEach(el=>DB.get(el.dataset.photo).then(src=>{if(!src)return;if(el.tagName.toLowerCase()==='image')el.setAttribute('href',src);else el.src=src}))}
+document.addEventListener('click',async e=>{const v=e.target.closest('[data-view]');if(!v)return;e.preventDefault();e.stopPropagation();const src=await DB.get(v.dataset.view);if(!src)return;$('#pvImg').src=src;openModal('photoView')},true);
+$('#photoView').addEventListener('click',e=>{if(e.target.id==='photoView'||e.target.id==='pvImg')closeModal('photoView')});
 function testsHTML(kind,d){const key=kind==='preg'?'pregTests':'lhTests',opts=kind==='preg'?PREG_OPTS:LH_OPTS,lbl=kind==='preg'?'Line':'T/C';
   const L=[...(d[key]||[])].sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'));let h='';
   for(const t of L){const mk=t.crop&&t.c!=null?`<i class="mk c" style="left:${t.c*100}%">C</i><i class="mk t" style="left:${t.t*100}%">T</i>`:'';
-    h+=`<div class="tcard" data-kind="${kind}" data-tid="${t.id}">${t.photo&&t.crop?`<div class="lhfull"><img data-photo="${t.photo}" alt="Cropped test photo">${mk}</div>`:''}
-      <div class="trow">${t.photo&&!t.crop?`<img class="lhthumb" data-photo="${t.photo}" alt="Test photo">`:''}<input class="field ttime" type="time" value="${t.time||''}" aria-label="Time taken">${t.ratio!=null?`<span class="ratio">${lbl} ${t.ratio.toFixed(2)}</span>`:''}<span style="flex:1"></span>
+    h+=`<div class="tcard" data-kind="${kind}" data-tid="${t.id}">${testDraw(kind,t)}
+      <div class="trow"><input class="field ttime" type="time" value="${t.time||''}" aria-label="Time taken">${t.ratio!=null?`<span class="ratio">${lbl} ${t.ratio.toFixed(2)}</span>`:''}<span style="flex:1"></span>
       <button type="button" class="btn ghost small" data-tact="scan">${t.photo?'Rescan':'Add photo'}</button><button type="button" class="btn ghost small" data-tact="del">Delete</button></div>
       <div class="chips">${opts.map(([v,l])=>`<button type="button" class="chip t" data-tres="${v}" aria-pressed="${t.result===v}">${l}</button>`).join('')}</div></div>`}
   return h+`<div class="addrow2"><button type="button" class="btn ghost small" data-add="${kind}-scan">${ic(kind==='preg'?'preg':'lh')}${L.length?'Scan another':kind==='preg'?'Scan a test':'Scan a strip'}</button><button type="button" class="btn ghost small" data-add="${kind}-manual">Add without photo</button></div>`}
@@ -1246,23 +1284,29 @@ function autoDetect(){const o=scan.orig;if(!o)return null;const k=Math.min(1,520
     const dx=q.x-C.x,dy=q.y-C.y,along=Math.abs(dx*Math.cos(C.th)+dy*Math.sin(C.th)),across=Math.abs(-dx*Math.sin(C.th)+dy*Math.cos(C.th));
     if(along<C.len*.8&&across>C.len*.15&&across<C.len*8){T=q;break}}
   return{th:C.th,c:[C.x/k,C.y/k],t:T?[T.x/k,T.y/k]:null,len:C.len/k}}
-function applyAuto(quiet){const a=autoDetect();if(!a){if(!quiet)toast('No coloured lines found. Crop by hand instead.');return false}
+function applyAuto(quiet){const a=autoDetect();scan.autoBoth=!!(a&&a.t);if(!a){if(!quiet)toast('No coloured lines found. Crop by hand instead.');return false}
   const deg=a.th*180/Math.PI;let phi=((90-deg+90)%180+180)%180-90;const rot=((Math.round(phi/90)*90)%360+360)%360;let fine=phi-Math.round(phi/90)*90;
   scan.rot=rot;scan.fine=Math.round(fine*2)/2;$('#rotFine').value=scan.fine;$('#rotVal').textContent=(scan.fine>0?'+':'')+scan.fine.toFixed(1)+'°';scan.view={x:0,y:0,w:1,h:1};
   const o=scan.orig;scan.src=rotated(o,scan.rot+scan.fine);const R=(scan.rot+scan.fine)*Math.PI/180,cs=Math.cos(R),sn=Math.sin(R),s=scan.src;
   const map=p=>{const dx=p[0]-o.width/2,dy=p[1]-o.height/2;return[cs*dx-sn*dy+s.width/2,sn*dx+cs*dy+s.height/2]};
   const pc=map(a.c),pt=a.t?map(a.t):null,L=a.len,cx=pt?(pc[0]+pt[0])/2:pc[0],cy=pt?(pc[1]+pt[1])/2:pc[1],span=pt?Math.abs(pt[0]-pc[0]):0;
   const W=pt?Math.max(L*4.2,span*4.5):L*6,H=L*1.7,x0=Math.max(0,cx-W/2),y0=Math.max(0,cy-H/2),x1=Math.min(s.width,cx+W/2),y1=Math.min(s.height,cy+H/2);
-  scan.rect={x:x0/s.width,y:y0/s.height,w:(x1-x0)/s.width,h:(y1-y0)/s.height};scan.boxSet=true;drawCrop();if(!quiet)toast('Lines found, check the box');else toast('Strip found automatically. Adjust the box if needed.');return true}
-function autoTaps(){if(!scan.prof)return;const p=scan.prof.p,w=scan.w,pk=[];for(let i=2;i<w-2;i++)if(p[i]>=p[i-1]&&p[i]>=p[i+1]&&p[i]>p[i-2]&&p[i]>p[i+2])pk.push(i);
+  scan.rect={x:x0/s.width,y:y0/s.height,w:(x1-x0)/s.width,h:(y1-y0)/s.height};scan.boxSet=true;drawCrop();if(!quiet)toast('Lines found, check the box');return true}
+function blueCols(){const d=scan.data.data,w2=scan.w,h2=scan.h,out=[];for(let x=0;x<w2;x++){let n=0,m=0;for(let y=Math.floor(h2*.3);y<h2*.7;y+=2){m++;const i=(y*w2+x)*4,r=d[i],g=d[i+1],b=d[i+2];if(b-r>35&&b>g+10&&b>70)n++}out.push(n>m*.5)}return out}
+function autoTaps(){if(!scan.prof)return;const p=scan.prof.p,w=scan.w,pk=[],blue=blueCols(),pad=Math.max(3,Math.round(w*.015));
+  const nearBlue=i=>{for(let j=Math.max(0,i-pad);j<=Math.min(w-1,i+pad);j++)if(blue[j])return true;return false};
+  for(let i=2;i<w-2;i++)if(p[i]>=p[i-1]&&p[i]>=p[i+1]&&p[i]>p[i-2]&&p[i]>p[i+2]&&!nearBlue(i))pk.push(i);
   const loc=i=>{const gap=Math.max(4,Math.round(w*.025)),bw=Math.max(12,Math.round(w*.09)),v=[];for(let j=i-bw;j<=i+bw;j++)if(j>=0&&j<w&&Math.abs(j-i)>=gap)v.push(p[j]);v.sort((a,b)=>a-b);return p[i]-(v[v.length>>1]||0)};
   const sc=pk.map(i=>[i,loc(i)]).filter(q=>q[1]>3).sort((a,b)=>b[1]-a[1]);if(!sc.length)return;const C=sc[0];
   const T=sc.slice(1).find(q=>Math.abs(q[0]-C[0])>w*.04&&Math.abs(q[0]-C[0])<w*.5&&q[1]>Math.max(2.5,C[1]*.05));
-  scan.taps=[{x:C[0],y:scan.h/2}];if(T)scan.taps.push({x:T[0],y:scan.h/2});drawTaps();scanHint();if(scan.taps.length===2){analyse();toast('Lines placed automatically. Drag to adjust, or swap C and T.')}}
+  let c0=C[0],t0=T?T[0]:null;
+  if(T){const w2=w;
+    const near=x=>{let m=1e9;for(let j=0;j<w2;j++)if(blue[j])m=Math.min(m,Math.abs(j-x));return m};const nc=near(c0),nt=near(t0);if(nt<1e9&&nt<nc*.8){[c0,t0]=[t0,c0]}}
+  scan.taps=[{x:c0,y:scan.h/2}];if(t0!=null)scan.taps.push({x:t0,y:scan.h/2});drawTaps();scanHint();if(scan.taps.length===2){analyse();toast('Lines placed automatically. Drag to adjust, or swap C and T.')}}
 async function onPhotoPicked(e){const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;toast('Opening photo…');const im=await loadPhoto(f);
   if(!im||!im.w){toast('That photo couldn’t be opened. In Settings → Camera → Formats, “Most Compatible” saves photos as JPEG, which always works.');return}
   const s=Math.min(1,1600/Math.max(im.w,im.h)),c=document.createElement('canvas');c.width=Math.round(im.w*s);c.height=Math.round(im.h*s);c.getContext('2d').drawImage(im.src,0,0,c.width,c.height);
-  scan.orig=c;scan.rot=0;scan.fine=0;scan.view={x:0,y:0,w:1,h:1};$('#rotFine').value=0;$('#rotVal').textContent='0.0°';scan.src=c;scan.boxSet=false;scan.rect={x:.1,y:.1,w:.8,h:.8};scan.mode='crop';scan.taps=[];$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop();applyAuto(true)}
+  scan.orig=c;scan.rot=0;scan.fine=0;scan.view={x:0,y:0,w:1,h:1};$('#rotFine').value=0;$('#rotVal').textContent='0.0°';scan.src=c;scan.boxSet=false;scan.rect={x:.1,y:.1,w:.8,h:.8};scan.mode='crop';scan.taps=[];$('#scanOut').innerHTML='';$('#scanSave').disabled=true;scanUI();drawCrop();if(applyAuto(true))$('#cropOk').click()}
 $$('.scanIn').forEach(inp=>inp.addEventListener('change',onPhotoPicked));
 $('#scanCanvas').addEventListener('touchstart',e=>{if(scan.mode==='crop'||scan.mode==='tap')e.preventDefault()},{passive:false});
 $('#scanCanvas').addEventListener('contextmenu',e=>e.preventDefault());
@@ -1459,9 +1503,9 @@ function renderPeek(){const k=peekDate,d=dayData(k),mk=model.marks[k]||{},cd=cdO
   let h=st.length?`<div class="tags pk">${st.map(([c,t,f])=>f?`<button type="button" class="tag tagbtn ${c}" data-pf="${f}">${t}</button>`:`<span class="tag ${c}">${t}</span>`).join('')}</div>`:'';
   h+=tags.length?`<div class="tags pk">${tags.map(x=>{const f=FBY[x.k]?x.k:null;return`<button type="button" class="tag tagbtn" ${f?`data-pf="${f}"${x.v!=null&&x.k!=='bbt'?` data-po="${esc(x.v)}"`:''}`:`data-pq="${esc(x.txt.toLowerCase())}" data-pl="${esc(x.txt)}"`}>${tagIc(x)}${esc(x.txt)}</button>`}).join('')}</div><p class="hint" style="margin-top:10px">Tap a tag to find every day with it.</p>`:'<p class="muted" style="margin:14px 0 4px">Nothing logged for this day.</p>';
   if(d.note)h+=`<p class="pknote">${esc(d.note)}</p>`;
-  const phs=[...(d.lhTests||[]),...(d.pregTests||[])].filter(t=>t.photo);if(phs.length)h+=`<div class="pkph">${phs.map(t=>`<img data-photo="${t.photo}" class="${t.crop?'wide':''}" alt="Test photo">`).join('')}</div>`;
+  const phs=[...(d.lhTests||[]).map(t=>['lh',t]),...(d.pregTests||[]).map(t=>['preg',t])].filter(([,t])=>t.photo||t.ratio!=null||t.result);if(phs.length)h+=`<div class="pkph">${phs.map(([k,t])=>testDraw(k,t)).join('')}</div>`;
   $('#pkBody').innerHTML=h;$('#pkEdit').textContent=Object.keys(d).length?'Edit this day':'Log this day';
-  $$('img[data-photo]',$('#pkBody')).forEach(im=>DB.get(im.dataset.photo).then(src=>{if(src)im.src=src}));
+  fillPhotos($('#pkBody'));
 }
 $('#pkPrev').addEventListener('click',()=>{peekDate=addDays(peekDate,-1);renderPeek()});
 $('#pkNext').addEventListener('click',()=>{peekDate=addDays(peekDate,1);renderPeek()});
@@ -1744,6 +1788,9 @@ $('#v-chart').addEventListener('pointerdown',e=>{if(!e.target.closest('.emring')
 $('#v-chart').addEventListener('pointermove',e=>{if(!emDrag)return;if(Math.hypot(e.clientX-emDrag.x,e.clientY-emDrag.y)>6)emDrag.moved=true;const k=emoAt(e);if(k)emoSelect(k)});
 $('#v-chart').addEventListener('pointerup',e=>{if(!emDrag)return;const d=emDrag;emDrag=null;if(!d.moved&&d.was===emoSel&&emoSel&&emoSel<=todayKey())openLog(emoSel)});
 $('#v-chart').addEventListener('pointercancel',()=>{emDrag=null});
+/* show unexpected errors on screen, so they can be reported */
+window.addEventListener('error',e=>{if(e&&e.message&&!/Script error|ResizeObserver/.test(e.message))toast('Error: '+e.message.slice(0,140))});
+window.addEventListener('unhandledrejection',e=>{const m=e&&e.reason&&(e.reason.message||String(e.reason));if(m)toast('Error: '+m.slice(0,140))});
 /* ================= home-screen icon & boot ================= */
 function makeIcon(){try{const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');x.fillStyle='#141414';x.fillRect(0,0,180,180);
   x.strokeStyle='#ece8e6';x.lineWidth=7;x.beginPath();x.arc(90,90,58,0,7);x.stroke();x.fillStyle='#eb9fb4';x.beginPath();x.arc(74,100,15,0,7);x.fill();
