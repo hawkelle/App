@@ -81,6 +81,10 @@ h2.sect{font:500 21px/1.2 var(--serif);margin:28px 0 12px}
 .ring-center .big{font:700 58px/1 var(--serif);letter-spacing:-.03em;margin:2px 0 6px}
 .ring-center .st{font:600 16px var(--sans)}
 .ring-center .st2{font-size:13px;color:var(--muted);margin-top:4px;max-width:190px}
+.ring-center{inset:24%}
+.ring-center .big{font-size:50px;margin:0 0 4px}
+.ring-center .st{font-size:15px;line-height:1.25;max-width:165px}
+.ring-center .st2{font-size:12.5px;line-height:1.35;max-width:150px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .ring-center .empty{font:500 20px/1.3 var(--serif);max-width:180px}
 .btn{background:var(--berry);color:var(--on-berry);border:0;border-radius:999px;padding:13px 22px;font:600 15px var(--sans);display:inline-flex;align-items:center;gap:8px;justify-content:center}
 .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--cell)}
@@ -711,6 +715,7 @@ const NL={
 'You haven\u2019t saved a backup yet. Save one to Files now? Everything lives only on this phone.':'Je hebt nog geen back-up bewaard. Nu een back-up in Bestanden bewaren? Alles staat alleen op deze telefoon.','Confirmed by temperature':'Bevestigd door temperatuur','Estimated from LH':'Geschat uit LH','Cycles backup':'Cycles-back-up','Error: ':'Fout: '
 };
 const NL_RULES=[
+ [/^(Cervix position|Cervix firmness|Cervix opening|Mucus colour|Consistency|Amount) (.+)$/,m=>`${NL[m[1]]}: ${m[2].split(', ').map(x=>trWord(x).toLowerCase()).join(', ')}`],
  [/^PMS on (\d+) days?$/,m=>`PMS op ${m[1]} ${m[1]==='1'?'dag':'dagen'}`],
  [/^(\d+) days?$/,m=>`${m[1]} ${m[1]==='1'?'dag':'dagen'}`],[/^day (\d+)$/,m=>`dag ${m[1]}`],
  [/^Period in (\d+) days?$/,m=>`Menstruatie over ${m[1]} ${m[1]==='1'?'dag':'dagen'}`],[/^Period (\d+) days? late$/,m=>`Menstruatie ${m[1]} ${m[1]==='1'?'dag':'dagen'} te laat`],
@@ -1013,7 +1018,7 @@ function centerFor(sel){
     else if(today<p.fertStart)st2=`Fertile window from ${short(p.fertStart)}`;
     else st2='Waiting for a temperature shift'}
   else{st=d.flow?`${LABEL.flow[d.flow]} flow`:mk.ovu?(mk.ovu==='pred'?(mk.est?'Estimated ovulation':'Predicted ovulation'):'Ovulation day'):mk.fert?(mk.fert==='pred'?(mk.est?'Estimated fertile window':'Likely fertile'):'Fertile window'):mk.pp?'Predicted period':'';
-    const sm=daySummary(d).filter(x=>!/ flow$/.test(x));st2=sm.length?sm.slice(0,3).join(', ')+(sm.length>3?'…':''):(sel>today?'':'Nothing else logged')}
+    const sm=daySummary(d).filter(x=>!/ flow$/.test(x));st2=sm.length?sm.slice(0,3).map(T).join(', ')+(sm.length>3?'…':''):(sel>today?'':'Nothing else logged')}
   return`<div class="cdl">${isT?'Today':fmt(sel,{weekday:'short',day:'numeric',month:'short'})}</div><div class="big">${cd?`<small>CD</small>${cd}`:'–'}</div>${dpo?`<div class="dpo">${dpo} DPO</div>`:''}${st?`<div class="st">${st}</div>`:''}<div class="st2">${esc(st2)}</div>`;
 }
 function belowFor(sel){const isT=sel===todayKey(),p=model.pred;
@@ -1253,7 +1258,7 @@ function renderInsights(){
      <button class="btn small" data-act="csv">CSV</button><button class="btn small" data-act="pdf">PDF</button></div></div>
    <div class="setrow"><p class="lbl">Backup</p><p class="hint" style="margin:0 0 10px">Everything lives only on this phone. Save a backup to Files now and then; clearing Safari's website data would erase it.</p><p class="hint" style="margin:-4px 0 10px">${state.settings.lastBackup?'Last backup: '+fmt(state.settings.lastBackup,{day:'numeric',month:'long',year:'numeric'}):'No backup saved yet'}</p><div class="datarow"><button class="btn small" data-act="export">Save backup</button><button class="btn ghost small" data-act="import">Restore backup</button></div></div>
    <div class="setrow"><div class="datarow"><button class="btn ghost small" data-act="wipe" style="color:#d4574a;border-color:#d4574a">Delete all data</button></div></div>
-   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.<br>Cycles version 13 Nov 2026 (q)</p>`;
+   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.<br>Cycles version 13 Nov 2026 (r)</p>`;
 }
 $('#v-ins').addEventListener('click',async e=>{
   const pp=e.target.closest('[data-pdfpart]');if(pp){const set=new Set(pdfParts()),k=pp.dataset.pdfpart;set.has(k)?set.delete(k):set.add(k);state.settings.pdfParts=PDF_PARTS.map(x=>x[0]).filter(x=>set.has(x));pp.setAttribute('aria-pressed',set.has(k));save();return}
@@ -1305,7 +1310,7 @@ function secSummary(title){const d=dayData(logDate),keys=SEC_KEYS[title],multi=k
     else if(k==='pms')out.push('PMS '+LABEL.pms[v].toLowerCase());
     else if(Array.isArray(v))out.push(...v.map(x=>LABEL[k]?.[x]||x));
     else{const l=LABEL[k]?.[v]||v;out.push(multi&&SUBLBL[k]&&k!=='mucus'?`${SUBLBL[k]} ${l.toLowerCase()}`:l)}}
-  return out.join(', ')}
+  return out.map(T).join(', ')}
 function refreshSummaries(){$$('details.sec',$('#sBody')).forEach(el=>{const sv=el.querySelector('.sv');if(sv)sv.textContent=secSummary(el.dataset.sec)})}
 function renderLog(){
   const d=dayData(logDate),u=state.settings.unit,openS=new Set(state.settings.openSecs||[]);sheetHead();renderStrip();let h='<div class="inner">',open=false;
