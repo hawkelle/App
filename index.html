@@ -709,7 +709,11 @@ const NL={
 'JAN':'JAN','FEB':'FEB','MAR':'MRT','APR':'APR','MAY':'MEI','JUN':'JUN','JUL':'JUL','AUG':'AUG','SEP':'SEP','OCT':'OKT','NOV':'NOV','DEC':'DEC',
 'Date':'Datum','DPO':'DPO','Fertile window':'Vruchtbare periode','Temperature time':'Tijdstip temperatuur','Temperature flags':'Temperatuurmarkeringen','LH test (best)':'LH-test (beste)','LH T/C ratio (highest)':'LH T/C-ratio (hoogste)',
 'All LH tests':'Alle LH-tests','Pregnancy test (best)':'Zwangerschapstest (beste)','All pregnancy tests':'Alle zwangerschapstests','Mucus consistency':'Consistentie slijm','Mucus amount':'Hoeveelheid slijm',
-'Yes':'Ja','Feelings':'Gevoelens','MOST LOGGED':'MEEST GELOGD','Year overview':'Jaaroverzicht','Monthly pages':'Maandpagina’s','Temperature charts':'Temperatuurgrafieken','Feelings rings':'Emotieringen','Test photos':'Testfoto’s',
+'Yes':'Ja','My ovulation day':'Mijn eisprongdag','Set by you':'Door jou ingesteld','Ovulation day set':'Eisprongdag ingesteld','Back to the app\u2019s ovulation day':'Terug naar de eisprongdag van de app',
+'Ovulation day set by you':'Eisprongdag door jou ingesteld','Ovulation day (set by you)':'Eisprongdag (door jou ingesteld)','You set this day as your ovulation day.':'Je hebt deze dag als eisprongdag ingesteld.',
+'Tap above to move it to this day.':'Tik hierboven om hem naar deze dag te verplaatsen.','Tap above if you think you ovulated on this day.':'Tik hierboven als je denkt dat je op deze dag ovuleerde.',
+'Log a period first, then you can set your ovulation day.':'Vul eerst een menstruatie in, dan kun je je eisprongdag instellen.','You can set this once the day has come.':'Dit kun je instellen zodra het zover is.',
+'The app hasn\u2019t found your ovulation in this cycle yet.':'De app heeft je eisprong in deze cyclus nog niet gevonden.','The dashed line is your coverline.':'De stippellijn is je dekkingslijn.','Feelings':'Gevoelens','MOST LOGGED':'MEEST GELOGD','Year overview':'Jaaroverzicht','Monthly pages':'Maandpagina’s','Temperature charts':'Temperatuurgrafieken','Feelings rings':'Emotieringen','Test photos':'Testfoto’s',
 'A spreadsheet of every logged day, or a printable PDF. Tick what goes in the PDF:':'Een spreadsheet van elke gelogde dag, of een printbare pdf. Vink aan wat er in de pdf komt:','Tick at least one part for the PDF.':'Vink minstens één onderdeel voor de pdf aan.',
 'LH STRIPS':'LH-STRIPS','PREGNANCY TESTS':'ZWANGERSCHAPSTESTS','No photo':'Geen foto','No feelings logged.':'Geen gevoelens gelogd.','Nothing to show for these choices.':'Niets te tonen voor deze keuzes.','In Clue, go to Settings → Download my data. Clue emails you a zip file and shows a password for it. Unzip it, save the .json file to Files, then choose it here. Imported days merge with what you already have.':'Ga in Clue naar Instellingen en kies het downloaden van je gegevens. Clue mailt je een zip-bestand en toont er een wachtwoord bij. Pak het uit, bewaar het .json-bestand in Bestanden en kies het hier. Geïmporteerde dagen worden samengevoegd met wat je al hebt.','How to get your Clue data ↗':'Zo krijg je je Clue-gegevens ↗','How to read this':'Uitleg','Tired':'Moe','Energetic':'Fit','No backup saved yet':'Nog geen back-up bewaard','Not now':'Niet nu',
 'You haven\u2019t saved a backup yet. Save one to Files now? Everything lives only on this phone.':'Je hebt nog geen back-up bewaard. Nu een back-up in Bestanden bewaren? Alles staat alleen op deze telefoon.','Confirmed by temperature':'Bevestigd door temperatuur','Estimated from LH':'Geschat uit LH','Cycles backup':'Cycles-back-up','Error: ':'Fout: '
@@ -745,6 +749,10 @@ const NL_RULES=[
  [/^Cycle day (\d+), (\d+) DPO$/,m=>`Cyclusdag ${m[1]}, ${m[2]} DPO`],[/^Today, (.+)$/,m=>`Vandaag, ${tr(m[1])}`],[/^(.+), Cycle day (\d+)(, (\d+) DPO)?$/,m=>`${m[1]}, cyclusdag ${m[2]}${m[3]?`, ${m[4]} DPO`:''}`],
  [/^No feelings logged in (\d+)\.$/,m=>`Geen gevoelens gelogd in ${m[1]}.`],[/^No tests logged in (\d+)\.$/,m=>`Geen tests gelogd in ${m[1]}.`],
  [/^(.+ – .+), (\d+) days$/,m=>`${m[1]}, ${m[2]} dagen`],
+ [/^You set ovulation on cycle day (\d+)\.$/,m=>`Je hebt de eisprong op cyclusdag ${m[1]} gezet.`],[/^Your temperature shift points to cycle day (\d+)\.$/,m=>`Je temperatuurstijging wijst op cyclusdag ${m[1]}.`],
+ [/^Your LH peak points to cycle day (\d+)\.$/,m=>`Je LH-piek wijst op cyclusdag ${m[1]}.`],[/^The app predicts ovulation around cycle day (\d+)\.$/,m=>`De app voorspelt de eisprong rond cyclusdag ${m[1]}.`],
+ [/^Without a temperature shift or LH peak, the app estimates cycle day (\d+)\.$/,m=>`Zonder temperatuurstijging of LH-piek schat de app cyclusdag ${m[1]}.`],[/^You set ovulation on (.+) \(cycle day (\d+)\)\.$/,m=>`Je hebt de eisprong op ${m[1]} gezet (cyclusdag ${m[2]}).`],
+ [/^(\d+) days after the ovulation day you set$/,m=>`${m[1]} dagen na de eisprongdag die je hebt ingesteld`],[/^Ovulation set by you on cycle day (\d+)$/,m=>`Eisprong door jou gezet op cyclusdag ${m[1]}`],
  [/^Cycles version (.+)$/,m=>`Cycles versie ${m[1]}`],[/^Error: (.+)$/,m=>`Fout: ${m[1]}`],[/^Opening (.+)…$/,m=>`${m[1]} openen…`]
 ];
 const NL_DONE=new Set(Object.values(NL));
@@ -762,7 +770,7 @@ function trNode(root){if(LANG!=='nl'||!root)return;if(root.nodeType===3){const v
   for(const e of els)for(const a of['placeholder','aria-label','title']){const v=e.getAttribute&&e.getAttribute(a);if(v){const t=tr(v);if(t!==v)e.setAttribute(a,t)}}}
 let trObs=null;
 function applyLang(){const pref=state.settings.lang||'auto',sys=(navigator.languages&&navigator.languages[0]||navigator.language||'en').toLowerCase();
-  LANG=pref==='auto'?(sys.startsWith('nl')?'nl':'en'):pref;LOC=LANG==='nl'?'nl-NL':undefined;document.documentElement.lang=LANG;
+  LANG=pref==='auto'?(sys.startsWith('nl')?'nl':'en'):pref;LOC=LANG==='nl'?'nl-NL':(sys.startsWith('en')&&!/-(nl|be)\b/.test(sys)?undefined:'en-GB');document.documentElement.lang=LANG;
   if(LANG==='nl'&&!trObs){trObs=new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData')trNode(m.target);else if(m.type==='attributes')trNode(m.target);else m.addedNodes.forEach(trNode)}});
     trObs.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['placeholder','aria-label','title']});trNode(document.body)}}
 
@@ -806,6 +814,7 @@ const BBT_FLAGS=[['excluded','Ignore this one'],['sleep','Poor sleep'],['alcohol
 const SECTIONS=[
  {key:'flow',title:'Flow',type:'flow'},
  {key:'bbt',title:'Temperature',type:'bbt'},
+ {key:'ovuMan',title:'Ovulation',type:'ovu'},
  {key:'lh',title:'Tests',label:'Ovulation test (LH)',type:'lh'},
  {key:'preg',label:'Pregnancy test',type:'preg'},
  {key:'mucus',title:'Mucus and cervix',label:'Cervical mucus',type:'multi',cls:'t',opts:[['dry','Dry'],['sticky','Sticky'],['creamy','Creamy'],['watery','Watery'],['eggwhite','Egg white']]},
@@ -829,7 +838,7 @@ const SECTIONS=[
  {key:'meds',label:'Medication and supplements',type:'meds'},
  {key:'note',title:'Notes',type:'note'}
 ];
-const SEC_ICON={Flow:'flow',Temperature:'bbt',Tests:'lh','Mucus and cervix':'mucus',Sex:'sex',Pain:'pain',Mood:'mood',Body:'energy',Notes:'note'};
+const SEC_ICON={Flow:'flow',Temperature:'bbt',Ovulation:'ovu',Tests:'lh','Mucus and cervix':'mucus',Sex:'sex',Pain:'pain',Mood:'mood',Body:'energy',Notes:'note'};
 const ICON={flow:['drop','cp'],pms:['cloud','cb'],pain:['zap','cp'],ovu:['egg','cf'],lh:['eggo','cf'],bbt:['thermo','cf'],mucus:['wave','cf'],cervix:['cervix','cf'],preg:['stick','cf'],sex:['heart','ci'],libido:['flame','ci'],mood:['face','cb'],energy:['battery','cb'],sleep:['moon','cb'],dreams:['dream','cb'],digestion:['swirl','cb'],skin:['sparkle','cb'],cravings:['cookie','cb'],meds:['pill','cb'],note:['lines','cb']};
 const ic=(k,extra='')=>{const[n,c]=ICON[k]||['lines','cb'];return`<svg class="ico ${c} ${extra}" viewBox="0 0 24 24" aria-hidden="true"><use href="#${n==='cloud'?'cloud':'i-'+n}"/></svg>`};
 const LABEL={};SECTIONS.forEach(s=>{if(s.opts)LABEL[s.key]=Object.fromEntries(s.opts)});
@@ -855,6 +864,11 @@ function setField(k,f,v){const d=state.days[k]||(state.days[k]={});if(v==null||v
 
 /* ================= cycle model ================= */
 function detectOvulation(c){
+  const auto=detectAuto(c);c.ovuAuto=auto;let man=null;
+  for(let i=0;i<c.days;i++){const k=addDays(c.start,i);if(state.days[k]?.ovuMan)man={cd:i+1,date:k}}
+  c.ovu=man?{...man,basis:'manual',cover:auto&&auto.basis==='bbt'?auto.cover:undefined}:auto||undefined;
+}
+function detectAuto(c){
   const temps=[];let lhI=null,lhH=null;
   for(let i=0;i<c.days;i++){const d=state.days[addDays(c.start,i)];if(!d)continue;
     if(typeof d.bbt==='number'&&!(d.bbtFlags&&d.bbtFlags.length))temps.push({i,t:d.bbt});
@@ -866,9 +880,15 @@ function detectOvulation(c){
     const a=temps[j],b=temps[j+1],e=temps[j+2],f=temps[j+3];
     if(a.t>cov&&b.t>cov&&e.t>cov&&(e.t>=cov+0.2-1e-9||(f&&f.t>cov))){
       if(a.i<1)continue;
-      c.ovu={cd:a.i,date:addDays(c.start,a.i-1),basis:'bbt',cover:cov+0.05};return}
+      // the rise often starts a day earlier with an in-between reading (above every earlier low, below the highs):
+      // then that reading is the first day after ovulation, so ovulation is the last truly low day before it
+      let k=j;for(let n=0;n<2;n++){const prev=temps[k-1],before=temps.slice(Math.max(0,k-7),k-1).map(x=>x.t);if(!prev||before.length<3||prev.i<1)break;
+        if(prev.t>=Math.max(...before)+0.1-1e-9&&prev.t<=temps[k].t+1e-9)k--;else break}
+      let ci=temps[k].i;if(lhI!=null&&ci-1<lhI)ci=lhI+1;// ovulation never comes before the LH surge
+      return{cd:ci,date:addDays(c.start,ci-1),basis:'bbt',cover:cov+0.05}}
   }
-  if(lhI!=null)c.ovu={cd:lhI+2,date:addDays(c.start,lhI+1),basis:'lh'};
+  if(lhI!=null)return{cd:lhI+2,date:addDays(c.start,lhI+1),basis:'lh'};
+  return null;
 }
 function computeModel(){
   const S=state.settings,days=state.days,today=todayKey();
@@ -936,12 +956,14 @@ function statusLine(p){if(p.late)return`Period ${plural(p.late,'day')} late`;con
 function basisText(p){const m=model;return{
   bbt:`${m.luteal} days after the temperature shift confirmed ovulation`,
   lh:`${m.luteal} days after the day following your LH surge`,
+  manual:`${m.luteal} days after the ovulation day you set`,
   history:`From your median cycle of ${m.L} days`,
   fixed:`Using your fixed cycle length of ${m.L} days`,
   default:`Using ${m.L} days until you've logged a full cycle`,
   nobbt:`No temperature shift yet, so it's at least ${m.luteal+1} days away`}[p.basis]}
 function dayTags(d){const out=[],t=(k,txt,v)=>out.push({k,txt,v});
   if(d.flow)t('flow',LABEL.flow[d.flow]+' flow',d.flow);
+  if(d.ovuMan)t('ovu','Ovulation day (set by you)');
   if(d.bbt!=null)t('bbt',toUnit(d.bbt).toFixed(2)+'°'+state.settings.unit);
   if(d.lh)t('lh','LH '+LABEL.lh[d.lh].toLowerCase()+((d.lhTests||[]).length>1?`, ${d.lhTests.length} tests`:''),d.lh);
   if(d.preg)t('preg','Pregnancy test '+LABEL.preg[d.preg].toLowerCase(),d.preg);
@@ -1013,7 +1035,7 @@ function centerFor(sel){
   if(!p)return`<div class="empty">Log a period to start your cycle</div>`;
   const cd=cdOf(sel),dpo=dpoOf(sel),mk=m.marks[sel]||{};let st,st2='';
   if(isT){st=statusLine(p);const inF=today>=p.fertStart&&today<=p.fertEnd;
-    if(p.ovuKnown&&today>p.fertEnd)st2=m.cur.ovu.basis==='bbt'?'Ovulation confirmed by temperature':'Fertile window confirmed by LH surge';
+    if(p.ovuKnown&&today>p.fertEnd)st2=m.cur.ovu.basis==='bbt'?'Ovulation confirmed by temperature':m.cur.ovu.basis==='manual'?'Ovulation day set by you':'Fertile window confirmed by LH surge';
     else if(inF)st2=p.ovuKnown?'In your fertile window':'Likely fertile window';
     else if(today<p.fertStart)st2=`Fertile window from ${short(p.fertStart)}`;
     else st2='Waiting for a temperature shift'}
@@ -1032,7 +1054,7 @@ function renderToday(){
   if(p){const summ=daySummary(dayData(today));
     facts=`<div class="facts">
       <div class="fact"><div class="k">Next period</div><div class="v">${fmt(p.next<today?today:p.next,{weekday:'short',day:'numeric',month:'long'})}${p.late?' or later':''}<small>${basisText(p)}</small></div></div>
-      <div class="fact"><div class="k">Fertile window</div><div class="v">${short(p.fertStart)} – ${short(p.fertEnd)}<small>${p.ovuKnown?(m.cur.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${m.cur.ovu.cd}`:`Confirmed by your LH surge`):'Predicted, not yet confirmed'}</small></div></div>
+      <div class="fact"><div class="k">Fertile window</div><div class="v">${short(p.fertStart)} – ${short(p.fertEnd)}<small>${p.ovuKnown?(m.cur.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${m.cur.ovu.cd}`:m.cur.ovu.basis==='manual'?`Ovulation set by you on cycle day ${m.cur.ovu.cd}`:`Confirmed by your LH surge`):'Predicted, not yet confirmed'}</small></div></div>
       <div class="fact"><div class="k">Today</div><div class="v">${summ.length?`<div class="tags">${dayTags(dayData(today)).map(tagHTML).join('')}</div>`:'<small style="margin:0">Nothing logged yet</small>'}</div></div>
     </div>`}
   $('#v-today').innerHTML=`<div class="ring-wrap"><svg id="ringSvg" viewBox="0 0 340 340" role="img" aria-label="Cycle ring">${ringSVG(sel)}</svg><div class="ring-center">${centerFor(sel)}</div></div>
@@ -1146,7 +1168,7 @@ function renderChartInner(){
     else if(mk.fert)t=mk.fert==='pred'?'fcol pred':'fcol';
     else if(mk.pp&&isCur)t='ppcol';
     colType[i]=t;if(t){const[f,o]=BLK[t];blocks+=`<rect x="${i*CW}" y="0" width="${CW}" height="${H}" fill="${f}" opacity="${o}"/>`}}
-  let cover='';if(c.ovu&&c.ovu.basis==='bbt'){const y=yOf(toUnit(c.ovu.cover)).toFixed(1);cover=`<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="var(--teal-strong)" stroke-width="1.5" stroke-dasharray="5 4"/>`}
+  let cover='';if(c.ovu&&c.ovu.cover!=null){const y=yOf(toUnit(c.ovu.cover)).toFixed(1);cover=`<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="var(--teal-strong)" stroke-width="1.5" stroke-dasharray="5 4"/>`}
   // LH line (T/C ratio) on its own scale, Premom-style; results without a scanned ratio use an estimate
   const LHV={neg:.1,low:.5,high:.9,peak:1.2},LHL={neg:'–',low:'L',high:'H',peak:'P'},lhp=[];
   for(let i=0;i<N;i++){const d=state.days[addDays(c.start,i)];if(!d)continue;if(d.lhRatio!=null)lhp.push({i,v:d.lhRatio,est:false,r:d.lh});else if(d.lh)lhp.push({i,v:LHV[d.lh],est:true,r:d.lh})}
@@ -1195,7 +1217,7 @@ function renderChartInner(){
   const title=c.noPeriod?`Last ${c.days} days`:isCur?'Current cycle':`Cycle of ${fmt(c.start,{month:'long',year:'numeric'})}`;
   const dpoNow=isCur?dpoOf(today):null;
   const sub=c.noPeriod?`Since ${short(c.start)}`:isCur?`Started ${short(c.start)}, day ${c.days}${dpoNow?`, ${dpoNow} DPO`:''}`:`${short(c.start)} – ${short(addDays(c.next,-1))}, ${c.len} days`;
-  const ovTxt=!c.ovu&&c.ovuEst?`No temperature shift or LH surge was logged, so ovulation is estimated around cycle day ${c.ovuEst.cd} from your cycle length and luteal phase.`:c.ovu?(c.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${c.ovu.cd} by the temperature shift. The dashed line is your coverline.`:`Ovulation estimated on cycle day ${c.ovu.cd}, the day after your LH peak.`):'No ovulation detected yet in this cycle.';
+  const ovTxt=!c.ovu&&c.ovuEst?`No temperature shift or LH surge was logged, so ovulation is estimated around cycle day ${c.ovuEst.cd} from your cycle length and luteal phase.`:c.ovu?(c.ovu.basis==='manual'?manOvTxt(c):c.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${c.ovu.cd} by the temperature shift. The dashed line is your coverline.`:`Ovulation estimated on cycle day ${c.ovu.cd}, the day after your LH peak.`):'No ovulation detected yet in this cycle.';
   el.innerHTML=`${tempAvail?chartToggle('temp'):''}<div class="cnav"><button class="iconbtn" data-cnav="-1" ${idx===0?'disabled':''} aria-label="Earlier cycle">‹</button><div class="t"><b>${title}</b><span>${sub}</span></div><button class="iconbtn" data-cnav="1" ${isCur?'disabled':''} aria-label="Later cycle">›</button></div>
     <div class="cscroll" id="cscroll">${h}</div>
     <div class="ckeyrow"><span><i style="background:color-mix(in srgb,var(--f-medium) 45%,transparent)"></i>Period</span><span><i style="background:color-mix(in srgb,var(--teal) 70%,transparent)"></i>Fertile window</span><span><i style="background:var(--teal-strong)"></i>Ovulation</span><span><svg width="22" height="10" style="display:block"><line x1="0" y1="5" x2="22" y2="5" stroke="var(--berry)" stroke-width="2"/><circle cx="11" cy="5" r="3.5" fill="var(--berry)"/></svg>Temperature</span><span><svg width="22" height="10" style="display:block"><line x1="0" y1="5" x2="22" y2="5" stroke="var(--teal-strong)" stroke-width="2"/><rect x="8" y="2" width="6" height="6" transform="rotate(45 11 5)" fill="var(--teal-strong)"/></svg>LH (T/C)</span>${isCur?'<span><i style="background:color-mix(in srgb,var(--teal) 30%,transparent)"></i>Predicted</span>':''}${infoBtn()}</div>
@@ -1258,7 +1280,7 @@ function renderInsights(){
      <button class="btn small" data-act="csv">CSV</button><button class="btn small" data-act="pdf">PDF</button></div></div>
    <div class="setrow"><p class="lbl">Backup</p><p class="hint" style="margin:0 0 10px">Everything lives only on this phone. Save a backup to Files now and then; clearing Safari's website data would erase it.</p><p class="hint" style="margin:-4px 0 10px">${state.settings.lastBackup?'Last backup: '+fmt(state.settings.lastBackup,{day:'numeric',month:'long',year:'numeric'}):'No backup saved yet'}</p><div class="datarow"><button class="btn small" data-act="export">Save backup</button><button class="btn ghost small" data-act="import">Restore backup</button></div></div>
    <div class="setrow"><div class="datarow"><button class="btn ghost small" data-act="wipe" style="color:#d4574a;border-color:#d4574a">Delete all data</button></div></div>
-   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.<br>Cycles version 13 Nov 2026 (r)</p>`;
+   <p class="fine">Predictions are estimates based on your own logs. This app isn't a medical device or a method of contraception.<br>Cycles version 22 Nov 2026 (u)</p>`;
 }
 $('#v-ins').addEventListener('click',async e=>{
   const pp=e.target.closest('[data-pdfpart]');if(pp){const set=new Set(pdfParts()),k=pp.dataset.pdfpart;set.has(k)?set.delete(k):set.add(k);state.settings.pdfParts=PDF_PARTS.map(x=>x[0]).filter(x=>set.has(x));pp.setAttribute('aria-pressed',set.has(k));save();return}
@@ -1303,6 +1325,7 @@ function secSummary(title){const d=dayData(logDate),keys=SEC_KEYS[title],multi=k
   for(const k of keys){const v=d[k];if(v==null)continue;
     if(k==='bbt')out.push(toUnit(v).toFixed(2)+'°'+state.settings.unit);
     else if(k==='bbtFlags')out.push('flagged');
+    else if(k==='ovuMan')out.push('Set by you');
     else if(k==='note')out.push(v.length>28?v.slice(0,28)+'…':v);
     else if(k==='meds')out.push(...v);
     else if(k==='lh')out.push('LH '+LABEL.lh[v].toLowerCase());
@@ -1327,6 +1350,7 @@ function renderLog(){
       <div class="sub">Anything that could throw it off?</div><div class="chips">${BBT_FLAGS.map(([v,l])=>chip('bbtFlags',v,l,'multi')).join('')}</div>`}
     else if(s.type==='lh'||s.type==='preg'){if(s.type==='lh'&&[...(d.lhTests||[]),...(d.pregTests||[])].some(t=>t.photo))h+=tviewSeg();h+=testsHTML(s.type,d)}
     else if(s.type==='meds')h+=`<div class="chips">${state.settings.meds.map(v=>chip('meds',v,esc(v),'multi')).join('')}</div><div class="addrow"><input class="field" id="medIn" placeholder="Add one, e.g. Vitamin D"><button type="button" class="btn ghost small" id="medAdd">Add</button></div>`;
+    else if(s.type==='ovu')h+=ovuHTML(d);
     else if(s.type==='note')h+=`<textarea class="field" id="noteIn" rows="4" placeholder="Anything else about today">${esc(d.note||'')}</textarea>`;
   }
   $('#sBody').innerHTML=h+'</div></details></div>';
@@ -1373,9 +1397,20 @@ async function handleTest(b){
   if(b.dataset.tact==='del'){const c=t.photo?await askChoice('Delete this test? You can keep its result and remove only the photo.','Photo only','Whole test'):(await askConfirm('Delete this test?','Delete',true)?'all':null);if(!c)return;
     if(t.photo)await DB.del(t.photo);if(t.orig)await DB.del(t.orig);if(c==='all')list.splice(list.indexOf(t),1);else Object.assign(t,{photo:null,orig:null,edit:null,crop:null,c:null,t:null});
     setField(logDate,key,list);syncTests(logDate);rerenderLog();toast(c==='all'?'Test deleted':'Photo deleted')}}
+function manOvTxt(c){const a=c.ovuAuto;return`You set ovulation on cycle day ${c.ovu.cd}.`+(a&&a.cd!==c.ovu.cd?` ${a.basis==='bbt'?'Your temperature shift':'Your LH peak'} points to cycle day ${a.cd}.`:'')+(c.ovu.cover!=null?' The dashed line is your coverline.':'')}
+function ovuHTML(d){const cf=cycleFor(logDate),c=cf&&(!cf.c.next||logDate<cf.c.next)?cf.c:null,on=!!d.ovuMan,fut=logDate>todayKey();let info;
+  if(!c)info='Log a period first, then you can set your ovulation day.';
+  else{const a=c.ovuAuto,man=c.ovu&&c.ovu.basis==='manual'&&!on?c.ovu:null;
+    const appTxt=a?`${a.basis==='bbt'?'Your temperature shift':'Your LH peak'} points to cycle day ${a.cd}.`:c===model.cur&&model.pred?`The app predicts ovulation around cycle day ${diffDays(c.start,model.pred.ovuPred)+1}.`:c.ovuEst?`Without a temperature shift or LH peak, the app estimates cycle day ${c.ovuEst.cd}.`:'The app hasn\u2019t found your ovulation in this cycle yet.';
+    info=on?`You set this day as your ovulation day. ${appTxt}`:man?`You set ovulation on ${short(man.date)} (cycle day ${man.cd}). Tap above to move it to this day.`:fut?'You can set this once the day has come.':`${appTxt} Tap above if you think you ovulated on this day.`}
+  return`<div class="chips"><button type="button" class="chip t" data-ovuman aria-pressed="${on}"${!c||(fut&&!on)?' disabled':''}>${ic('ovu')}My ovulation day</button></div><p class="hint">${info}</p>`}
+function toggleOvuMan(k){const cf=cycleFor(k);if(!cf)return;const c=cf.c,end=c.next?addDays(c.next,-1):'9999-12-31',on=!state.days[k]?.ovuMan;
+  for(const key of Object.keys(state.days))if(key!==k&&key>=c.start&&key<=end&&state.days[key].ovuMan)setField(key,'ovuMan',null);
+  setField(k,'ovuMan',on?true:null);for(const x in dirty)dirty[x]=1;rerenderLog();sheetHead();renderStrip();toast(on?'Ovulation day set':'Back to the app\u2019s ovulation day')}
 function rerenderLog(){const st=$('#sBody').scrollTop;renderLog();$('#sBody').scrollTop=st}
 $('#sBody').addEventListener('toggle',e=>{const el=e.target;if(!el.matches||!el.matches('details.sec'))return;const set=new Set(state.settings.openSecs||[]);el.open?set.add(el.dataset.sec):set.delete(el.dataset.sec);state.settings.openSecs=[...set];unsaved=true;clearTimeout(saveT);saveT=setTimeout(persist,500)},true);
 $('#sBody').addEventListener('click',e=>{
+  if(e.target.closest('[data-ovuman]')){toggleOvuMan(logDate);return}
   if(e.target.closest('[data-addmood]')){openMoodAdd();return}
   const ac=e.target.closest('[data-addc]');if(ac){openMoodAdd(ac.dataset.addc);return}if(false){ac.outerHTML=`<span class="addin" data-key="${ac.dataset.addc}"><input class="field" placeholder="Name" enterkeyhint="done"><button type="button" class="btn small" data-addok="1">Add</button></span>`;$('.addin input',$('#sBody')).focus();return}
   const ao=e.target.closest('[data-addok]');if(ao){const w=ao.closest('.addin'),v=w.querySelector('input').value.trim();if(v)addCustomOpt(w.dataset.key,v);return}
@@ -1877,7 +1912,7 @@ async function buildPDF(J,year,parts=PDF_PARTS.map(x=>x[0])){
     if(temps.length<3)continue;newPage();
     header('Basal body temperature',`Cycle starting ${fmt(c.start,{day:'numeric',month:'short',year:'numeric'})}`);
     font('helvetica',9);tcol(C.muted);
-    doc.text(`${c.complete?`${c.len} days`:`Day ${c.days}, ongoing`}. ${c.ovu?(c.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${c.ovu.cd} by the temperature shift; dashed line is the coverline.`:`Ovulation estimated on cycle day ${c.ovu.cd} from the LH peak.`):'No ovulation detected.'}`,M,100,{maxWidth:W-2*M});
+    doc.text(`${T(c.complete?`${c.len} days`:`Day ${c.days}, ongoing`)}. ${c.ovu?c.ovu.basis==='manual'?manOvTxt(c).split(/(?<=\.) /).map(T).join(' '):(c.ovu.basis==='bbt'?`Ovulation confirmed on cycle day ${c.ovu.cd} by the temperature shift; dashed line is the coverline.`:`Ovulation estimated on cycle day ${c.ovu.cd} from the LH peak.`):'No ovulation detected.'}`,M,100,{maxWidth:W-2*M});
     const N=Math.max(35,len),step=u==='F'?.1:.05,vs=temps.map(t=>t.v);
     let lo=Math.min(u==='F'?96.8:36.0,Math.floor(Math.min(...vs)/step-1)*step),hi=Math.max(u==='F'?98.6:37.0,Math.ceil(Math.max(...vs)/step+1)*step);
     const rowsN=Math.round((hi-lo)/step),gx0=M+40,gw=W-M-gx0-30,gy0=130,gh=420,cwid=gw/N,yOf=v=>gy0+(hi-v)/(hi-lo)*gh,xOf=i=>gx0+(i+.5)*cwid;
@@ -1888,7 +1923,7 @@ async function buildPDF(J,year,parts=PDF_PARTS.map(x=>x[0])){
       if(major){font('helvetica',6.5);tcol(C.muted);doc.text(v.toFixed(u==='F'?1:2),gx0-4,y+2.2,{align:'right'});doc.text(v.toFixed(u==='F'?1:2),gx0+gw+4,y+2.2)}}
     for(let i=0;i<=N;i++){draw(C.faint);doc.setLineWidth(.4);doc.line(gx0+i*cwid,gy0,gx0+i*cwid,gy0+gh)}
     if(c.ovu){I.egg(xOf(c.ovu.cd-1),gy0-8,10,C.tealStrong)}
-    if(c.ovu&&c.ovu.basis==='bbt'){draw(C.tealStrong);doc.setLineWidth(1.1);doc.setLineDashPattern([5,3],0);const y=yOf(toUnit(c.ovu.cover));doc.line(gx0,y,gx0+gw,y);dash(false)}
+    if(c.ovu&&c.ovu.cover!=null){draw(C.tealStrong);doc.setLineWidth(1.1);doc.setLineDashPattern([5,3],0);const y=yOf(toUnit(c.ovu.cover));doc.line(gx0,y,gx0+gw,y);dash(false)}
     if(lhp.length){const lmax=Math.max(1.3,...lhp.map(q=>q.v))*1.08,yL=v=>gy0+8+(1-v/lmax)*(gh-16);draw(C.tealStrong);doc.setLineWidth(1);
       for(let j=1;j<lhp.length;j++)doc.line(xOf(lhp[j-1].i),yL(lhp[j-1].v),xOf(lhp[j].i),yL(lhp[j].v));
       lhp.forEach(q=>{const x=xOf(q.i),y=yL(q.v),r=2.6;fill(q.est?C.white:C.tealStrong);draw(C.tealStrong);doc.setLineWidth(.9);doc.lines([[r,r],[-r,r],[-r,-r]],x,y-r,[1,1],'FD',true);
@@ -1953,7 +1988,7 @@ async function buildPDF(J,year,parts=PDF_PARTS.map(x=>x[0])){
 function exportCSV(year){const allT=(L,f)=>(L||[]).map(t=>[t.time,t.result?LABEL[f][t.result]:'',t.ratio!=null?t.ratio.toFixed(2):''].filter(Boolean).join(' ')).join('; '),u=state.settings.unit,lab=(f,v)=>v==null?'':(LABEL[f]?.[v]??v),arr=(f,v)=>(v||[]).map(x=>LABEL[f]?.[x]??x).join('; ');
   const head=['Date','Cycle day','DPO','Flow','Fertile window','Ovulation',`Temperature (°${u})`,'Temperature time','Temperature flags','LH test (best)','LH T/C ratio (highest)','All LH tests','Pregnancy test (best)','All pregnancy tests','Cervical mucus','Mucus consistency','Mucus amount','Mucus colour','Cervix position','Cervix firmness','Cervix opening','Sex','Libido','Pain','Mood','PMS','Energy','Sleep','Dreams','Digestion','Skin','Cravings','Medication','Notes'];
   const rows=Object.keys(state.days).filter(k=>k.startsWith(year)).sort().map(k=>{const d=state.days[k],mk=model.marks[k]||{};
-    return[k,cdOf(k)??'',dpoOf(k)??'',lab('flow',d.flow),mk.fert?(mk.fert==='pred'?'Predicted':'Yes'):'',mk.ovu?{bbt:'Confirmed by temperature',lh:'Estimated from LH',pred:'Predicted'}[mk.ovu]:'',
+    return[k,cdOf(k)??'',dpoOf(k)??'',lab('flow',d.flow),mk.fert?(mk.fert==='pred'?'Predicted':'Yes'):'',mk.ovu?{bbt:'Confirmed by temperature',lh:'Estimated from LH',manual:'Set by you',pred:'Predicted'}[mk.ovu]:'',
       d.bbt!=null?toUnit(d.bbt).toFixed(2):'',d.bbtTime||'',arr('bbtFlags',d.bbtFlags),lab('lh',d.lh),d.lhRatio??'',allT(d.lhTests,'lh'),lab('preg',d.preg),allT(d.pregTests,'preg'),
       arr('mucus',arrOf(d.mucus)),arr('mucusFeel',d.mucusFeel),lab('mucusAmt',d.mucusAmt),arr('mucusColor',arrOf(d.mucusColor)),lab('cervixPos',d.cervixPos),lab('cervixFirm',d.cervixFirm),lab('cervixOpen',d.cervixOpen),
       arr('sex',d.sex),lab('libido',d.libido),arr('pain',d.pain),arr('mood',d.mood),lab('pms',d.pms),lab('energy',d.energy),lab('sleep',d.sleep),arr('dreams',d.dreams),arr('digestion',d.digestion),arr('skin',d.skin),arr('cravings',d.cravings),(d.meds||[]).join('; '),d.note||'']});
@@ -2040,8 +2075,11 @@ $('#v-chart').addEventListener('pointermove',e=>{if(!emDrag)return;if(Math.hypot
 $('#v-chart').addEventListener('pointerup',e=>{if(!emDrag)return;const d=emDrag;emDrag=null;if(!d.moved&&d.was===emoSel&&emoSel&&emoSel<=todayKey())openLog(emoSel)});
 $('#v-chart').addEventListener('pointercancel',()=>{emDrag=null});
 /* show unexpected errors on screen, so they can be reported */
-window.addEventListener('error',e=>{if(e&&e.message&&!/Script error|ResizeObserver/.test(e.message))toast('Error: '+e.message.slice(0,140))});
-window.addEventListener('unhandledrejection',e=>{const m=e&&e.reason&&(e.reason.message||String(e.reason));if(m)toast('Error: '+m.slice(0,140))});
+/* only report errors from this app, not from things the browser injects (Brave's crypto wallet, extensions…) */
+const FOREIGN=/Script error|ResizeObserver|ethereum|selectedAddress|web3|solana|phantom|wallet|__gCrWeb|webkit\.messageHandlers|extension/i;
+const ownFile=f=>!f||f===location.href||f.split('#')[0]===location.href.split('#')[0];
+window.addEventListener('error',e=>{if(e&&e.message&&!FOREIGN.test(e.message)&&!FOREIGN.test(e.filename||'')&&ownFile(e.filename))toast('Error: '+e.message.slice(0,140))});
+window.addEventListener('unhandledrejection',e=>{const r=e&&e.reason,m=r&&(r.message||String(r));if(m&&!FOREIGN.test(m)&&!FOREIGN.test((r&&r.stack)||''))toast('Error: '+m.slice(0,140))});
 /* ================= home-screen icon & boot ================= */
 function makeIcon(){try{const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');x.fillStyle='#141414';x.fillRect(0,0,180,180);
   x.strokeStyle='#ece8e6';x.lineWidth=7;x.beginPath();x.arc(90,90,58,0,7);x.stroke();x.fillStyle='#eb9fb4';x.beginPath();x.arc(74,100,15,0,7);x.fill();
