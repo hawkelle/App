@@ -744,18 +744,18 @@ const NL={
 'Date':'Datum','DPO':'DPO','Fertile window':'Vruchtbare periode','Temperature time':'Tijdstip temperatuur','Temperature flags':'Temperatuurmarkeringen','LH test (best)':'LH-test (beste)','LH T/C ratio (highest)':'LH T/C-ratio (hoogste)',
 'All LH tests':'Alle LH-tests','Pregnancy test (best)':'Zwangerschapstest (beste)','All pregnancy tests':'Alle zwangerschapstests','Mucus consistency':'Consistentie slijm','Mucus amount':'Hoeveelheid slijm',
 'Yes':'Ja','Something in this backup couldn’t be read. Nothing was changed.':'Iets in deze back-up kon niet worden gelezen. Er is niets veranderd.',
-'Backup restored. It comes from a newer version of Cycles, so update this app to see everything.':'Back-up teruggezet. Hij komt uit een nieuwere versie van Cycles, dus werk deze app bij om alles te zien.','Cycles is moving to hellocycles.nl':'Cycles verhuist naar hellocycles.nl','Tap here to take your data with you':'Tik hier om je gegevens mee te nemen','Cycles is moving':'Cycles verhuist','Cycles has moved':'Cycles is verhuisd','Cycles has moved to hellocycles.nl':'Cycles is verhuisd naar hellocycles.nl',
+'Backup restored. It comes from a newer version of Cycles, so update this app to see everything.':'Back-up teruggezet. Hij komt uit een nieuwere versie van Cycles, dus werk deze app bij om alles te zien.','Cycles is moving to cyclesapp.nl':'Cycles verhuist naar cyclesapp.nl','Tap here to take your data with you':'Tik hier om je gegevens mee te nemen','Cycles is moving':'Cycles verhuist','Cycles has moved':'Cycles is verhuisd','Cycles has moved to cyclesapp.nl':'Cycles is verhuisd naar cyclesapp.nl',
 'New app tomorrow · tap to see what’s coming':'Nieuwe app morgen · tik om te zien wat er komt','This old app stops tomorrow · tap to move your data':'Deze oude app stopt morgen · tik om je gegevens mee te nemen',
 'This old app stops today · tap to move your data':'Deze oude app stopt vandaag · tik om je gegevens mee te nemen','This old app has stopped · move your data now':'Deze oude app is gestopt · neem je gegevens nu mee',
 'New app':'Nieuwe app','Old app stops':'Oude app stopt','Live':'Live','Stopped':'Gestopt','day':'dag',
-'Cycles now lives at hellocycles.nl. New updates only come out there.':'Cycles staat nu op hellocycles.nl. Nieuwe updates komen alleen daar.',
+'Cycles now lives at cyclesapp.nl. New updates only come out there.':'Cycles staat nu op cyclesapp.nl. Nieuwe updates komen alleen daar.',
 'Your data is saved on this phone per web address, so the new app starts empty.':'Je gegevens worden per webadres op deze telefoon bewaard, dus de nieuwe app begint leeg.',
 'Move everything over in four steps:':'Zet alles over in vier stappen:','From then on you can move everything over in four steps:':'Vanaf dan zet je alles over in vier stappen:',
 'You can already do this now.':'Dit kun je nu al doen.','All your days, settings and test photos come along.':'Al je dagen, instellingen en testfoto’s gaan mee.',
 'When everything is in the new app, you can delete this old icon from your Home Screen.':'Staat alles in de nieuwe app, dan kun je dit oude icoon van je beginscherm verwijderen.',
-'Cycles now lives at hellocycles.nl. Your data is saved on this phone per web address, so the new app starts empty. Move everything over in four steps:':'Cycles staat nu op hellocycles.nl. Je gegevens worden per webadres op deze telefoon bewaard, dus de nieuwe app begint leeg. Zet alles over in vier stappen:',
+'Cycles now lives at cyclesapp.nl. Your data is saved on this phone per web address, so the new app starts empty. Move everything over in four steps:':'Cycles staat nu op cyclesapp.nl. Je gegevens worden per webadres op deze telefoon bewaard, dus de nieuwe app begint leeg. Zet alles over in vier stappen:',
 'Save a backup':'Maak een back-up','Save the file in Files, for example in On My iPhone.':'Bewaar het bestand in Bestanden, bijvoorbeeld in de map Op mijn iPhone.',
-'Open hellocycles.nl in Safari':'Open hellocycles.nl in Safari','Not from this app: open Safari and go to the address.':'Niet vanuit deze app: open Safari en ga naar het adres.','Open hellocycles.nl ↗':'Open hellocycles.nl ↗',
+'Open cyclesapp.nl in Safari':'Open cyclesapp.nl in Safari','Not from this app: open Safari and go to the address.':'Niet vanuit deze app: open Safari en ga naar het adres.','Open cyclesapp.nl ↗':'Open cyclesapp.nl ↗',
 'Add it to your Home Screen':'Zet hem op je beginscherm','Tap the Share button, then Add to Home Screen.':'Tik op de deelknop en dan op Zet op beginscherm.',
 'Restore your backup':'Zet je back-up terug','In the new app, tap Restore your backup on the first screen (or go to Insights → Your data → Restore backup) and choose the file from step 1.':'Tik in de nieuwe app op het eerste scherm op Zet je back-up terug (of ga naar Inzichten → Je gegevens → Back-up terugzetten) en kies het bestand uit stap 1.',
 'All your days, settings and test photos come along. When everything is there, you can delete this old icon from your Home Screen.':'Al je dagen, instellingen en testfoto’s gaan mee. Staat alles erin, dan kun je dit oude icoon van je beginscherm verwijderen.',
@@ -807,12 +807,12 @@ const NL_RULES=[
  [/^Fixed length of (\d+) days$/,m=>`Vaste lengte van ${m[1]} dagen`],[/^Theme: (.+) · Language: (.+)$/,m=>`Thema: ${tr(m[1])} · Taal: ${tr(m[2])}`],
  [/^New app in (\d+) days · tap to see what’s coming$/,m=>`Nieuwe app over ${m[1]} dagen · tik om te zien wat er komt`],
  [/^This old app stops in (\d+) days · tap to move your data$/,m=>`Deze oude app stopt over ${m[1]} dagen · tik om je gegevens mee te nemen`],
- [/^Cycles moves to hellocycles\.nl on (.+)\.$/,m=>`Cycles verhuist op ${m[1]} naar hellocycles.nl.`],[/^New updates will only come out there\.$/,m=>'Nieuwe updates komen dan alleen daar.'],
+ [/^Cycles moves to cyclesapp\.nl on (.+)\.$/,m=>`Cycles verhuist op ${m[1]} naar cyclesapp.nl.`],[/^New updates will only come out there\.$/,m=>'Nieuwe updates komen dan alleen daar.'],
  [/^Available from (.+)$/,m=>`Beschikbaar vanaf ${m[1]}`],[/^This old app keeps working until (.+), then it disappears\.$/,m=>`Deze oude app werkt nog tot ${m[1]}, daarna verdwijnt hij.`],
  [/^This old app keeps working until (.+), so there’s no rush\.$/,m=>`Deze oude app werkt nog tot ${m[1]}, dus je hebt de tijd.`],
  [/^Cycles version (.+)$/,m=>`Cycles versie ${m[1]}`],[/^Error: (.+)$/,m=>`Fout: ${m[1]}`],[/^Opening (.+)…$/,m=>`${m[1]} openen…`]
 ];
-/* the app used to live on GitHub Pages; that copy now shows how to move to hellocycles.nl */
+/* the app used to live on GitHub Pages; that copy now shows how to move to cyclesapp.nl */
 const OLD_HOST=/(^|\.)github\.io$/.test(location.hostname);
 const NL_DONE=new Set(Object.values(NL));
 let LANG='en',LOC=undefined;
@@ -1716,27 +1716,27 @@ function askChoice(msg,altLabel,yesLabel){return new Promise(res=>{$('#confirmMs
 /* BACKUP CONTRACT: a backup is {app:'my-period-tracker', format, state:{days,settings,…}, photos:{'photo:…':dataURL}}.
    Never rename or remove fields; only add new ones. Restoring keeps every field it doesn't know (top level, per day, settings),
    and migrate() upgrades older shapes, so a backup from any version restores into any later version and survives the round trip. */
-const BACKUP_FORMAT=1,APP_VERSION='25 Nov 2026 (y)';
+const BACKUP_FORMAT=1,APP_VERSION='26 Nov 2026 (y2)';
 async function exportBackup(){await persist();const photos={};for(const k of await DB.keys())if(k.startsWith('photo:'))photos[k]=await DB.get(k);
   const name=`cycles-backup-${todayKey()}.json`,blob=new Blob([JSON.stringify({app:'my-period-tracker',format:BACKUP_FORMAT,version:1,appVersion:APP_VERSION,from:location.hostname,exported:new Date().toISOString(),state,photos})],{type:'application/json'});
   if(!await shareFile(blob,name,'Cycles backup'))await offerFile(blob,name,'Cycles backup');
   state.settings.lastBackup=todayKey();state.settings.backupAsked=todayKey();save();dirty.ins=1;if(curView==='ins')renderView?.('ins')}
 /* ask for a backup once a month (and at most once a week after a "Not now") */
 /* move dates: the new address goes live on MOVE_LIVE, this GitHub copy is removed after MOVE_END */
-const MOVE_LIVE='2026-11-28',MOVE_END='2026-12-28',NEW_URL='https://hellocycles.nl';
+const MOVE_LIVE='2026-11-28',MOVE_END='2026-12-28',NEW_URL='https://cyclesapp.nl';
 const moveLive=()=>todayKey()>=MOVE_LIVE;
 function moveBanner(){const t=todayKey(),n=diffDays(t,moveLive()?MOVE_END:MOVE_LIVE);
-  if(!moveLive())return['Cycles is moving to hellocycles.nl',n===1?'New app tomorrow · tap to see what’s coming':`New app in ${n} days · tap to see what’s coming`];
-  return['Cycles has moved to hellocycles.nl',n>1?`This old app stops in ${n} days · tap to move your data`:n===1?'This old app stops tomorrow · tap to move your data':n===0?'This old app stops today · tap to move your data':'This old app has stopped · move your data now']}
+  if(!moveLive())return['Cycles is moving to cyclesapp.nl',n===1?'New app tomorrow · tap to see what’s coming':`New app in ${n} days · tap to see what’s coming`];
+  return['Cycles has moved to cyclesapp.nl',n>1?`This old app stops in ${n} days · tap to move your data`:n===1?'This old app stops tomorrow · tap to move your data':n===0?'This old app stops today · tap to move your data':'This old app has stopped · move your data now']}
 function cdTile(label,target,doneTxt){const n=diffDays(todayKey(),target);
   return`<div class="cdt2${n<=0?' cdok':''}"><span class="cdl2">${label}</span><b>${n>0?n:doneTxt}</b><span class="cdu">${n>1?'days':n===1?'day':''}</span><span class="cdd">${fmt(target,{weekday:'long',day:'numeric',month:'long'})}</span></div>`}
 function moveHTML(){const live=moveLive(),liveD=fmt(MOVE_LIVE,{weekday:'long',day:'numeric',month:'long'}),endD=fmt(MOVE_END,{weekday:'long',day:'numeric',month:'long'});
   return`<div class="cdrow">${cdTile('New app',MOVE_LIVE,'Live')}${cdTile('Old app stops',MOVE_END,diffDays(todayKey(),MOVE_END)===0?'Today':'Stopped')}</div>
-  <p class="hint" style="margin:4px 0 6px;font-size:14px">${live?'Cycles now lives at hellocycles.nl. New updates only come out there.':`<span>Cycles moves to hellocycles.nl on ${liveD}.</span> <span>New updates will only come out there.</span>`}</p>
+  <p class="hint" style="margin:4px 0 6px;font-size:14px">${live?'Cycles now lives at cyclesapp.nl. New updates only come out there.':`<span>Cycles moves to cyclesapp.nl on ${liveD}.</span> <span>New updates will only come out there.</span>`}</p>
   <p class="hint" style="margin:0 0 14px;font-size:14px"><span>Your data is saved on this phone per web address, so the new app starts empty.</span> <span>${live?'Move everything over in four steps:':'From then on you can move everything over in four steps:'}</span></p>
   <ol class="movesteps">
     <li><b>Save a backup</b><span>${live?'Save the file in Files, for example in On My iPhone.':'<span>You can already do this now.</span> <span>Save the file in Files, for example in On My iPhone.</span>'}</span><button class="btn small" data-act2="backup">Save backup</button></li>
-    <li><b>Open hellocycles.nl in Safari</b><span>Not from this app: open Safari and go to the address.</span>${live?`<a class="btn ghost small" href="${NEW_URL}" target="_blank" rel="noopener">Open hellocycles.nl ↗</a>`:`<em class="cdsoon">Available from ${liveD}</em>`}</li>
+    <li><b>Open cyclesapp.nl in Safari</b><span>Not from this app: open Safari and go to the address.</span>${live?`<a class="btn ghost small" href="${NEW_URL}" target="_blank" rel="noopener">Open cyclesapp.nl ↗</a>`:`<em class="cdsoon">Available from ${liveD}</em>`}</li>
     <li><b>Add it to your Home Screen</b><span>Tap the Share button, then Add to Home Screen.</span></li>
     <li><b>Restore your backup</b><span>In the new app, tap Restore your backup on the first screen (or go to Insights → Your data → Restore backup) and choose the file from step 1.</span></li>
   </ol>
